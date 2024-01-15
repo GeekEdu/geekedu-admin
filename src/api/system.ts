@@ -1,7 +1,7 @@
 import client from "./internal/httpClient";
 
 export function getSystemConfig() {
-  return client.get("/api/system/config", {});
+  return client.get("/system/api/config", {});
 }
 
 export function setting() {

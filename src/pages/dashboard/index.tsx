@@ -416,9 +416,9 @@ const DashboardPage = () => {
         <div className={styles["copyright"]}>
           <p className="mb-10">Powered By GeekEdu</p>
           <p className={styles["info"]}>
-            <span>SpringBoot{systemInfo.php_version} </span>
-            <span className="mx-10">API程序{systemInfo.meedu_version}</span>
-            <span>后台前端程序v4.9.9</span>
+            <span>SpringBoot{systemInfo.springbootVersion} </span>
+            <span className="mx-10">API程序{systemInfo.geekeduVersion}</span>
+            <span>后台前端程序{systemInfo.geekeduVersion}</span>
           </p>
         </div>
       </div>

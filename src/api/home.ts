@@ -5,7 +5,7 @@ export function index() {
 }
 
 export function systemInfo() {
-  return client.get("/backend/api/v1/dashboard/system/info", {});
+  return client.get("/system/api/version/info", {});
 }
 
 export function statistic(params: any) {
