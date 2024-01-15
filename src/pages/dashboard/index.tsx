@@ -14,22 +14,27 @@ import pathIcon from "../../assets/home/course.png";
 import paperIcon from "../../assets/home/testpaper.png";
 const { RangePicker } = DatePicker;
 
-const funDate = (aa: number) => {
+// 计算出当前日期加上 day 天后的日期
+const funDate = (day: number) => {
   let time2 = "";
   let date1 = new Date();
   let date2 = new Date(date1);
-  date2.setDate(date1.getDate() + aa);
+  date2.setDate(date1.getDate() + day);
   time2 =
     date2.getFullYear() + "-" + (date2.getMonth() + 1) + "-" + date2.getDate();
   return time2;
 };
 
+// 函数组件入口
 const DashboardPage = () => {
   let chartRef = useRef(null);
   const dispatch = useDispatch();
   const [loading, setLoading] = useState<boolean>(false);
+  // 基础数据
   const [basicData, setBasicData] = useState<any>({});
+  // 系统信息
   const [systemInfo, setSystemInfo] = useState<any>({});
+  // 过去一周的时间
   const [start_at, setStartAt] = useState(funDate(-7));
   const [end_at, setEndAt] = useState(
     new Date().getFullYear() +
@@ -47,7 +52,7 @@ const DashboardPage = () => {
   );
 
   useEffect(() => {
-    document.title = "MeEdu后台管理";
+    document.title = "GeekEdu后台管理";
     dispatch(titleAction("主页"));
     getStatData();
     getSystemInfo();
@@ -123,6 +128,7 @@ const DashboardPage = () => {
     };
   };
 
+  // 画图
   const drawLineChart = (params: any) => {
     let dom: any = chartRef.current;
     let myChart = echarts.init(dom);
@@ -408,9 +414,9 @@ const DashboardPage = () => {
           </div>
         </div>
         <div className={styles["copyright"]}>
-          <p className="mb-10">Powered By MeEdu</p>
+          <p className="mb-10">Powered By GeekEdu</p>
           <p className={styles["info"]}>
-            <span>PHP{systemInfo.php_version} </span>
+            <span>SpringBoot{systemInfo.php_version} </span>
             <span className="mx-10">API程序{systemInfo.meedu_version}</span>
             <span>后台前端程序v4.9.9</span>
           </p>

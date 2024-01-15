@@ -1,7 +1,7 @@
 import client from "./internal/httpClient";
 
 export function getSystemConfig() {
-  return client.get("/backend/api/v2/system/config", {});
+  return client.get("/api/system/config", {});
 }
 
 export function setting() {
@@ -13,7 +13,7 @@ export function saveSetting(params: any) {
 }
 
 export function getImageCaptcha() {
-  return client.get("/api/user/captcha/image", {});
+  return client.get("/user/api/captcha/image", {});
 }
 
 export function addonsList() {

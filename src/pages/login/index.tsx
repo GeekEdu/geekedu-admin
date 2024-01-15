@@ -74,8 +74,8 @@ const LoginPage = () => {
       let res: any = await loginApi.login({
         username: email,
         password: password,
-        image_key: captchaKey,
-        image_captcha: captchaVal,
+        imageKey: captchaKey,
+        imageCaptcha: captchaVal,
       });
       setToken(res.data.token); //将token写入本地
       await getSystemConfig(); //获取系统配置并写入store

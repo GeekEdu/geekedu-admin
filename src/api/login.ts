@@ -1,7 +1,7 @@
 import client from "./internal/httpClient";
 
 export function login(params: any) {
-  return client.post("/backend/api/v1/login", params);
+  return client.post("/user/api/login", params);
 }
 
 export function logout() {

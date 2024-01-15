@@ -10,7 +10,7 @@ type UserStoreInterface = {
 let defaultValue: UserStoreInterface = {
   user: null,
   isLogin: false,
-  title: "MeEdu后台管理",
+  title: "GeekEdu后台管理",
 };
 
 const loginUserSlice = createSlice({
