@@ -5,7 +5,7 @@ type SystemConfigStoreInterface = {
     logo?: string;
     url?: {
       api?: string;
-      h5?: string;
+      wx?: string;
       pc?: string;
     };
   };

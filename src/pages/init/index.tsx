@@ -30,7 +30,7 @@ const InitPage = (props: Props) => {
           logo: props.configData.system.logo,
           url: {
             api: props.configData.system.url.api,
-            h5: props.configData.system.url.h5,
+            wx: props.configData.system.url.wx,
             pc: props.configData.system.url.pc,
           },
         },

@@ -342,12 +342,16 @@ const DecorationPCPage = lazy(() => import("../pages/decoration/pc"));
 const DecorationH5Page = lazy(() => import("../pages/decoration/h5"));
 
 let RootPage: any = null;
+// 通过找到 token 判断是否登录 
 if (getToken()) {
   RootPage = lazy(async () => {
     return new Promise<any>(async (resolve) => {
       try {
+        // 系统配置
         let configRes: any = await system.getSystemConfig();
+        // 用户信息
         let userRes: any = await login.getUser();
+        // 对应权限
         let addonsRes: any = await system.addonsList();
 
         resolve({

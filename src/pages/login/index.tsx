@@ -115,7 +115,7 @@ const LoginPage = () => {
         logo: res.data.system.logo,
         url: {
           api: res.data.system.url.api,
-          h5: res.data.system.url.h5,
+          wx: res.data.system.url.wx,
           pc: res.data.system.url.pc,
         },
       },

@@ -17,7 +17,7 @@ export function getImageCaptcha() {
 }
 
 export function addonsList() {
-  return client.get(`/backend/api/v1/addons`, {});
+  return client.get(`/system/api/addons`, {});
 }
 
 export function repository(params: any) {

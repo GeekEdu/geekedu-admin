@@ -2,15 +2,15 @@ import moment from "moment";
 declare const window: any;
 
 export function getToken(): string {
-  return window.localStorage.getItem("meedu-admin-token") || "";
+  return window.localStorage.getItem("geekedu-admin-token") || "";
 }
 
 export function setToken(token: string) {
-  window.localStorage.setItem("meedu-admin-token", token);
+  window.localStorage.setItem("geekedu-admin-token", token);
 }
 
 export function clearToken() {
-  window.localStorage.removeItem("meedu-admin-token");
+  window.localStorage.removeItem("geekedu-admin-token");
 }
 
 export function dateFormat(dateStr: string) {
@@ -94,11 +94,11 @@ export function getUrl() {
 }
 
 export function saveEditorKey(key: string) {
-  window.localStorage.setItem("meedu-editor-key", key);
+  window.localStorage.setItem("geekedu-editor-key", key);
 }
 
 export function getEditorKey() {
-  return window.localStorage.getItem("meedu-editor-key");
+  return window.localStorage.getItem("geekedu-editor-key");
 }
 
 export function codeRender(el: any) {
