@@ -61,21 +61,21 @@ const DashboardPage = () => {
 
   useEffect(() => {
     if (
-      typeof basicData.today_register_user_count === "undefined" ||
-      typeof basicData.user_count === "undefined" ||
-      isNaN(basicData.today_register_user_count) ||
-      isNaN(basicData.user_count) ||
-      basicData.user_count === 0
+      typeof basicData.todayRegisterUserCount === "undefined" ||
+      typeof basicData.userCount === "undefined" ||
+      isNaN(basicData.todayRegisterUserCount) ||
+      isNaN(basicData.userCount) ||
+      basicData.userCount === 0
     ) {
       setUserCountIncRate(0);
     } else {
       let value: any = (
-        basicData.today_register_user_count / basicData.user_count
+        basicData.todayRegisterUserCount / basicData.userCount
       ).toFixed(3);
       setUserCountIncRate(Math.floor(value * 100));
     }
     setThisMonthPaidRate(
-      sumrate(basicData.this_month_paid_sum, basicData.last_month_paid_sum)
+      sumrate(basicData.thisMonthPaidSum, basicData.lastMonthPaidSum)
     );
   }, [basicData]);
 
@@ -236,31 +236,31 @@ const DashboardPage = () => {
         <div className={styles["el_top_row1"]}>
           <div className={styles["el_row_item"]}>
             <span className={styles["item_title"]}>今日收入(元)</span>
-            <p>{formatNumber(basicData.today_paid_sum || 0)}</p>
+            <p>{formatNumber(basicData.todayPaidSum || 0)}</p>
             <div className={styles["item_info"]}>
-              <span>昨日：{numberForHuman(basicData.yesterday_paid_sum)}</span>
+              <span>昨日：{numberForHuman(basicData.yesterdayPaidSum)}</span>
               <span>
                 较昨日：
                 {sumrate(
-                  basicData.today_paid_sum,
-                  basicData.yesterday_paid_sum
+                  basicData.todayPaidSum,
+                  basicData.yesterdayPaidSum
                 ) < 0 && (
                   <strong className="c-danger">
                     {sumrate(
-                      basicData.today_paid_sum,
-                      basicData.yesterday_paid_sum
+                      basicData.todayPaidSum,
+                      basicData.yesterdayPaidSum
                     )}
                     %
                   </strong>
                 )}
                 {sumrate(
-                  basicData.today_paid_sum,
-                  basicData.yesterday_paid_sum
+                  basicData.todayPaidSum,
+                  basicData.yesterdayPaidSum
                 ) >= 0 && (
                   <strong>
                     {sumrate(
-                      basicData.today_paid_sum,
-                      basicData.yesterday_paid_sum
+                      basicData.todayPaidSum,
+                      basicData.yesterdayPaidSum
                     )}
                     %
                   </strong>
@@ -270,33 +270,33 @@ const DashboardPage = () => {
           </div>
           <div className={styles["el_row_item"]}>
             <span className={styles["item_title"]}>今日支付人数</span>
-            <p>{formatNumber(basicData.today_paid_user_num || 0)}</p>
+            <p>{formatNumber(basicData.todayPaidUserNum || 0)}</p>
             <div className={styles["item_info"]}>
               <span>
-                昨日：{numberForHuman(basicData.yesterday_paid_user_num)}
+                昨日：{numberForHuman(basicData.yesterdayPaidUserNum)}
               </span>
               <span>
                 较昨日：
                 {sumrate(
-                  basicData.today_paid_user_num,
-                  basicData.yesterday_paid_user_num
+                  basicData.todayPaidUserNum,
+                  basicData.yesterdayPaidUserNum
                 ) < 0 && (
                   <strong className="c-danger">
                     {sumrate(
-                      basicData.today_paid_user_num,
-                      basicData.yesterday_paid_user_num
+                      basicData.todayPaidUserNum,
+                      basicData.yesterdayPaidUserNum
                     )}
                     %
                   </strong>
                 )}
                 {sumrate(
-                  basicData.today_paid_user_num,
-                  basicData.yesterday_paid_user_num
+                  basicData.todayPaidUserNum,
+                  basicData.yesterdayPaidUserNum
                 ) >= 0 && (
                   <strong>
                     {sumrate(
-                      basicData.today_paid_user_num,
-                      basicData.yesterday_paid_user_num
+                      basicData.todayPaidUserNum,
+                      basicData.yesterdayPaidUserNum
                     )}
                     %
                   </strong>
@@ -308,7 +308,7 @@ const DashboardPage = () => {
             <div className={styles["el_item"]}>
               <span>总学员数</span>
               <span className={styles["el_item_num"]}>
-                {formatNumber(basicData.user_count || 0)}
+                {formatNumber(basicData.userCount || 0)}
               </span>
 
               <span className={styles["el_item_increase"]}>
@@ -322,7 +322,7 @@ const DashboardPage = () => {
             <div className={styles["el_item"]}>
               <span>本月收入(元)</span>
               <span className={styles["el_item_num"]}>
-                {formatNumber(basicData.this_month_paid_sum || 0)}
+                {formatNumber(basicData.thisMonthPaidSum || 0)}
               </span>
 
               <span className={styles["el_item_increase"]}>

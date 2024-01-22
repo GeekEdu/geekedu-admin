@@ -1,7 +1,7 @@
 import client from "./internal/httpClient";
 
 export function index() {
-  return client.get("/backend/api/v1/dashboard", {});
+  return client.get("/system/api/dashboard", {});
 }
 
 export function systemInfo() {
@@ -9,5 +9,5 @@ export function systemInfo() {
 }
 
 export function statistic(params: any) {
-  return client.get(`/backend/api/v1/dashboard/graph`, params);
+  return client.get(`/system/api/dashboard/graph`, params);
 }

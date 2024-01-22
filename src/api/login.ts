@@ -9,5 +9,5 @@ export function logout() {
 }
 
 export function getUser() {
-  return client.get("/backend/api/v1/user", {});
+  return client.get("/user/api/users", {});
 }
