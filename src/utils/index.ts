@@ -1,18 +1,22 @@
 import moment from "moment";
 declare const window: any;
 
+// 从localstorage中拿到token
 export function getToken(): string {
   return window.localStorage.getItem("geekedu-admin-token") || "";
 }
 
+// 在localstorage中存token
 export function setToken(token: string) {
   window.localStorage.setItem("geekedu-admin-token", token);
 }
 
+// 清除token
 export function clearToken() {
   window.localStorage.removeItem("geekedu-admin-token");
 }
 
+// 日期格式化
 export function dateFormat(dateStr: string) {
   if (!dateStr) {
     return "";
@@ -34,6 +38,7 @@ export function yearFormat(dateStr: string) {
   return moment(dateStr).format("YYYY-MM-DD");
 }
 
+// 生成uuid
 export function generateUUID(): string {
   let guid = "";
   for (let i = 1; i <= 32; i++) {
@@ -72,6 +77,7 @@ export function inStrArray(array: string[], value: string): boolean {
   return false;
 }
 
+// 校验url
 export function checkUrl(value: any) {
   let url = value;
   let str = url.substr(url.length - 1, 1);
@@ -81,6 +87,7 @@ export function checkUrl(value: any) {
   return url;
 }
 
+// 密码校验
 export function passwordRules(value: any) {
   let re = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[^]{12,25}$/;
   let result = re.test(value);
