@@ -1,16 +1,16 @@
-import { Suspense } from "react";
-import styles from "./index.module.scss";
-import { Outlet } from "react-router-dom";
-import LoadingPage from "../../loading";
+import { Suspense } from 'react'
+import { Outlet } from 'react-router-dom'
+import LoadingPage from '../../loading'
+import styles from './index.module.scss'
 
-const WithoutHeaderWithoutFooter = () => {
+function WithoutHeaderWithoutFooter() {
   return (
-    <div className={styles["layout-wrap"]}>
+    <div className={styles['layout-wrap']}>
       <Suspense fallback={<LoadingPage height="100vh" />}>
         <Outlet />
       </Suspense>
     </div>
-  );
-};
+  )
+}
 
-export default WithoutHeaderWithoutFooter;
+export default WithoutHeaderWithoutFooter

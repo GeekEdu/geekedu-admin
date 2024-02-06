@@ -1,24 +1,23 @@
-import { useEffect } from "react";
-import styles from "./index.module.scss";
-import { Outlet } from "react-router-dom";
-import { Header, LeftMenu } from "../../../components";
-import { Suspense } from "react";
-import LoadingPage from "../../loading";
+import { Suspense, useEffect } from 'react'
+import { Outlet } from 'react-router-dom'
+import { Header, LeftMenu } from '../../../components'
+import LoadingPage from '../../loading'
+import styles from './index.module.scss'
 
-const HomePage = () => {
-  useEffect(() => {}, []);
+function HomePage() {
+  useEffect(() => {}, [])
 
   return (
     <>
-      <div className={styles["layout-wrap"]}>
-        <div className={styles["left-menu"]}>
+      <div className={styles['layout-wrap']}>
+        <div className={styles['left-menu']}>
           <LeftMenu />
         </div>
-        <div className={styles["right-cont"]}>
-          <div className={styles["right-top"]}>
+        <div className={styles['right-cont']}>
+          <div className={styles['right-top']}>
             <Header></Header>
           </div>
-          <div className={styles["right-main"]}>
+          <div className={styles['right-main']}>
             <Suspense fallback={<LoadingPage height="100vh" />}>
               {/* 二级路由出口 */}
               <Outlet />
@@ -27,7 +26,7 @@ const HomePage = () => {
         </div>
       </div>
     </>
-  );
-};
+  )
+}
 
-export default HomePage;
+export default HomePage

@@ -45,8 +45,11 @@ function CoursePage() {
   const [drawer, setDrawer] = useState(false)
   const [showStatus, setShowStatus] = useState<boolean>(false)
 
+  // 初始化界面
   useEffect(() => {
+    // 界面标题
     document.title = '录播课'
+    // 浏览器标签名
     dispatch(titleAction('录播课'))
     getParams()
   }, [])
@@ -62,11 +65,13 @@ function CoursePage() {
       setShowStatus(false)
   }, [category_id, id, keywords])
 
+  // 请求录播课数据
   const getData = () => {
     if (loading)
       return
 
     setLoading(true)
+    // 发送请求
     course
       .list({
         page,
@@ -87,11 +92,13 @@ function CoursePage() {
       })
   }
 
+  // 请求课程分类数据
   const getParams = () => {
     course.create().then((res: any) => {
       const categories = res.data.categories
       const box: any = []
       for (let i = 0; i < categories.length; i++) {
+        // 判断是否有二级分类
         if (categories[i].children.length > 0) {
           box.push({
             label: categories[i].name,
@@ -117,6 +124,7 @@ function CoursePage() {
     })
   }
 
+  // 刷新页面函数
   const resetList = () => {
     setPage(1)
     setSize(10)
@@ -127,9 +135,10 @@ function CoursePage() {
     setRefresh(!refresh)
   }
 
+  // 定义分页类
   const paginationProps = {
     current: page, // 当前页码
-    pageSize: size,
+    pageSize: size, // 每页展示条数
     total, // 总条数
     onChange: (page: number, pageSize: number) =>
       handlePageChange(page, pageSize), // 改变页码的函数
@@ -141,11 +150,14 @@ function CoursePage() {
     setSize(pageSize)
   }
 
+  // 定义表格 使用 antd 的组件 ColumnsType
+  // 参数为 列名 列宽 列内容
   const columns: ColumnsType<DataType> = [
     {
       title: 'ID',
       width: '6%',
-      render: (_, record: any) => <span>{record.id}</span>,
+      // 生成复杂数据的渲染函数，参数分别为当前行的值，当前行数据，行索引
+      render: (_, record: any) => <span>{record.id}</span>, // 课程数据id
     },
     {
       title: '课程',
@@ -159,7 +171,7 @@ function CoursePage() {
           border={4}
         >
         </ThumbBar>
-      ),
+      ), // 课程图片 + 课程名 作为组件封装
     },
     {
       title: '分类',
@@ -206,6 +218,7 @@ function CoursePage() {
       title: '操作',
       width: '14%',
       fixed: 'right',
+      // 下拉菜单
       render: (_, record: any) => {
         const items: MenuProps['items'] = [
           {
@@ -304,18 +317,22 @@ function CoursePage() {
     },
   ]
 
+  // 重置数据
   const resetData = () => {
     setPage(1)
     setList([])
     setRefresh(!refresh)
   }
 
+  // 删除
   const destory = (id: number) => {
     if (id === 0)
       return
 
+    // 确认弹窗
     confirm({
       title: '操作确认',
+      // Modal对话框自定义icon
       icon: <ExclamationCircleFilled />,
       content: '确认删除此课程？',
       centered: true,
@@ -326,6 +343,7 @@ function CoursePage() {
           return
 
         setLoading(true)
+        // 调用删除请求
         course
           .destroy(id)
           .then(() => {
@@ -345,6 +363,7 @@ function CoursePage() {
 
   return (
     <div className="meedu-main-body">
+      {/* 导航栏 */}
       <div className="float-left j-b-flex mb-30">
         <div className="d-flex">
           <PerButton
@@ -398,6 +417,7 @@ function CoursePage() {
           >
           </OptionBar>
         </div>
+        {/* 搜索框 */}
         <div className="d-flex">
           <Input
             value={keywords}
@@ -442,6 +462,7 @@ function CoursePage() {
         </div>
       </div>
       <div className="float-left">
+        {/* 表格 */}
         <Table
           loading={loading}
           columns={columns}
@@ -452,6 +473,7 @@ function CoursePage() {
       </div>
       {drawer
         ? (
+          // 抽屉
           <Drawer
             title="更多筛选"
             onClose={() => setDrawer(false)}

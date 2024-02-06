@@ -770,7 +770,7 @@ textarea.ant-input {
   }
   .ql-editor ol li:not(.ql-direction-rtl)::before {
     counter-increment: myCounter;
-    content: counter(myCounter) ". ";
+    content: counter(myCounter) '. ';
     margin-left: -1.5em;
     margin-right: 0.3em;
     text-align: right;
@@ -784,7 +784,12 @@ textarea.ant-input {
     margin: 0 2px;
     color: #1e6bb8;
     background-color: rgba(27, 31, 35, 0.05);
-    font-family: Operator Mono, Consolas, Monaco, Menlo, monospace;
+    font-family:
+      Operator Mono,
+      Consolas,
+      Monaco,
+      Menlo,
+      monospace;
     word-break: break-all;
   }
   .ql-editor sub,
@@ -1945,5 +1950,3 @@ textarea.ant-input {
     }
   }
 }
-
-

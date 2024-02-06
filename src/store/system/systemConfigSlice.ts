@@ -1,32 +1,32 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice } from '@reduxjs/toolkit'
 
-type SystemConfigStoreInterface = {
+interface SystemConfigStoreInterface {
   system?: {
-    logo?: string;
+    logo?: string
     url?: {
-      api?: string;
-      wx?: string;
-      pc?: string;
-    };
-  };
+      api?: string
+      wx?: string
+      pc?: string
+    }
+  }
   video?: {
-    default_service?: string;
-  };
-};
+    default_service?: string
+  }
+}
 
 const systemConfigSlice = createSlice({
-  name: "systemConfig",
+  name: 'systemConfig',
   initialState: {
     value: {},
   },
   reducers: {
     saveConfigAction(stage, e) {
-      stage.value = e.payload;
+      stage.value = e.payload
     },
   },
-});
+})
 
-export default systemConfigSlice.reducer;
-export const { saveConfigAction } = systemConfigSlice.actions;
+export default systemConfigSlice.reducer
+export const { saveConfigAction } = systemConfigSlice.actions
 
-export type { SystemConfigStoreInterface };
+export type { SystemConfigStoreInterface }
