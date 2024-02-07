@@ -34,8 +34,8 @@ function CoursePage() {
   const navigate = useNavigate()
   const [loading, setLoading] = useState<boolean>(false)
   const [list, setList] = useState<any>([])
-  const [page, setPage] = useState(1)
-  const [size, setSize] = useState(10)
+  const [pageNum, setPageNum] = useState(1)
+  const [pageSize, setPageSize] = useState(10)
   const [total, setTotal] = useState(0)
   const [refresh, setRefresh] = useState(false)
   const [keywords, setKeywords] = useState<string>('')
@@ -56,7 +56,7 @@ function CoursePage() {
 
   useEffect(() => {
     getData()
-  }, [page, size, refresh])
+  }, [pageNum, pageSize, refresh])
 
   useEffect(() => {
     if ((category_id && category_id.length !== 0) || id || keywords)
@@ -74,8 +74,8 @@ function CoursePage() {
     // 发送请求
     course
       .list({
-        page,
-        size,
+        pageNum,
+        pageSize,
         sort: 'id',
         order: 'desc',
         keywords,
@@ -126,8 +126,8 @@ function CoursePage() {
 
   // 刷新页面函数
   const resetList = () => {
-    setPage(1)
-    setSize(10)
+    setPageNum(1)
+    setPageSize(10)
     setList([])
     setKeywords('')
     setCategoryId([])
@@ -137,8 +137,8 @@ function CoursePage() {
 
   // 定义分页类
   const paginationProps = {
-    current: page, // 当前页码
-    pageSize: size, // 每页展示条数
+    current: pageNum, // 当前页码
+    pageSize, // 每页展示条数
     total, // 总条数
     onChange: (page: number, pageSize: number) =>
       handlePageChange(page, pageSize), // 改变页码的函数
@@ -146,8 +146,8 @@ function CoursePage() {
   }
 
   const handlePageChange = (page: number, pageSize: number) => {
-    setPage(page)
-    setSize(pageSize)
+    setPageNum(page)
+    setPageSize(pageSize)
   }
 
   // 定义表格 使用 antd 的组件 ColumnsType
@@ -165,7 +165,7 @@ function CoursePage() {
       render: (_, record: any) => (
         <ThumbBar
           width={120}
-          value={record.thumb}
+          value={record.pictureLink}
           height={90}
           title={record.title}
           border={4}
@@ -188,7 +188,7 @@ function CoursePage() {
       width: '8%',
       render: (_, record: any) => (
         <div>
-          {record.charge}
+          {record.price}
           元
         </div>
       ),
@@ -196,22 +196,33 @@ function CoursePage() {
     {
       title: '销量',
       width: '8%',
-      render: (_, record: any) => <span>{record.user_count}</span>,
+      render: (_, record: any) => <span>{record.sellNum}</span>,
     },
     {
       title: '上架时间',
       width: '14%',
       dataIndex: 'published_at',
-      render: (published_at: string) => <span>{dateFormat(published_at)}</span>,
+      render: (_, record: any) => <span>{dateFormat(record.groundingTime)}</span>,
     },
     {
       title: '是否显示',
       width: '8%',
       render: (_, record: any) => (
-        <>
-          {record.is_show === 1 && <span className="c-green">· 显示</span>}
-          {record.is_show !== 1 && <span className="c-red">· 隐藏</span>}
-        </>
+        record.isShow
+          ? (
+            <>
+              <span className="c-green">· 显示</span>
+            </>
+            )
+          : (
+            <>
+              <span className="c-red">· 隐藏</span>
+            </>
+            )
+        // <>
+        //   {record.isShow && <span className="c-green">· 显示</span>}
+        //   {record.isShow && <span className="c-red">· 隐藏</span>}
+        // </>
       ),
     },
     {
@@ -319,7 +330,7 @@ function CoursePage() {
 
   // 重置数据
   const resetData = () => {
-    setPage(1)
+    setPageNum(1)
     setList([])
     setRefresh(!refresh)
   }
@@ -435,7 +446,7 @@ function CoursePage() {
             className="ml-10"
             type="primary"
             onClick={() => {
-              setPage(1)
+              setPageNum(1)
               setRefresh(!refresh)
               setDrawer(false)
             }}
@@ -491,7 +502,7 @@ function CoursePage() {
                 </Button>
                 <Button
                   onClick={() => {
-                    setPage(1)
+                    setPageNum(1)
                     setRefresh(!refresh)
                     setDrawer(false)
                   }}

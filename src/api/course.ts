@@ -3,7 +3,7 @@ import client from './internal/httpClient'
 // 线上课详情
 
 export function list(params: any) {
-  return client.get(`/backend/api/v1/course`, params)
+  return client.get(`/course/api/courses`, params)
 }
 
 export function create() {
