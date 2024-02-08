@@ -97,7 +97,7 @@ function CoursePage() {
     course.getCourseCategory({
       type: 'REPLAY_COURSE',
     }).then((res: any) => {
-      const categories = res.data.categories
+      const categories = res.data
       const box: any = []
       for (let i = 0; i < categories.length; i++) {
         // 判断是否有二级分类
