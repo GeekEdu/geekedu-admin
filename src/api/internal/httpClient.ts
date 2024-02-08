@@ -1,14 +1,15 @@
-import axios, { Axios, AxiosResponse } from "axios";
-import { message } from "antd";
-import { getToken, clearToken } from "../../utils/index";
+import type { Axios, AxiosResponse } from 'axios'
+import axios from 'axios'
+import { message } from 'antd'
+import { clearToken, getToken } from '../../utils/index'
 
-const GoLogin = () => {
-  clearToken();
-  window.location.href = "/login";
-};
+function GoLogin() {
+  clearToken()
+  window.location.href = '/login'
+}
 
 export class HttpClient {
-  axios: Axios;
+  axios: Axios
 
   constructor(url: string) {
     this.axios = axios.create({
@@ -16,69 +17,74 @@ export class HttpClient {
       timeout: 15000,
       withCredentials: false,
       headers: {
-        Accept: "application/json",
+        Accept: 'application/json',
       },
-    });
+    })
 
-    //拦截器注册
+    // 拦截器注册
     this.axios.interceptors.request.use(
       (config) => {
-        const token = getToken();
-        token && (config.headers.Authorization = "Bearer " + token);
-        return config;
+        const token = getToken()
+        token && (config.headers.Authorization = `Bearer ${token}`)
+        return config
       },
       (err) => {
-        return Promise.reject(err);
-      }
-    );
+        return Promise.reject(err)
+      },
+    )
 
     this.axios.interceptors.response.use(
       (response: AxiosResponse) => {
-        let status = response.data.status;
-        let code = response.data.code; //业务返回代码
-        let msg = response.data.message; //错误消息
+        const status = response.data.status
+        const code = response.data.code // 业务返回代码
+        const msg = response.data.message // 错误消息
 
         if (status === 0) {
-          return Promise.resolve(response);
-        } else if (code === 401) {
-          message.error("请重新登录");
-          GoLogin();
-        } else {
-          message.error(msg);
+          return Promise.resolve(response)
         }
-        return Promise.reject(response);
+        else if (code === 401) {
+          message.error('请重新登录')
+          GoLogin()
+        }
+        else {
+          message.error(msg)
+        }
+        return Promise.reject(response)
       },
       // 当http的状态码非0
       (error) => {
-        let status = error.response.status;
+        const status = error.response.status
         if (status === 401) {
-          message.error("请重新登录");
-          GoLogin();
-        } else if (status === 404) {
+          message.error('请重新登录')
+          GoLogin()
+        }
+        else if (status === 404) {
           // 跳转到404页面
-        } else if (status === 403) {
+        }
+        else if (status === 403) {
           // 跳转到无权限页面
-        } else if (status === 500) {
+        }
+        else if (status === 500) {
           // 跳转到500异常页面
         }
-        return Promise.reject(error.response);
-      }
-    );
+        return Promise.reject(error.response)
+      },
+    )
   }
 
   get(url: string, params: object) {
     return new Promise((resolve, reject) => {
       this.axios
         .get(url, {
-          params: params,
+          params,
         })
         .then((res) => {
-          resolve(res.data);
+          resolve(res.data)
         })
         .catch((err) => {
-          reject(err.data);
-        });
-    });
+          reject(err.data)
+        })
+    })
   }
 
   destroy(url: string) {
@@ -86,12 +92,12 @@ export class HttpClient {
       this.axios
         .delete(url)
         .then((res) => {
-          resolve(res.data);
+          resolve(res.data)
         })
         .catch((err) => {
-          reject(err.data);
-        });
-    });
+          reject(err.data)
+        })
+    })
   }
 
   post(url: string, params: object) {
@@ -99,12 +105,12 @@ export class HttpClient {
       this.axios
         .post(url, params)
         .then((res) => {
-          resolve(res.data);
+          resolve(res.data)
         })
         .catch((err) => {
-          reject(err.data);
-        });
-    });
+          reject(err.data)
+        })
+    })
   }
 
   put(url: string, params: object) {
@@ -112,12 +118,12 @@ export class HttpClient {
       this.axios
         .put(url, params)
         .then((res) => {
-          resolve(res.data);
+          resolve(res.data)
         })
         .catch((err) => {
-          reject(err.data);
-        });
-    });
+          reject(err.data)
+        })
+    })
   }
 
   request(config: object) {
@@ -125,17 +131,17 @@ export class HttpClient {
       this.axios
         .request(config)
         .then((res) => {
-          resolve(res.data);
+          resolve(res.data)
         })
         .catch((err) => {
-          reject(err.data);
-        });
-    });
+          reject(err.data)
+        })
+    })
   }
 }
 
-const APP_URL = import.meta.env.VITE_APP_URL || "";
+const APP_URL = import.meta.env.VITE_APP_URL || ''
 
-const client = new HttpClient(APP_URL);
+const client = new HttpClient(APP_URL)
 
-export default client;
+export default client

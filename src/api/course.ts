@@ -2,12 +2,14 @@ import client from './internal/httpClient'
 
 // 线上课详情
 
+// 后台返回录播课列表
 export function list(params: any) {
   return client.get(`/course/api/courses`, params)
 }
 
-export function create() {
-  return client.get(`/backend/api/v1/course/create`, {})
+// 后台返回录播课分类列表
+export function getCourseCategory(params: any) {
+  return client.get(`/label/api/category/getCategoryList`, params)
 }
 
 export function store(params: any) {
@@ -42,28 +44,30 @@ export function userImport(id: number, params: any) {
   return client.post(`/backend/api/v1/course/${id}/subscribe/import`, params)
 }
 
+// 后台分页返回录播课分类列表
 export function categoryList(params: any) {
-  return client.get(`/backend/api/v1/courseCategory`, params)
+  return client.get(`/label/api/category/getCategoryPage`, params)
 }
 
 export function categoryDestroy(id: number) {
-  return client.destroy(`/backend/api/v1/courseCategory/${id}`)
+  return client.post(`/label/api/category/delete/${id}`, {})
 }
 
 export function categoryCreate() {
   return client.get(`/backend/api/v1/courseCategory/create`, {})
 }
 
+// 后台新建录播课分类
 export function categoryStore(params: any) {
-  return client.post('/backend/api/v1/courseCategory', params)
+  return client.post('/label/api/category/add', params)
 }
 
-export function categoryDetail(id: number) {
-  return client.get(`/backend/api/v1/courseCategory/${id}`, {})
+export function categoryDetail(params: any) {
+  return client.get(`/label/api/category/getCategoryById`, params)
 }
 
 export function categoryUpdate(id: number, params: any) {
-  return client.put(`/backend/api/v1/courseCategory/${id}`, params)
+  return client.post(`/label/api/category/update/${id}`, params)
 }
 
 export function commentList(params: any) {

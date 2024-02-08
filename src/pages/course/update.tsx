@@ -1,66 +1,66 @@
-import { useState, useEffect } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useEffect, useState } from 'react'
+import { useLocation, useNavigate } from 'react-router-dom'
 import {
   Button,
-  Input,
-  message,
-  Form,
-  DatePicker,
-  Switch,
-  Space,
-  Select,
-  Row,
   Col,
+  DatePicker,
+  Form,
+  Input,
+  Row,
+  Select,
+  Space,
   Spin,
-} from "antd";
-import { useDispatch } from "react-redux";
-import { course } from "../../api/index";
-import { titleAction } from "../../store/user/loginUserSlice";
+  Switch,
+  message,
+} from 'antd'
+import { useDispatch } from 'react-redux'
+import dayjs from 'dayjs'
+import moment from 'moment'
+import { course } from '../../api/index'
+import { titleAction } from '../../store/user/loginUserSlice'
 import {
   BackBartment,
-  PerButton,
-  UploadImageButton,
   HelperText,
+  PerButton,
   QuillEditor,
-} from "../../components";
-import dayjs from "dayjs";
-import moment from "moment";
+  UploadImageButton,
+} from '../../components'
 
-const CourseUpdatePage = () => {
-  const result = new URLSearchParams(useLocation().search);
-  const [form] = Form.useForm();
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const [init, setInit] = useState<boolean>(true);
-  const [loading, setLoading] = useState<boolean>(false);
-  const [categories, setCategories] = useState<any>([]);
-  const [isFree, setIsFree] = useState(0);
-  const [thumb, setThumb] = useState<string>("");
-  const [defautValue, setDefautValue] = useState("");
-  const [id, setId] = useState(Number(result.get("id")));
-
-  useEffect(() => {
-    document.title = "编辑录播课程";
-    dispatch(titleAction("编辑录播课程"));
-    initData();
-  }, [id]);
+function CourseUpdatePage() {
+  const result = new URLSearchParams(useLocation().search)
+  const [form] = Form.useForm()
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
+  const [init, setInit] = useState<boolean>(true)
+  const [loading, setLoading] = useState<boolean>(false)
+  const [categories, setCategories] = useState<any>([])
+  const [isFree, setIsFree] = useState(0)
+  const [thumb, setThumb] = useState<string>('')
+  const [defautValue, setDefautValue] = useState('')
+  const [id, setId] = useState(Number(result.get('id')))
 
   useEffect(() => {
-    setId(Number(result.get("id")));
-  }, [result.get("id")]);
+    document.title = '编辑录播课程'
+    dispatch(titleAction('编辑录播课程'))
+    initData()
+  }, [id])
+
+  useEffect(() => {
+    setId(Number(result.get('id')))
+  }, [result.get('id')])
 
   const initData = async () => {
-    await getParams();
-    await getDetail();
-    setInit(false);
-  };
+    await getParams()
+    await getDetail()
+    setInit(false)
+  }
 
   const getDetail = async () => {
-    if (id === 0) {
-      return;
-    }
-    const res: any = await course.detail(id);
-    var data = res.data;
+    if (id === 0)
+      return
+
+    const res: any = await course.detail(id)
+    const data = res.data
     form.setFieldsValue({
       category_id: data.category_id,
       title: data.title,
@@ -70,94 +70,97 @@ const CourseUpdatePage = () => {
       short_description: data.short_description,
       original_desc: data.original_desc,
       charge: data.charge,
-      published_at: dayjs(data.published_at, "YYYY-MM-DD HH:mm"),
-    });
-    setIsFree(data.is_free);
-    setDefautValue(data.original_desc);
-    setThumb(data.thumb);
-  };
+      published_at: dayjs(data.published_at, 'YYYY-MM-DD HH:mm'),
+    })
+    setIsFree(data.is_free)
+    setDefautValue(data.original_desc)
+    setThumb(data.thumb)
+  }
 
   const getParams = async () => {
-    const res: any = await course.create();
-    let categories = res.data.categories;
-    const box: any = [];
+    const res: any = await course.getCourseCategory({
+      type: 'REPLAY_COURSE',
+    })
+    const categories = res.data.categories
+    const box: any = []
     for (let i = 0; i < categories.length; i++) {
       if (categories[i].children.length > 0) {
         box.push({
           label: categories[i].name,
           value: categories[i].id,
-        });
-        let children = categories[i].children;
+        })
+        const children = categories[i].children
         for (let j = 0; j < children.length; j++) {
-          children[j].name = "|----" + children[j].name;
+          children[j].name = `|----${children[j].name}`
           box.push({
             label: children[j].name,
             value: children[j].id,
-          });
+          })
         }
-      } else {
+      }
+      else {
         box.push({
           label: categories[i].name,
           value: categories[i].id,
-        });
+        })
       }
     }
-    setCategories(box);
-  };
+    setCategories(box)
+  }
 
   const onFinish = (values: any) => {
-    if (loading) {
-      return;
-    }
-    if (values.is_free === 1) {
-      values.charge = 0;
-    }
+    if (loading)
+      return
+
+    if (values.is_free === 1)
+      values.charge = 0
+
     if (Number(values.charge) % 1 !== 0) {
-      message.error("课程价格必须为整数型");
-      return;
+      message.error('课程价格必须为整数型')
+      return
     }
     if (values.is_free === 0 && Number(values.charge) <= 0) {
-      message.error("课程未设置免费时价格应该大于0");
-      return;
+      message.error('课程未设置免费时价格应该大于0')
+      return
     }
-    values.render_desc = values.original_desc;
+    values.render_desc = values.original_desc
     values.published_at = moment(new Date(values.published_at)).format(
-      "YYYY-MM-DD HH:mm"
-    );
-    setLoading(true);
+      'YYYY-MM-DD HH:mm',
+    )
+    setLoading(true)
     course
       .update(id, values)
       .then((res: any) => {
-        setLoading(false);
-        message.success("保存成功！");
-        navigate(-1);
+        setLoading(false)
+        message.success('保存成功！')
+        navigate(-1)
       })
       .catch((e) => {
-        setLoading(false);
-      });
-  };
+        setLoading(false)
+      })
+  }
 
   const onFinishFailed = (errorInfo: any) => {
-    console.log("Failed:", errorInfo);
-  };
+    console.log('Failed:', errorInfo)
+  }
 
   const onSwitch = (checked: boolean) => {
-    if (checked) {
-      form.setFieldsValue({ is_show: 1 });
-    } else {
-      form.setFieldsValue({ is_show: 0 });
-    }
-  };
+    if (checked)
+      form.setFieldsValue({ is_show: 1 })
+    else
+      form.setFieldsValue({ is_show: 0 })
+  }
 
   const isVChange = (checked: boolean) => {
     if (checked) {
-      form.setFieldsValue({ is_free: 1 });
-      setIsFree(1);
-    } else {
-      form.setFieldsValue({ is_free: 0 });
-      setIsFree(0);
+      form.setFieldsValue({ is_free: 1 })
+      setIsFree(1)
     }
-  };
+    else {
+      form.setFieldsValue({ is_free: 0 })
+      setIsFree(0)
+    }
+  }
 
   return (
     <div className="meedu-main-body">
@@ -168,7 +171,7 @@ const CourseUpdatePage = () => {
         </div>
       )}
       <div
-        style={{ display: init ? "none" : "block" }}
+        style={{ display: init ? 'none' : 'block' }}
         className="float-left mt-30"
       >
         <Form
@@ -184,12 +187,12 @@ const CourseUpdatePage = () => {
           <Form.Item
             name="category_id"
             label="所属分类"
-            rules={[{ required: true, message: "请选择所属分类!" }]}
+            rules={[{ required: true, message: '请选择所属分类!' }]}
           >
             <Space align="baseline" style={{ height: 32 }}>
               <Form.Item
                 name="category_id"
-                rules={[{ required: true, message: "请选择所属分类!" }]}
+                rules={[{ required: true, message: '请选择所属分类!' }]}
               >
                 <Select
                   style={{ width: 300 }}
@@ -206,7 +209,7 @@ const CourseUpdatePage = () => {
                   icon={null}
                   p="courseCategory"
                   onClick={() => {
-                    navigate("/course/vod/category/index");
+                    navigate('/course/vod/category/index')
                   }}
                   disabled={null}
                 />
@@ -216,7 +219,7 @@ const CourseUpdatePage = () => {
           <Form.Item
             label="课程名称"
             name="title"
-            rules={[{ required: true, message: "请输入课程名称!" }]}
+            rules={[{ required: true, message: '请输入课程名称!' }]}
           >
             <Input
               style={{ width: 300 }}
@@ -227,20 +230,21 @@ const CourseUpdatePage = () => {
           <Form.Item
             label="课程封面"
             name="thumb"
-            rules={[{ required: true, message: "请上传课程封面!" }]}
+            rules={[{ required: true, message: '请上传课程封面!' }]}
           >
             <Space align="baseline" style={{ height: 32 }}>
               <Form.Item
                 name="thumb"
-                rules={[{ required: true, message: "请上传课程封面!" }]}
+                rules={[{ required: true, message: '请上传课程封面!' }]}
               >
                 <UploadImageButton
                   text="选择图片"
                   onSelected={(url) => {
-                    form.setFieldsValue({ thumb: url });
-                    setThumb(url);
+                    form.setFieldsValue({ thumb: url })
+                    setThumb(url)
                   }}
-                ></UploadImageButton>
+                >
+                </UploadImageButton>
               </Form.Item>
               <div className="ml-10">
                 <HelperText text="长宽比4:3，建议尺寸：400x300像素"></HelperText>
@@ -258,7 +262,8 @@ const CourseUpdatePage = () => {
                     width: 200,
                     height: 150,
                   }}
-                ></div>
+                >
+                </div>
               </Col>
             </Row>
           )}
@@ -269,12 +274,12 @@ const CourseUpdatePage = () => {
             <Form.Item
               label="价格"
               name="charge"
-              rules={[{ required: true, message: "请输入价格!" }]}
+              rules={[{ required: true, message: '请输入价格!' }]}
             >
               <Space align="baseline" style={{ height: 32 }}>
                 <Form.Item
                   name="charge"
-                  rules={[{ required: true, message: "请输入价格!" }]}
+                  rules={[{ required: true, message: '请输入价格!' }]}
                 >
                   <Input
                     style={{ width: 300 }}
@@ -293,7 +298,7 @@ const CourseUpdatePage = () => {
             <Space align="baseline" style={{ height: 32 }}>
               <Form.Item
                 name="published_at"
-                rules={[{ required: true, message: "请选择上架时间!" }]}
+                rules={[{ required: true, message: '请选择上架时间!' }]}
               >
                 <DatePicker
                   format="YYYY-MM-DD HH:mm"
@@ -320,7 +325,7 @@ const CourseUpdatePage = () => {
           <Form.Item
             label="简短介绍"
             name="short_description"
-            rules={[{ required: true, message: "请输入简短介绍!" }]}
+            rules={[{ required: true, message: '请输入简短介绍!' }]}
           >
             <Input.TextArea
               style={{ width: 800 }}
@@ -334,7 +339,7 @@ const CourseUpdatePage = () => {
           <Form.Item
             label="详情介绍"
             name="original_desc"
-            rules={[{ required: true, message: "请输入详情介绍!" }]}
+            rules={[{ required: true, message: '请输入详情介绍!' }]}
             style={{ height: 840 }}
           >
             <div className="w-800px">
@@ -344,9 +349,10 @@ const CourseUpdatePage = () => {
                 defautValue={defautValue}
                 isFormula={false}
                 setContent={(value: string) => {
-                  form.setFieldsValue({ original_desc: value });
+                  form.setFieldsValue({ original_desc: value })
                 }}
-              ></QuillEditor>
+              >
+              </QuillEditor>
             </div>
           </Form.Item>
         </Form>
@@ -370,7 +376,7 @@ const CourseUpdatePage = () => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default CourseUpdatePage;
+export default CourseUpdatePage

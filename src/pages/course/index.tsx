@@ -94,7 +94,9 @@ function CoursePage() {
 
   // 请求课程分类数据
   const getParams = () => {
-    course.create().then((res: any) => {
+    course.getCourseCategory({
+      type: 'REPLAY_COURSE',
+    }).then((res: any) => {
       const categories = res.data.categories
       const box: any = []
       for (let i = 0; i < categories.length; i++) {
