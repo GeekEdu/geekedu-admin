@@ -42,7 +42,7 @@ export class HttpClient {
         if (status === 0) {
           return Promise.resolve(response)
         }
-        else if (code === 401) {
+        else if (status === 401) {
           message.error('请重新登录')
           GoLogin()
         }
