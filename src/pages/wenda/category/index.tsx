@@ -36,9 +36,11 @@ const WendaCategoriesPage = () => {
     }
     setLoading(true);
     wenda
-      .category()
+      .category({
+        type: 'ASK_QUESTION'
+      })
       .then((res: any) => {
-        setList(res.data.data);
+        setList(res.data);
         setLoading(false);
       })
       .catch((e) => {

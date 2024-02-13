@@ -121,8 +121,10 @@ const WendaPage = () => {
   };
 
   const getParams = () => {
-    wenda.category().then((res: any) => {
-      let categories = res.data.data;
+    wenda.category({
+      type: 'ASK_QUESTION'
+    }).then((res: any) => {
+      let categories = res.data;
       const arr = [];
       for (let i = 0; i < categories.length; i++) {
         arr.push({

@@ -4,8 +4,8 @@ export function list(params: any) {
   return client.get("/backend/addons/Wenda/question/index", params);
 }
 
-export function category() {
-  return client.get("/backend/addons/Wenda/category/index", {});
+export function category(params: any) {
+  return client.get("/label/api/category/getCategoryList", params);
 }
 
 export function destroyMulti(params: any) {
