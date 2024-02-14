@@ -37,7 +37,7 @@ export class HttpClient {
       (response: AxiosResponse) => {
         const status = response.data.status
         const code = response.data.code // 业务返回代码
-        const msg = response.data.message // 错误消息
+        const msg = response.data.message // 返回消息
 
         if (status === 0) {
           return Promise.resolve(response)
@@ -54,9 +54,12 @@ export class HttpClient {
       // 当http的状态码非0
       (error) => {
         const status = error.response.status
+        const errMsg = error.response.data.message
         if (status === 401) {
           message.error('请重新登录')
           GoLogin()
+        } else if (status === 400) {
+          message.error(errMsg)
         }
         else if (status === 404) {
           // 跳转到404页面
