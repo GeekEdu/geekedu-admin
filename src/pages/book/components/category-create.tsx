@@ -27,8 +27,12 @@ export const CourseCategoryCreateDialog = (props: PropsInterface) => {
       return;
     }
     setLoading(true);
+    const updatedValue: any = {
+      ...values,
+      type: 'E_BOOK'
+    }
     book
-      .categoryStore(values)
+      .categoryStore(updatedValue)
       .then((res: any) => {
         setLoading(false);
         message.success("成功！");

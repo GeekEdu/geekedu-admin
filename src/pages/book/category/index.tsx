@@ -39,7 +39,9 @@ const BookCategoryPage = () => {
     }
     setLoading(true);
     book
-      .categoryList({})
+      .categoryList({
+        type: 'E_BOOK'
+      })
       .then((res: any) => {
         setList(res.data);
         setLoading(false);

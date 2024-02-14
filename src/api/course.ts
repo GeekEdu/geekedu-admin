@@ -49,6 +49,7 @@ export function categoryList(params: any) {
   return client.get(`/label/api/category/getCategoryPage`, params)
 }
 
+// 根据id删除分类
 export function categoryDestroy(id: number) {
   return client.post(`/label/api/category/delete/${id}`, {})
 }
@@ -62,10 +63,12 @@ export function categoryStore(params: any) {
   return client.post('/label/api/category/add', params)
 }
 
+// 根据id查看某一个分类
 export function categoryDetail(params: any) {
   return client.get(`/label/api/category/getCategoryById`, params)
 }
 
+// 根据id更新分类
 export function categoryUpdate(id: number, params: any) {
   return client.post(`/label/api/category/update/${id}`, params)
 }

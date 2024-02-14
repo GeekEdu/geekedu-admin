@@ -42,27 +42,32 @@ export function commentMulti(params: any) {
   );
 }
 
+// 返回电子书列表
 export function categoryList(params: any) {
-  return client.get(`/backend/addons/meedu_books/book_category/index`, params);
+  return client.get(`/label/api/category/getCategoryList`, params);
 }
 
+// 根据id删除指定电子书
 export function categoryDestroy(id: number) {
-  return client.destroy(`/backend/addons/meedu_books/book_category/${id}`);
+  return client.post(`/label/api/category/delete/${id}`, {});
 }
 
+// 新增分类
 export function categoryStore(params: any) {
   return client.post(
-    "/backend/addons/meedu_books/book_category/create",
+    "/label/api/category/add", 
     params
   );
 }
 
-export function categoryDetail(id: number) {
-  return client.get(`/backend/addons/meedu_books/book_category/${id}`, {});
+// 根据id查看某一个分类
+export function categoryDetail(params: any) {
+  return client.get(`/label/api/category/getCategoryById`, params);
 }
 
+// 根据id更新分类
 export function categoryUpdate(id: number, params: any) {
-  return client.put(`/backend/addons/meedu_books/book_category/${id}`, params);
+  return client.post(`/label/api/category/update/${id}`, params);
 }
 
 export function articleList(params: any) {
