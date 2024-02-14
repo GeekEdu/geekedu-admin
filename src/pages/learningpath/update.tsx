@@ -54,7 +54,9 @@ const LearnPathUpdatePage = () => {
   };
 
   const getParams = async () => {
-    const res: any = await path.create();
+    const res: any = await path.create({
+      type: 'LEARN_PATH'
+    });
     let categories = res.data.categories;
     const box: any = [];
     for (let i = 0; i < categories.length; i++) {

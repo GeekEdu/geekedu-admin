@@ -4,8 +4,9 @@ export function list(params: any) {
   return client.get(`/backend/addons/LearningPaths/path/index`, params);
 }
 
-export function create() {
-  return client.get(`/backend/addons/LearningPaths/path/create`, {});
+// 返回分类列表
+export function create(params: any) {
+  return client.get(`/label/api/category/getCategoryList`, params);
 }
 
 export function store(params: any) {
@@ -28,28 +29,34 @@ export function users(id: number, params: any) {
   return client.get(`/backend/addons/LearningPaths/path/${id}/users`, params);
 }
 
+// 分页返回分类列表
 export function categoryList(params: any) {
-  return client.get(`/backend/addons/LearningPaths/category/index`, params);
+  return client.get(`/label/api/category/getCategoryPage`, params);
 }
 
+// 根据id删除分类
 export function categoryDestroy(id: number) {
-  return client.destroy(`/backend/addons/LearningPaths/category/${id}`);
+  return client.post(`/label/api/category/delete/${id}`, {});
 }
 
-export function categoryCreate() {
-  return client.get(`/backend/addons/LearningPaths/category/create`, {});
-}
+// 新增分类
+// export function categoryCreate(params: any) {
+//   return client.get(`/label/api/category/add`, params);
+// }
 
+// 新增分类
 export function categoryStore(params: any) {
-  return client.post("/backend/addons/LearningPaths/category/create", params);
+  return client.post("/label/api/category/add", params);
 }
 
-export function categoryDetail(id: number) {
-  return client.get(`/backend/addons/LearningPaths/category/${id}`, {});
+// 根据id查看分类
+export function categoryDetail(params: any) {
+  return client.get(`/label/api/category/getCategoryById`, params);
 }
 
+// 更新分类
 export function categoryUpdate(id: number, params: any) {
-  return client.put(`/backend/addons/LearningPaths/category/${id}`, params);
+  return client.post(`/label/api/category/update/${id}`, params);
 }
 
 export function stepList(params: any) {

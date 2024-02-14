@@ -39,7 +39,9 @@ const LearnPathCreatePage = () => {
   }, []);
 
   const getParams = () => {
-    path.create().then((res: any) => {
+    path.create({
+      type: 'LEARN_PATH'
+    }).then((res: any) => {
       let categories = res.data.categories;
       const box: any = [];
       for (let i = 0; i < categories.length; i++) {

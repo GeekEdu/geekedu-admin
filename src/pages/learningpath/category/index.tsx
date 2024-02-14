@@ -43,8 +43,9 @@ const LearnPathCategoryPage = () => {
     setLoading(true);
     path
       .categoryList({
-        page: page,
-        size: size,
+        pageNum: page,
+        pageSize: size,
+        type: 'LEARN_PATH'
       })
       .then((res: any) => {
         const box: any = [];

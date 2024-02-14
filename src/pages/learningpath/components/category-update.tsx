@@ -23,7 +23,7 @@ export const LearnPathCategoryUpdateDialog = (props: PropsInterface) => {
       form.setFieldsValue({
         name: "",
         sort: "",
-        parent_id: 0,
+        parentId: 0,
       });
     }
     if (props.id > 0) {
@@ -54,11 +54,14 @@ export const LearnPathCategoryUpdateDialog = (props: PropsInterface) => {
   };
 
   const getDetail = async () => {
-    const res: any = await path.categoryDetail(props.id);
+    const res: any = await path.categoryDetail({
+      id: props.id,
+      type: 'LEARN_PATH'
+    });
     form.setFieldsValue({
       name: res.data.name,
       sort: res.data.sort,
-      parent_id: res.data.parent_id,
+      parentId: res.data.parentId,
     });
   };
 
@@ -67,8 +70,12 @@ export const LearnPathCategoryUpdateDialog = (props: PropsInterface) => {
       return;
     }
     setLoading(true);
+    const updatedValue: any = {
+      ...values,
+      type: 'LEARN_PATH'
+    }
     path
-      .categoryUpdate(props.id, values)
+      .categoryUpdate(props.id, updatedValue)
       .then((res: any) => {
         setLoading(false);
         message.success("成功！");
@@ -120,7 +127,7 @@ export const LearnPathCategoryUpdateDialog = (props: PropsInterface) => {
             >
               <Form.Item
                 label="父级分类"
-                name="parent_id"
+                name="parentId"
                 rules={[{ required: true, message: "请选择父级分类!" }]}
               >
                 <Select

@@ -46,8 +46,12 @@ export const LearnPathCategoryCreateDialog = (props: PropsInterface) => {
       return;
     }
     setLoading(true);
+    const insertValue: any = {
+      ...values,
+      type: 'LEARN_PATH'
+    }
     path
-      .categoryStore(values)
+      .categoryStore(insertValue)
       .then((res: any) => {
         setLoading(false);
         message.success("成功！");
