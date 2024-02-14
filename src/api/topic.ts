@@ -52,22 +52,27 @@ export function userAdd(params: any) {
   return client.post(`/backend/addons/meedu_topics/order/user/add`, params);
 }
 
+// 返回分类列表
 export function categoryList(params: any) {
-  return client.get(`/backend/addons/meedu_topics/category/index`, params);
+  return client.get(`/label/api/category/getCategoryList`, params);
 }
 
+// 根据id删除分类
 export function categoryDestroy(id: number) {
-  return client.destroy(`/backend/addons/meedu_topics/category/${id}`);
+  return client.post(`/label/api/category/delete/${id}`, {});
 }
 
+// 新增分类
 export function categoryStore(params: any) {
-  return client.post("/backend/addons/meedu_topics/category/create", params);
+  return client.post("/label/api/category/add", params);
 }
 
-export function categoryDetail(id: number) {
-  return client.get(`/backend/addons/meedu_topics/category/${id}`, {});
+// 根据id查看某一个分类
+export function categoryDetail(params: any) {
+  return client.get(`/label/api/category/getCategoryById`, params);
 }
 
+// 根据id更新分类
 export function categoryUpdate(id: number, params: any) {
-  return client.put(`/backend/addons/meedu_topics/category/${id}`, params);
+  return client.post(`/label/api/category/update/${id}`, params);
 }

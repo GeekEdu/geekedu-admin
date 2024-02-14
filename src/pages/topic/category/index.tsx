@@ -39,7 +39,9 @@ const TopicCategoryPage = () => {
     }
     setLoading(true);
     topic
-      .categoryList({})
+      .categoryList({
+        type: 'IMAGE_TEXT'
+      })
       .then((res: any) => {
         setList(res.data);
         setLoading(false);

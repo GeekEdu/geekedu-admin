@@ -34,7 +34,10 @@ export const CourseCategoryUpdateDialog = (props: PropsInterface) => {
   };
 
   const getDetail = async () => {
-    const res: any = await topic.categoryDetail(props.id);
+    const res: any = await topic.categoryDetail({
+      id: props.id,
+      type: 'IMAGE_TEXT'
+    });
     form.setFieldsValue({
       name: res.data.name,
       sort: res.data.sort,
@@ -46,8 +49,12 @@ export const CourseCategoryUpdateDialog = (props: PropsInterface) => {
       return;
     }
     setLoading(true);
+    const updatedValue: any = {
+      ...values,
+      type: 'IMAGE_TEXT'
+    }
     topic
-      .categoryUpdate(props.id, values)
+      .categoryUpdate(props.id, updatedValue)
       .then((res: any) => {
         setLoading(false);
         message.success("成功！");

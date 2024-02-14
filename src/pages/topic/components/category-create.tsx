@@ -27,8 +27,12 @@ export const CourseCategoryCreateDialog = (props: PropsInterface) => {
       return;
     }
     setLoading(true);
+    const insertValue: any = {
+      ...values,
+      type: 'IMAGE_TEXT'
+    }
     topic
-      .categoryStore(values)
+      .categoryStore(insertValue)
       .then((res: any) => {
         setLoading(false);
         message.success("成功！");
