@@ -1,7 +1,7 @@
 import client from "./internal/httpClient";
 
 export function list(params: any) {
-  return client.get("/backend/addons/Wenda/question/index", params);
+  return client.get("/ask/api/question/getQuestionPage", params);
 }
 
 export function category(params: any) {

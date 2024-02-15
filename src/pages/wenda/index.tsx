@@ -100,12 +100,12 @@ const WendaPage = () => {
     setLoading(true);
     wenda
       .list({
-        page: page,
-        size: size,
+        pageNum: page,
+        pageSize: size,
         sort: "id",
         order: "desc",
-        user_id: user_id,
-        category_id: category_id,
+        userId: user_id,
+        categoryId: category_id,
         status: status,
         created_at: created_at,
         keywords: keywords,
@@ -157,7 +157,7 @@ const WendaPage = () => {
     confirm({
       title: "操作确认",
       icon: <ExclamationCircleFilled />,
-      content: "确认删除选中的优惠码？",
+      content: "确认删除选中的问题？", 
       centered: true,
       okText: "确认",
       cancelText: "取消",
