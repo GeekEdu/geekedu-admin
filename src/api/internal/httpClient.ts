@@ -55,10 +55,11 @@ export class HttpClient {
       (error) => {
         const status = error.response.status
         const errMsg = error.response.data.message
-        if (status === 401) {
+        if (status === 401 || status === 500) {
           message.error('请重新登录')
           GoLogin()
-        } else if (status === 400) {
+        }
+        else if (status === 400) {
           message.error(errMsg)
         }
         else if (status === 404) {

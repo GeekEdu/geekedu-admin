@@ -1,42 +1,46 @@
-import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { Button, Input, message, Form, Space } from "antd";
-import { member } from "../../../api/index";
-import { useDispatch } from "react-redux";
-import { titleAction } from "../../../store/user/loginUserSlice";
-import { BackBartment } from "../../../components";
+import { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { Button, Form, Input, Space, message } from 'antd'
+import { useDispatch } from 'react-redux'
+import { member } from '../../../api/index'
+import { titleAction } from '../../../store/user/loginUserSlice'
+import { BackBartment } from '../../../components'
 
-const MemberTagsCreatePage = () => {
-  const [form] = Form.useForm();
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const [loading, setLoading] = useState<boolean>(false);
+function MemberTagsCreatePage() {
+  const [form] = Form.useForm()
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
+  const [loading, setLoading] = useState<boolean>(false)
 
   useEffect(() => {
-    document.title = "添加学员标签";
-    dispatch(titleAction("添加学员标签"));
-  }, []);
+    document.title = '添加学员标签'
+    dispatch(titleAction('添加学员标签'))
+  }, [])
 
   const onFinish = (values: any) => {
-    if (loading) {
-      return;
+    if (loading)
+      return
+
+    setLoading(true)
+    const insertValue; any = {
+      ...values,
+      type: 'MEMBERS',
     }
-    setLoading(true);
     member
-      .tagStore(values)
+      .tagStore(insertValue)
       .then((res: any) => {
-        setLoading(false);
-        message.success("保存成功！");
-        navigate(-1);
+        setLoading(false)
+        message.success('保存成功！')
+        navigate(-1)
       })
       .catch((e) => {
-        setLoading(false);
-      });
-  };
+        setLoading(false)
+      })
+  }
 
   const onFinishFailed = (errorInfo: any) => {
-    console.log("Failed:", errorInfo);
-  };
+    console.log('Failed:', errorInfo)
+  }
 
   return (
     <div className="meedu-main-body">
@@ -55,7 +59,7 @@ const MemberTagsCreatePage = () => {
           <Form.Item
             label="标签名"
             name="name"
-            rules={[{ required: true, message: "请输入标签名!" }]}
+            rules={[{ required: true, message: '请输入标签名!' }]}
           >
             <Input
               style={{ width: 300 }}
@@ -84,7 +88,7 @@ const MemberTagsCreatePage = () => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default MemberTagsCreatePage;
+export default MemberTagsCreatePage

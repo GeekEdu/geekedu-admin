@@ -1,266 +1,271 @@
-import { useState, useEffect, useRef } from "react";
-import styles from "./index.module.scss";
-import { DatePicker, Button } from "antd";
-import { Link } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import { home } from "../../api/index";
-import * as echarts from "echarts";
-import { titleAction } from "../../store/user/loginUserSlice";
-import demandIcon from "../../assets/home/demand.png";
-import liveIcon from "../../assets/home/live.png";
-import topicIcon from "../../assets/home/tuwen.png";
-import bookIcon from "../../assets/home/ebook.png";
-import pathIcon from "../../assets/home/course.png";
-import paperIcon from "../../assets/home/testpaper.png";
-const { RangePicker } = DatePicker;
+import { useEffect, useRef, useState } from 'react'
+import { Button, DatePicker } from 'antd'
+import { Link } from 'react-router-dom'
+import { useDispatch, useSelector } from 'react-redux'
+import * as echarts from 'echarts'
+import { home } from '../../api/index'
+import { titleAction } from '../../store/user/loginUserSlice'
+import demandIcon from '../../assets/home/demand.png'
+import liveIcon from '../../assets/home/live.png'
+import topicIcon from '../../assets/home/tuwen.png'
+import bookIcon from '../../assets/home/ebook.png'
+import pathIcon from '../../assets/home/course.png'
+import paperIcon from '../../assets/home/testpaper.png'
+import styles from './index.module.scss'
+
+const { RangePicker } = DatePicker
 
 // 计算出当前日期加上 day 天后的日期
-const funDate = (day: number) => {
-  let time2 = "";
-  let date1 = new Date();
-  let date2 = new Date(date1);
-  date2.setDate(date1.getDate() + day);
-  time2 =
-    date2.getFullYear() + "-" + (date2.getMonth() + 1) + "-" + date2.getDate();
-  return time2;
-};
+function funDate(day: number) {
+  let time2 = ''
+  const date1 = new Date()
+  const date2 = new Date(date1)
+  date2.setDate(date1.getDate() + day)
+  time2
+    = `${date2.getFullYear()}-${date2.getMonth() + 1}-${date2.getDate()}`
+  return time2
+}
 
 // 函数组件入口
-const DashboardPage = () => {
-  let chartRef = useRef(null);
-  const dispatch = useDispatch();
-  const [loading, setLoading] = useState<boolean>(false);
+function DashboardPage() {
+  const chartRef = useRef(null)
+  const dispatch = useDispatch()
+  const [loading, setLoading] = useState<boolean>(false)
   // 基础数据
-  const [basicData, setBasicData] = useState<any>({});
+  const [basicData, setBasicData] = useState<any>({})
   // 系统信息
-  const [systemInfo, setSystemInfo] = useState<any>({});
+  const [systemInfo, setSystemInfo] = useState<any>({})
   // 过去一周的时间
-  const [start_at, setStartAt] = useState(funDate(-7));
+  const [start_at, setStartAt] = useState(funDate(-7))
   const [end_at, setEndAt] = useState(
-    new Date().getFullYear() +
-      "-" +
-      (new Date().getMonth() + 1) +
-      "-" +
-      new Date().getDate()
-  );
-  const [flagE, setFlagE] = useState(1);
-  const [userCountIncRate, setUserCountIncRate] = useState(0);
-  const [thisMonthPaidRate, setThisMonthPaidRate] = useState(0);
-  const user = useSelector((state: any) => state.loginUser.value.user);
+    `${new Date().getFullYear()
+      }-${
+      new Date().getMonth() + 1
+      }-${
+      new Date().getDate()}`,
+  )
+  const [flagE, setFlagE] = useState(1)
+  const [userCountIncRate, setUserCountIncRate] = useState(0)
+  const [thisMonthPaidRate, setThisMonthPaidRate] = useState(0)
+  const user = useSelector((state: any) => state.loginUser.value.user)
   const enabledAddons = useSelector(
-    (state: any) => state.enabledAddonsConfig.value.enabledAddons
-  );
+    (state: any) => state.enabledAddonsConfig.value.enabledAddons,
+  )
 
   useEffect(() => {
-    document.title = "GeekEdu后台管理";
-    dispatch(titleAction("主页"));
-    getStatData();
-    getSystemInfo();
-    getZXTdata();
-  }, []);
+    document.title = 'GeekEdu后台管理'
+    dispatch(titleAction('主页'))
+    getStatData()
+    getSystemInfo()
+    getZXTdata()
+  }, [])
 
   useEffect(() => {
     if (
-      typeof basicData.todayRegisterUserCount === "undefined" ||
-      typeof basicData.userCount === "undefined" ||
-      isNaN(basicData.todayRegisterUserCount) ||
-      isNaN(basicData.userCount) ||
-      basicData.userCount === 0
+      typeof basicData.todayRegisterUserCount === 'undefined'
+      || typeof basicData.userCount === 'undefined'
+      || isNaN(basicData.todayRegisterUserCount)
+      || isNaN(basicData.userCount)
+      || basicData.userCount === 0
     ) {
-      setUserCountIncRate(0);
-    } else {
-      let value: any = (
+      setUserCountIncRate(0)
+    }
+    else {
+      const value: any = (
         basicData.todayRegisterUserCount / basicData.userCount
-      ).toFixed(3);
-      setUserCountIncRate(Math.floor(value * 100));
+      ).toFixed(3)
+      setUserCountIncRate(Math.floor(value * 100))
     }
     setThisMonthPaidRate(
-      sumrate(basicData.thisMonthPaidSum, basicData.lastMonthPaidSum)
-    );
-  }, [basicData]);
+      sumrate(basicData.thisMonthPaidSum, basicData.lastMonthPaidSum),
+    )
+  }, [basicData])
 
   const getStatData = () => {
     home.index().then((res: any) => {
-      setBasicData(res.data);
-    });
-  };
+      setBasicData(res.data)
+    })
+  }
 
   const getSystemInfo = () => {
     home.systemInfo().then((res: any) => {
-      setSystemInfo(res.data);
-    });
-  };
+      setSystemInfo(res.data)
+    })
+  }
 
   const changeObjectKey = (obj: any) => {
-    var arr = [];
-    for (let i in obj) {
-      arr.push(i); //返回键名
-    }
-    return arr;
-  };
+    const arr = []
+    for (const i in obj)
+      arr.push(i) // 返回键名
+
+    return arr
+  }
 
   const changeObject = (obj: any) => {
-    let data = Object.values(obj);
-    return data;
-  };
+    const data = Object.values(obj)
+    return data
+  }
 
   const getZXTdata = () => {
-    let uid = "userRegister";
-    if (flagE == 2) {
-      uid = "orderCreated";
-    } else if (flagE == 3) {
-      uid = "orderPaidCount";
-    } else if (flagE == 4) {
-      uid = "orderPaidSum";
-    } else {
-      uid = "userRegister";
+    let uid = 'userRegister'
+    if (flagE == 2)
+      uid = 'orderCreated'
+    else if (flagE == 3)
+      uid = 'orderPaidCount'
+    else if (flagE == 4)
+      uid = 'orderPaidSum'
+    else
+      uid = 'userRegister'
+
+    const databox = {
+      start_at,
+      end_at,
     }
-    let databox = {
-      start_at: start_at,
-      end_at: end_at,
-    };
     home.statistic(databox).then((res: any) => {
-      drawLineChart(res.data);
-    });
+      drawLineChart(res.data)
+    })
 
     return () => {
-      window.onresize = null;
-    };
-  };
+      window.onresize = null
+    }
+  }
 
   // 画图
   const drawLineChart = (params: any) => {
-    let dom: any = chartRef.current;
-    let myChart = echarts.init(dom);
+    const dom: any = chartRef.current
+    const myChart = echarts.init(dom)
     myChart.setOption({
       tooltip: {
-        trigger: "axis",
+        trigger: 'axis',
       },
       legend: {
-        data: ["每日注册用户", "每日创建订单", "每日已支付订单", "每日营收"],
-        x: "right",
+        data: ['每日注册用户', '每日创建订单', '每日已支付订单', '每日营收'],
+        x: 'right',
       },
       grid: {
-        left: "3%",
-        right: "4%",
-        bottom: "3%",
+        left: '3%',
+        right: '4%',
+        bottom: '3%',
         containLabel: true,
       },
       xAxis: {
-        type: "category",
+        type: 'category',
         boundaryGap: false,
         data: changeObjectKey(params.order_created),
       },
       yAxis: {
-        type: "value",
+        type: 'value',
       },
       series: [
         {
-          name: "每日注册用户",
-          type: "line",
+          name: '每日注册用户',
+          type: 'line',
           data: changeObject(params.user_register),
         },
         {
-          name: "每日创建订单",
-          type: "line",
+          name: '每日创建订单',
+          type: 'line',
           data: changeObject(params.order_created),
         },
         {
-          name: "每日已支付订单",
-          type: "line",
+          name: '每日已支付订单',
+          type: 'line',
           data: changeObject(params.order_paid),
         },
         {
-          name: "每日营收",
-          type: "line",
+          name: '每日营收',
+          type: 'line',
           data: changeObject(params.order_sum),
         },
       ],
-    });
+    })
 
     window.onresize = () => {
-      myChart.resize();
-    };
-  };
+      myChart.resize()
+    }
+  }
 
   const onChange = (date: any, dateString: any) => {
-    dateString[1] += " 23:59:59";
-    setStartAt(dateString[0]);
-    setEndAt(dateString[1]);
-  };
+    dateString[1] += ' 23:59:59'
+    setStartAt(dateString[0])
+    setEndAt(dateString[1])
+  }
 
   const checkPermission = (val: string) => {
-    return typeof user.permissions[val] !== "undefined";
-  };
+    return typeof user.permissions[val] !== 'undefined'
+  }
 
   const formatNumber = (num: number) => {
-    return Number(num).toLocaleString();
-  };
+    return Number(num).toLocaleString()
+  }
 
   const numberForHuman = (num: number) => {
-    if (num >= 100000000) {
-      return (num / 100000000).toFixed(2) + "亿";
-    } else if (num >= 10000000) {
-      return (num / 10000000).toFixed(2) + "千万";
-    } else if (num >= 1000000) {
-      return (num / 1000000).toFixed(2) + "百万";
-    } else if (num >= 10000) {
-      return (num / 10000).toFixed(2) + "万";
-    } else if (num >= 1000) {
-      return (num / 1000).toFixed(2) + "千";
-    }
-    return num;
-  };
+    if (num >= 100000000)
+      return `${(num / 100000000).toFixed(2)}亿`
+    else if (num >= 10000000)
+      return `${(num / 10000000).toFixed(2)}千万`
+    else if (num >= 1000000)
+      return `${(num / 1000000).toFixed(2)}百万`
+    else if (num >= 10000)
+      return `${(num / 10000).toFixed(2)}万`
+    else if (num >= 1000)
+      return `${(num / 1000).toFixed(2)}千`
+
+    return num
+  }
 
   const sumrate = (num1: number, num2: number) => {
-    if (typeof num1 !== "number" || typeof num2 !== "number") {
-      return 0;
-    }
+    if (typeof num1 !== 'number' || typeof num2 !== 'number')
+      return 0
+
     if (num1 === 0) {
       // 今天未有增长
-      return 0;
+      return 0
     }
     if (num2 === 0) {
       // 昨天无增长，今天有增长 => 100%
-      return 100;
+      return 100
     }
 
-    let value: any = ((num1 - num2) / num2).toFixed(2);
+    const value: any = ((num1 - num2) / num2).toFixed(2)
 
-    return Math.floor(value * 100);
-  };
+    return Math.floor(value * 100)
+  }
 
   return (
     <>
-      <div className={styles["el_content"]}>
-        <div className={styles["el_top_row1"]}>
-          <div className={styles["el_row_item"]}>
-            <span className={styles["item_title"]}>今日收入(元)</span>
+      <div className={styles.el_content}>
+        <div className={styles.el_top_row1}>
+          <div className={styles.el_row_item}>
+            <span className={styles.item_title}>今日收入(元)</span>
             <p>{formatNumber(basicData.todayPaidSum || 0)}</p>
-            <div className={styles["item_info"]}>
-              <span>昨日：{numberForHuman(basicData.yesterdayPaidSum)}</span>
+            <div className={styles.item_info}>
+              <span>
+                昨日：
+                {numberForHuman(basicData.yesterdayPaidSum)}
+              </span>
               <span>
                 较昨日：
                 {sumrate(
                   basicData.todayPaidSum,
-                  basicData.yesterdayPaidSum
+                  basicData.yesterdayPaidSum,
                 ) < 0 && (
                   <strong className="c-danger">
                     {sumrate(
                       basicData.todayPaidSum,
-                      basicData.yesterdayPaidSum
+                      basicData.yesterdayPaidSum,
                     )}
                     %
                   </strong>
                 )}
                 {sumrate(
                   basicData.todayPaidSum,
-                  basicData.yesterdayPaidSum
+                  basicData.yesterdayPaidSum,
                 ) >= 0 && (
                   <strong>
                     {sumrate(
                       basicData.todayPaidSum,
-                      basicData.yesterdayPaidSum
+                      basicData.yesterdayPaidSum,
                     )}
                     %
                   </strong>
@@ -268,35 +273,36 @@ const DashboardPage = () => {
               </span>
             </div>
           </div>
-          <div className={styles["el_row_item"]}>
-            <span className={styles["item_title"]}>今日支付人数</span>
+          <div className={styles.el_row_item}>
+            <span className={styles.item_title}>今日支付人数</span>
             <p>{formatNumber(basicData.todayPaidUserNum || 0)}</p>
-            <div className={styles["item_info"]}>
+            <div className={styles.item_info}>
               <span>
-                昨日：{numberForHuman(basicData.yesterdayPaidUserNum)}
+                昨日：
+                {numberForHuman(basicData.yesterdayPaidUserNum)}
               </span>
               <span>
                 较昨日：
                 {sumrate(
                   basicData.todayPaidUserNum,
-                  basicData.yesterdayPaidUserNum
+                  basicData.yesterdayPaidUserNum,
                 ) < 0 && (
                   <strong className="c-danger">
                     {sumrate(
                       basicData.todayPaidUserNum,
-                      basicData.yesterdayPaidUserNum
+                      basicData.yesterdayPaidUserNum,
                     )}
                     %
                   </strong>
                 )}
                 {sumrate(
                   basicData.todayPaidUserNum,
-                  basicData.yesterdayPaidUserNum
+                  basicData.yesterdayPaidUserNum,
                 ) >= 0 && (
                   <strong>
                     {sumrate(
                       basicData.todayPaidUserNum,
-                      basicData.yesterdayPaidUserNum
+                      basicData.yesterdayPaidUserNum,
                     )}
                     %
                   </strong>
@@ -304,125 +310,149 @@ const DashboardPage = () => {
               </span>
             </div>
           </div>
-          <div className={styles["el_row_item2"]}>
-            <div className={styles["el_item"]}>
+          <div className={styles.el_row_item2}>
+            <div className={styles.el_item}>
               <span>总学员数</span>
-              <span className={styles["el_item_num"]}>
+              <span className={styles.el_item_num}>
                 {formatNumber(basicData.userCount || 0)}
               </span>
 
-              <span className={styles["el_item_increase"]}>
+              <span className={styles.el_item_increase}>
                 较昨日：
                 {userCountIncRate < 0 && (
-                  <strong className="c-danger">{userCountIncRate}%</strong>
+                  <strong className="c-danger">
+                    {userCountIncRate}
+                    %
+                  </strong>
                 )}
-                {userCountIncRate >= 0 && <strong>{userCountIncRate}%</strong>}
+                {userCountIncRate >= 0 && (
+                  <strong>
+                    {userCountIncRate}
+                    %
+                  </strong>
+                )}
               </span>
             </div>
-            <div className={styles["el_item"]}>
+            <div className={styles.el_item}>
               <span>本月收入(元)</span>
-              <span className={styles["el_item_num"]}>
+              <span className={styles.el_item_num}>
                 {formatNumber(basicData.thisMonthPaidSum || 0)}
               </span>
 
-              <span className={styles["el_item_increase"]}>
+              <span className={styles.el_item_increase}>
                 较上月：
                 {thisMonthPaidRate < 0 && (
-                  <strong className="c-danger">{thisMonthPaidRate}%</strong>
+                  <strong className="c-danger">
+                    {thisMonthPaidRate}
+                    %
+                  </strong>
                 )}
                 {thisMonthPaidRate >= 0 && (
-                  <strong>{thisMonthPaidRate}%</strong>
+                  <strong>
+                    {thisMonthPaidRate}
+                    %
+                  </strong>
                 )}
               </span>
             </div>
           </div>
         </div>
-        <div className={styles["el_top_row2"]}>
-          <div className={styles["tit"]}>快速访问</div>
-          {checkPermission("course") && (
-            <Link to="/course/vod/index" className={styles["el_row2_item"]}>
+        <div className={styles.el_top_row2}>
+          <div className={styles.tit}>快速访问</div>
+          {checkPermission('course') && (
+            <Link to="/course/vod/index" className={styles.el_row2_item}>
               <img src={demandIcon} />
               <span>录播课</span>
             </Link>
           )}
-          {enabledAddons["Zhibo"] &&
-            checkPermission("addons.Zhibo.course.list") && (
-              <Link to="/live/course/index" className={styles["el_row2_item"]}>
-                <img src={liveIcon} />
-                <span>直播课</span>
-              </Link>
-            )}
-          {enabledAddons["MeeduTopics"] &&
-            checkPermission("addons.meedu_topics.topic.list") && (
-              <Link to="/topic/index" className={styles["el_row2_item"]}>
-                <img src={topicIcon} />
-                <span>图文</span>
-              </Link>
-            )}
-          {enabledAddons["MeeduBooks"] &&
-            checkPermission("addons.meedu_books.book.list") && (
-              <Link
-                to="/meedubook/book/index"
-                className={styles["el_row2_item"]}
-              >
-                <img src={bookIcon} />
-                <span>电子书</span>
-              </Link>
-            )}
-          {enabledAddons["LearningPaths"] &&
-            checkPermission("addons.learnPaths.path.list") && (
-              <Link
-                to="/learningpath/path/index"
-                className={styles["el_row2_item"]}
-              >
-                <img src={pathIcon} />
-                <span>学习路径</span>
-              </Link>
-            )}
-          {enabledAddons["Paper"] &&
-            checkPermission("addons.Paper.paper.list") && (
-              <Link to="/exam/paper/index" className={styles["el_row2_item"]}>
-                <img src={paperIcon} />
-                <span>试卷</span>
-              </Link>
-            )}
+          {enabledAddons.Zhibo
+          && checkPermission('addons.Zhibo.course.list') && (
+            <Link to="/live/course/index" className={styles.el_row2_item}>
+              <img src={liveIcon} />
+              <span>直播课</span>
+            </Link>
+          )}
+          {enabledAddons.MeeduTopics
+          && checkPermission('addons.meedu_topics.topic.list') && (
+            <Link to="/topic/index" className={styles.el_row2_item}>
+              <img src={topicIcon} />
+              <span>图文</span>
+            </Link>
+          )}
+          {enabledAddons.MeeduBooks
+          && checkPermission('addons.meedu_books.book.list') && (
+            <Link
+              to="/meedubook/book/index"
+              className={styles.el_row2_item}
+            >
+              <img src={bookIcon} />
+              <span>电子书</span>
+            </Link>
+          )}
+          {enabledAddons.LearningPaths
+          && checkPermission('addons.learnPaths.path.list') && (
+            <Link
+              to="/learningpath/path/index"
+              className={styles.el_row2_item}
+            >
+              <img src={pathIcon} />
+              <span>学习路径</span>
+            </Link>
+          )}
+          {enabledAddons.Paper
+          && checkPermission('addons.Paper.paper.list') && (
+            <Link to="/exam/paper/index" className={styles.el_row2_item}>
+              <img src={paperIcon} />
+              <span>试卷</span>
+            </Link>
+          )}
         </div>
-        <div className={styles["el_top_row3"]}>
-          <div className={styles["tit"]}>统计分析</div>
-          <div className={styles["selcharttimebox"]}>
-            <RangePicker format={"YYYY-MM-DD"} onChange={onChange} />
+        <div className={styles.el_top_row3}>
+          <div className={styles.tit}>统计分析</div>
+          <div className={styles.selcharttimebox}>
+            <RangePicker format="YYYY-MM-DD" onChange={onChange} />
             <Button
               type="primary"
               className="ml-10"
               onClick={() => {
-                getZXTdata();
+                getZXTdata()
               }}
             >
               筛选
             </Button>
           </div>
-          <div className={styles["charts"]}>
+          <div className={styles.charts}>
             <div
               ref={chartRef}
               style={{
-                width: "100%",
+                width: '100%',
                 height: 280,
                 marginLeft: -30,
-                position: "relative",
+                position: 'relative',
               }}
-            ></div>
+            >
+            </div>
           </div>
         </div>
-        <div className={styles["copyright"]}>
+        <div className={styles.copyright}>
           <p className="mb-10">Powered By GeekEdu</p>
-          <p className={styles["info"]}>
-            <span>SpringBoot{systemInfo.springbootVersion} </span>
-            <span className="mx-10">API程序{systemInfo.geekeduVersion}</span>
-            <span>后台前端程序{systemInfo.geekeduVersion}</span>
+          <p className={styles.info}>
+            <span>
+              SpringBoot
+              {systemInfo.springbootVersion}
+            </span>
+            <span className="mx-10">
+              API程序
+              {systemInfo.geekeduVersion}
+            </span>
+            <span>
+              后台前端程序
+              {systemInfo.geekeduVersion}
+            </span>
           </p>
         </div>
       </div>
     </>
-  );
-};
-export default DashboardPage;
+  )
+}
+export default DashboardPage
