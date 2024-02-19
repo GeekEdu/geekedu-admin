@@ -21,8 +21,11 @@ export function videoAliyunTokenCreate(params: any) {
 }
 
 // 上传视频到腾讯云 获取上传后的签名
-export function videoTencentToken(params: any) {
-  return client.post('/backend/api/v1/video/token/tencent', params)
+// export function videoTencentToken(params: any) {
+//   return client.post('/res/api/media/getUploadSignature', params)
+// }
+export function videoTencentToken() {
+  return client.get('/res/api/media/getUploadSignature', {})
 }
 
 export function videoLocalUpload(params: any) {
@@ -31,12 +34,12 @@ export function videoLocalUpload(params: any) {
 
 // 返回视频列表
 export function newVideoList(params: any) {
-  return client.get('/backend/api/v1/media/videos/index', params)
+  return client.get('/res/api/media/getVideoPage', params)
 }
 
 // 保存视频到数据库
 export function storeVideo(params: any) {
-  return client.post('/backend/api/v1/media/videos/create', params)
+  return client.post('/res/api/media/video/add', params)
 }
 
 export function newDestroyVideo(params: any) {

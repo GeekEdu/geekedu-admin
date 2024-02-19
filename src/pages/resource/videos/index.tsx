@@ -108,8 +108,8 @@ function ResourceVideosPage() {
     setLoading(true)
     media
       .newVideoList({
-        page,
-        size,
+        pageNum: page,
+        pageSize: size,
         keywords,
       })
       .then((res: any) => {
@@ -147,51 +147,51 @@ function ResourceVideosPage() {
   const columns: ColumnsType<DataType> = [
     {
       title: '视频名称',
-      dataIndex: 'title',
-      render: (title: string) => <span>{title}</span>,
+      dataIndex: 'mediaName',
+      render: (mediaName: string) => <span>{mediaName}</span>,
     },
     {
       title: '视频时长',
-      width: 150,
+      width: 200,
       render: (_, record: any) => (
         <DurationText duration={record.duration}></DurationText>
       ),
     },
     {
       title: '大小',
-      width: 150,
+      width: 200,
       render: (_, record: any) => (
         <div>
-          {record.size_mb}
+          {record.sizeMb}
           MB
         </div>
       ),
     },
-    {
-      title: '加密',
-      width: 120,
-      render: (_, record: any) => (
-        <>
-          {record.storage_driver === 'aliyun'
-          && checkTrans(record.storage_file_id)
-            ? (
-              <span>已加密</span>
-              )
-            : record.storage_driver === 'tencent'
-            && checkTenTrans(record.storage_file_id)
-              ? (
-                <span>已加密</span>
-                )
-              : (
-                <span>-</span>
-                )}
-        </>
-      ),
-    },
+    // {
+    //   title: '加密',
+    //   width: 120,
+    //   render: (_, record: any) => (
+    //     <>
+    //       {record.storage_driver === 'aliyun'
+    //       && checkTrans(record.storage_file_id)
+    //         ? (
+    //           <span>已加密</span>
+    //           )
+    //         : record.storage_driver === 'tencent'
+    //         && checkTenTrans(record.storage_file_id)
+    //           ? (
+    //             <span>已加密</span>
+    //             )
+    //           : (
+    //             <span>-</span>
+    //             )}
+    //     </>
+    //   ),
+    // },
     {
       title: '上传时间',
       width: 200,
-      render: (_, record: any) => <div>{dateFormat(record.created_at)}</div>,
+      render: (_, record: any) => <div>{dateFormat(record.createdTime)}</div>,
     },
     {
       title: '操作',

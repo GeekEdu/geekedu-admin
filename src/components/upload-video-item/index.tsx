@@ -354,8 +354,8 @@ export const UploadVideoItem: React.FC<PropInterface> = ({
   const tencentUploadHandle = (fileId: any, file: any) => {
     const tcVod = new TcVod({
       getSignature: () => {
-        return media.videoTencentToken({}).then((res: any) => {
-          return res.data.signature
+        return media.videoTencentToken().then((res: any) => {
+          return res.data
         })
       },
     })
@@ -409,12 +409,12 @@ export const UploadVideoItem: React.FC<PropInterface> = ({
     setUpload(obj)
     media
       .storeVideo({
-        title: it.file.name,
+        mediaName: it.file.name,
         duration: it.file.duration,
-        thumb,
+        coverLink: thumb,
         size: it.size,
-        storage_driver: serviceRef.current,
-        storage_file_id: fileId,
+        mediaSource: serviceRef.current,
+        mediaId: fileId,
       })
       .then((res) => {
         message.success('上传成功')
