@@ -42,8 +42,9 @@ export function storeVideo(params: any) {
   return client.post('/res/api/media/video/add', params)
 }
 
+// 批量删除视频
 export function newDestroyVideo(params: any) {
-  return client.post(`/backend/api/v1/media/videos/delete/multi`, params)
+  return client.post(`/res/api/media/video/delete`, params)
 }
 
 export function aliyunTranscode(params: any) {

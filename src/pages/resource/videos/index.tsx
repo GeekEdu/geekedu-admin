@@ -289,9 +289,11 @@ function ResourceVideosPage() {
       if (selectedOtherKeys.length > 0) {
         const otherRes: any = await media.newDestroyVideo({
           ids: selectedOtherKeys,
+        }).then((res: any) => {
+          message.success(res.data ? '成功' : '失败')
         })
       }
-      message.success('成功')
+      // message.success('成功')
       resetData()
       setLoading(false)
     }
