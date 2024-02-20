@@ -1,71 +1,72 @@
-import { useState, useEffect } from "react";
-import { Table, Modal, message, Button, Space } from "antd";
-import { useNavigate } from "react-router-dom";
-import type { ColumnsType } from "antd/es/table";
-import { useDispatch, useSelector } from "react-redux";
-import { wenda } from "../../../api/index";
-import { titleAction } from "../../../store/user/loginUserSlice";
-import { BackBartment, PerButton } from "../../../components";
-import { ExclamationCircleFilled } from "@ant-design/icons";
-const { confirm } = Modal;
+import { useEffect, useState } from 'react'
+import { Button, Modal, Space, Table, message } from 'antd'
+import { useNavigate } from 'react-router-dom'
+import type { ColumnsType } from 'antd/es/table'
+import { useDispatch, useSelector } from 'react-redux'
+import { ExclamationCircleFilled } from '@ant-design/icons'
+import { wenda } from '../../../api/index'
+import { titleAction } from '../../../store/user/loginUserSlice'
+import { BackBartment, PerButton } from '../../../components'
+
+const { confirm } = Modal
 
 interface DataType {
-  id: React.Key;
-  name: string;
+  id: React.Key
+  name: string
 }
 
-const WendaCategoriesPage = () => {
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const [loading, setLoading] = useState<boolean>(false);
-  const [list, setList] = useState<any>([]);
-  const [refresh, setRefresh] = useState(false);
+function WendaCategoriesPage() {
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
+  const [loading, setLoading] = useState<boolean>(false)
+  const [list, setList] = useState<any>([])
+  const [refresh, setRefresh] = useState(false)
 
   useEffect(() => {
-    document.title = "问答分类";
-    dispatch(titleAction("问答分类"));
-  }, []);
+    document.title = '问答分类'
+    dispatch(titleAction('问答分类'))
+  }, [])
 
   useEffect(() => {
-    getData();
-  }, [refresh]);
+    getData()
+  }, [refresh])
 
   const getData = () => {
-    if (loading) {
-      return;
-    }
-    setLoading(true);
+    if (loading)
+      return
+
+    setLoading(true)
     wenda
       .category({
-        type: 'ASK_QUESTION'
+        type: 'ASK_QUESTION',
       })
       .then((res: any) => {
-        setList(res.data);
-        setLoading(false);
+        setList(res.data)
+        setLoading(false)
       })
       .catch((e) => {
-        setLoading(false);
-      });
-  };
+        setLoading(false)
+      })
+  }
 
   const resetData = () => {
-    setList([]);
-    setRefresh(!refresh);
-  };
+    setList([])
+    setRefresh(!refresh)
+  }
 
   const columns: ColumnsType<DataType> = [
     {
-      title: "排序",
+      title: '排序',
       width: 120,
       render: (_, record: any) => <span>{record.sort}</span>,
     },
     {
-      title: "分类名",
-      dataIndex: "name",
+      title: '分类名',
+      dataIndex: 'name',
       render: (name: string) => <span>{name}</span>,
     },
     {
-      title: "操作",
+      title: '操作',
       width: 130,
       render: (_, record: any) => (
         <Space>
@@ -76,7 +77,7 @@ const WendaCategoriesPage = () => {
             icon={null}
             p="addons.Wenda.category.update"
             onClick={() => {
-              navigate("/wenda/question/category/update?id=" + record.id);
+              navigate(`/wenda/question/category/update?id=${record.id}`)
             }}
             disabled={null}
           />
@@ -87,47 +88,47 @@ const WendaCategoriesPage = () => {
             icon={null}
             p="addons.Wenda.category.delete"
             onClick={() => {
-              destory(record.id);
+              destory(record.id)
             }}
             disabled={null}
           />
         </Space>
       ),
     },
-  ];
+  ]
 
   const destory = (id: number) => {
-    if (id === 0) {
-      return;
-    }
+    if (id === 0)
+      return
+
     confirm({
-      title: "操作确认",
+      title: '操作确认',
       icon: <ExclamationCircleFilled />,
-      content: "确认删除此分类？",
+      content: '确认删除此分类？',
       centered: true,
-      okText: "确认",
-      cancelText: "取消",
+      okText: '确认',
+      cancelText: '取消',
       onOk() {
-        if (loading) {
-          return;
-        }
-        setLoading(true);
+        if (loading)
+          return
+
+        setLoading(true)
         wenda
           .destroyCate(id)
           .then(() => {
-            setLoading(false);
-            message.success("删除成功");
-            resetData();
+            setLoading(false)
+            message.success('删除成功')
+            resetData()
           })
           .catch((e) => {
-            setLoading(false);
-          });
+            setLoading(false)
+          })
       },
       onCancel() {
-        console.log("Cancel");
+        console.log('Cancel')
       },
-    });
-  };
+    })
+  }
 
   return (
     <div className="meedu-main-body">
@@ -139,7 +140,7 @@ const WendaCategoriesPage = () => {
           class=""
           icon={null}
           p="addons.Wenda.category.store"
-          onClick={() => navigate("/wenda/question/category/create")}
+          onClick={() => navigate('/wenda/question/category/create')}
           disabled={null}
         />
       </div>
@@ -148,12 +149,12 @@ const WendaCategoriesPage = () => {
           loading={loading}
           columns={columns}
           dataSource={list}
-          rowKey={(record) => record.id}
+          rowKey={record => record.id}
           pagination={false}
         />
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default WendaCategoriesPage;
+export default WendaCategoriesPage

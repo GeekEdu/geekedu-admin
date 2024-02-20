@@ -249,10 +249,10 @@ function WendaPage() {
     {
       title: '答案',
       width: 120,
-      dataIndex: 'commentCount',
-      render: (commentCount: number) => (
+      dataIndex: 'answerCount',
+      render: (answerCount: number) => (
         <span>
-          {commentCount}
+          {answerCount}
           个
         </span>
       ),
