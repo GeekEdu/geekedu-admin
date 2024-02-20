@@ -1,18 +1,18 @@
-import { Button } from "antd";
-import { useState } from "react";
-import styles from "./index.module.scss";
-import { useNavigate } from "react-router-dom";
-import { LeftOutlined } from "@ant-design/icons";
+import { Button } from 'antd'
+import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { LeftOutlined } from '@ant-design/icons'
+import styles from './index.module.scss'
 
 interface PropInterface {
-  title: string;
+  title: string
 }
 
-export const BackBartment = (props: PropInterface) => {
-  const [loading, setLoading] = useState<boolean>(true);
-  const navigate = useNavigate();
+export function BackBartment(props: PropInterface) {
+  const [loading, setLoading] = useState<boolean>(true)
+  const navigate = useNavigate()
   return (
-    <div className={styles["back-bar-box"]}>
+    <div className={styles['back-bar-box']}>
       <Button
         style={{ paddingLeft: 0 }}
         icon={<LeftOutlined />}
@@ -21,8 +21,8 @@ export const BackBartment = (props: PropInterface) => {
       >
         返回
       </Button>
-      <div className={styles["line"]}></div>
-      <div className={styles["name"]}>{props.title}</div>
+      <div className={styles.line}></div>
+      <div className={styles.name}>{props.title}</div>
     </div>
-  );
-};
+  )
+}
