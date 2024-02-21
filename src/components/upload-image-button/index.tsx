@@ -21,16 +21,13 @@ interface Option {
 }
 
 interface ImageItem {
-  id: number
-  category_id: number
+  id: string
   name: string
-  extension: string
-  size: number
-  disk: string
-  file_id: string
+  source: string
+  // file_id: string
   path: string
   url: string
-  created_at: string
+  createdTime: string
 }
 
 interface PropsInterface {
@@ -49,10 +46,13 @@ export function UploadImageButton(props: PropsInterface) {
   const [total, setTotal] = useState(0)
   const [selected, setSelected] = useState<string>('')
   const fromRows = [
-    { key: 0, name: '全部图片' },
+    {
+      key: 0,
+      name: '全部图片',
+    },
     {
       key: 1,
-      name: '幻灯片',
+      name: 'PPT',
     },
     {
       key: 2,
@@ -71,7 +71,11 @@ export function UploadImageButton(props: PropsInterface) {
   // 获取图片列表
   const getImageList = () => {
     media
-      .imageList({ page, size, from })
+      .imageList({
+        pageNum: page,
+        pageSize: size,
+        from,
+      })
       .then((res: any) => {
         setTotal(res.data.data.total)
         setImageList(res.data.data.data)
@@ -169,24 +173,24 @@ export function UploadImageButton(props: PropsInterface) {
                         : styles['image-item']
                     }
                       onClick={() => {
-                setSelected(item.url)
-              }}
+                        setSelected(item.url)
+                      }}
                     >
                       {selected.includes(item.url) && (
-                <div className={styles.sel}>
-                        <img src={selectedIcon} />
-                      </div>
-              )}
+                        <div className={styles.sel}>
+                          <img src={selectedIcon} />
+                        </div>
+                      )}
                       <div className={styles['image-render']}>
-                <div
-                        className={styles['image-view']}
-                        style={{ backgroundImage: `url(${item.url})` }}
-                      >
+                        <div
+                          className={styles['image-view']}
+                          style={{ backgroundImage: `url(${item.url})` }}
+                        >
+                        </div>
                       </div>
-              </div>
                       <div className={styles['image-name']}>
-                <div className={styles.name}>{item.name}</div>
-              </div>
+                        <div className={styles.name}>{item.name}</div>
+                      </div>
                     </div>
                   ))}
                 </div>
@@ -201,9 +205,9 @@ export function UploadImageButton(props: PropsInterface) {
                   >
                     <Pagination
                       onChange={(currentPage, currentSize) => {
-                setPage(currentPage)
-                setSize(currentSize)
-              }}
+                        setPage(currentPage)
+                        setSize(currentSize)
+                      }}
                       pageSize={size}
                       defaultCurrent={page}
                       total={total}

@@ -1,7 +1,8 @@
 import client from './internal/httpClient'
 
+// 选择图片组件中 返回图片列表
 export function imageList(params: any) {
-  return client.get('/backend/api/v1/media/images', params)
+  return client.get('/res/api/file/images', params)
 }
 
 export function videoList(params: any) {
@@ -20,7 +21,7 @@ export function videoAliyunTokenCreate(params: any) {
   return client.post('/backend/api/v1/video/token/aliyun/create', params)
 }
 
-// 上传视频到腾讯云 获取上传后的签名
+// 上传视频到腾讯云 获取上传的签名
 // export function videoTencentToken(params: any) {
 //   return client.post('/res/api/media/getUploadSignature', params)
 // }
@@ -78,10 +79,12 @@ export function localVideoUrl(id: number, params: any) {
   return client.get(`/backend/addons/LocalUpload/video/${id}/play`, params)
 }
 
+// 资源库中 返回图片列表
 export function imagesList(params: any) {
   return client.get('/res/api/file/images', params)
 }
 
+// 批量删除图片
 export function destroyImages(params: any) {
-  return client.post(`/backend/api/v1/media/image/delete/multi`, params)
+  return client.post(`/res/api/file/delete/batch`, params)
 }

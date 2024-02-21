@@ -21,16 +21,12 @@ import styles from './index.module.scss'
 const { confirm } = Modal
 
 interface ImageItem {
-  id: number
-  admin_id: number
-  created_at: string
-  disk: string
-  extension: string
+  id: string
+  createdTime: string
+  source: string
   name: string
-  parent_id: number
   path: string
-  size: number
-  type: string
+  url: string
 }
 
 function ResourceImagesPage() {

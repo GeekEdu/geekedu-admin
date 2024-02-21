@@ -10,6 +10,7 @@ interface PropsInterface {
   onUpdate: () => void
 }
 
+// 上传图片的组件
 export function UploadImageSub(props: PropsInterface) {
   const [showModal, setShowModal] = useState(false)
 
