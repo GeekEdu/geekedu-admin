@@ -10,8 +10,9 @@ export function create(params: any) {
   return client.get(`/label/api/category/getCategoryList`, params)
 }
 
+// 新增图文
 export function store(params: any) {
-  return client.post('/backend/addons/meedu_topics/topic/create', params)
+  return client.post('/book/api/imageText/add', params)
 }
 
 // 查看某个图文的详情
@@ -19,12 +20,14 @@ export function detail(id: number) {
   return client.get(`/book/api/imageText/getImageTextById/${id}`, {})
 }
 
+// 根据id删除图文
 export function destroy(id: number) {
-  return client.destroy(`/backend/addons/meedu_topics/topic/${id}`)
+  return client.post(`/book/api/imageText/delete/${id}`, {})
 }
 
+// 根据id更新图文
 export function update(id: number, params: any) {
-  return client.put(`/backend/addons/meedu_topics/topic/${id}`, params)
+  return client.post(`/book/api/imageText/update/${id}`, params)
 }
 
 export function comments(params: any) {

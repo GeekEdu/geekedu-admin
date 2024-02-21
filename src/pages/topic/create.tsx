@@ -37,9 +37,9 @@ function TopicCreatePage() {
   const navigate = useNavigate()
   const [loading, setLoading] = useState<boolean>(false)
   const [categories, setCategories] = useState<any>([])
-  const [charge, setCharge] = useState(0)
-  const [isFree, setIsFree] = useState(0)
-  const [thumb, setThumb] = useState<string>('')
+  const [price, setPrice] = useState(0)
+  const [isFree, setIsFree] = useState(true)
+  const [coverLink, setCoverLink] = useState<string>('')
   const [current, setCurrent] = useState('')
   const [editor, setEditor] = useState('')
   const [renderValue, setRenderValue] = useState('')
@@ -52,11 +52,11 @@ function TopicCreatePage() {
   useEffect(() => {
     document.title = '新建图文'
     dispatch(titleAction('新建图文'))
-    setIsFree(0)
+    setIsFree(false)
     form.setFieldsValue({
-      is_show: 1,
-      is_free: 0,
-      is_vip_free: false,
+      isShow: true,
+      isFree: false,
+      isVipFree: false,
     })
     getParams()
   }, [])
@@ -66,14 +66,14 @@ function TopicCreatePage() {
     if (localCurrent === 'markdown')
       setEditor('MARKDOWN')
     else
-      setEditor('FULLEDITOR')
+      setEditor('RICHTEXT')
 
     const current = localCurrent || 'quill'
     setCurrent(current)
   }, [getEditorKey()])
 
   const getParams = () => {
-    topic.create().then((res: any) => {
+    topic.create({ type: 'IMAGE_TEXT' }).then((res: any) => {
       const categories = res.data
       const box: any = []
       for (let i = 0; i < categories.length; i++) {
@@ -90,36 +90,36 @@ function TopicCreatePage() {
     if (loading)
       return
 
-    if (values.is_free === 1) {
-      values.charge = 0
-      values.is_vip_free = false
-      values.free_content = ''
-      values.free_content_render = ''
+    if (values.isFree) {
+      values.price = 0
+      values.isVipFree = false
+      values.freeContent = ''
+      values.freeContentRender = ''
     }
 
-    if (Number(values.charge) % 1 !== 0) {
+    if (Number(values.price) % 1 !== 0) {
       message.error('图文价格必须为整数')
       return
     }
 
-    if (values.is_free === 0 && Number(values.charge) <= 0) {
+    if (!values.isFree && Number(values.price) <= 0) {
       message.error('图文价格必须输入且大于0')
       return
     }
     if (getEditorKey() === 'markdown') {
       values.editor = 'MARKDOWN'
-      values.render_content = renderValue
-      values.free_content_render = freeRenderValue
+      values.renderContent = renderValue
+      values.freeContentRender = freeRenderValue
     }
     else {
-      values.editor = 'FULLEDITOR'
-      values.render_content = values.original_content
-      values.free_content_render = values.free_content
+      values.editor = 'RICHTEXT'
+      values.renderContent = values.originalContent
+      values.freeContentRender = values.freeContent
     }
-    values.sorted_at = moment(new Date(values.sorted_at)).format(
-      'YYYY-MM-DD HH:mm',
+    values.groundingTime = moment(new Date(values.groundingTime)).format(
+      'YYYY-MM-DD HH:mm:ss',
     )
-    values.is_need_login = 0
+    // values.is_need_login = 0
     setLoading(true)
     topic
       .store(values)
@@ -139,27 +139,27 @@ function TopicCreatePage() {
 
   const onSwitch = (checked: boolean) => {
     if (checked)
-      form.setFieldsValue({ is_show: 1 })
+      form.setFieldsValue({ isShow: true })
     else
-      form.setFieldsValue({ is_show: 0 })
+      form.setFieldsValue({ isShow: false })
   }
 
   const isVipChange = (checked: boolean) => {
     if (checked)
-      form.setFieldsValue({ is_vip_free: true })
+      form.setFieldsValue({ isVipFree: true })
     else
-      form.setFieldsValue({ is_vip_free: false })
+      form.setFieldsValue({ isVipFree: false })
   }
 
   const isVChange = (checked: boolean) => {
     if (checked) {
-      form.setFieldsValue({ is_free: 1, charge: 0 })
-      setIsFree(1)
-      setCharge(0)
+      form.setFieldsValue({ isFree: true, price: 0 })
+      setIsFree(true)
+      setPrice(0)
     }
     else {
-      form.setFieldsValue({ is_free: 0 })
-      setIsFree(0)
+      form.setFieldsValue({ isFree: false })
+      setIsFree(false)
     }
   }
 
@@ -178,13 +178,13 @@ function TopicCreatePage() {
           autoComplete="off"
         >
           <Form.Item
-            name="cid"
+            name="categoryId"
             label="所属分类"
             rules={[{ required: true, message: '请选择分类!' }]}
           >
             <Space align="baseline" style={{ height: 32 }}>
               <Form.Item
-                name="cid"
+                name="categoryId"
                 rules={[{ required: true, message: '请选择分类!' }]}
               >
                 <Select
@@ -222,19 +222,19 @@ function TopicCreatePage() {
           </Form.Item>
           <Form.Item
             label="图文封面"
-            name="thumb"
+            name="coverLink"
             rules={[{ required: true, message: '请上传图文封面!' }]}
           >
             <Space align="baseline" style={{ height: 32 }}>
               <Form.Item
-                name="thumb"
+                name="coverLink"
                 rules={[{ required: true, message: '请上传图文封面!' }]}
               >
                 <UploadImageButton
                   text="选择图片"
                   onSelected={(url) => {
-                    form.setFieldsValue({ thumb: url })
-                    setThumb(url)
+                    form.setFieldsValue({ coverLink: url })
+                    setCoverLink(url)
                   }}
                 >
                 </UploadImageButton>
@@ -244,14 +244,14 @@ function TopicCreatePage() {
               </div>
             </Space>
           </Form.Item>
-          {thumb && (
+          {coverLink && (
             <Row style={{ marginBottom: 22 }}>
               <Col span={3}></Col>
               <Col span={21}>
                 <div
                   className="normal-thumb-box"
                   style={{
-                    backgroundImage: `url(${thumb})`,
+                    backgroundImage: `url(${coverLink})`,
                     width: 200,
                     height: 150,
                   }}
@@ -260,18 +260,18 @@ function TopicCreatePage() {
               </Col>
             </Row>
           )}
-          <Form.Item label="免费" name="is_free" valuePropName="checked">
+          <Form.Item label="免费" name="isFree" valuePropName="checked">
             <Switch onChange={isVChange} />
           </Form.Item>
-          {isFree === 0 && (
+          {!isFree && (
             <Form.Item
               label="价格"
-              name="charge"
+              name="price"
               rules={[{ required: true, message: '请输入价格!' }]}
             >
               <Space align="baseline" style={{ height: 32 }}>
                 <Form.Item
-                  name="charge"
+                  name="price"
                   rules={[{ required: true, message: '请输入价格!' }]}
                 >
                   <Input
@@ -280,7 +280,7 @@ function TopicCreatePage() {
                     allowClear
                     type="number"
                     onChange={(e) => {
-                      setCharge(Number(e.target.value))
+                      setPrice(Number(e.target.value))
                     }}
                   />
                 </Form.Item>
@@ -290,10 +290,10 @@ function TopicCreatePage() {
               </Space>
             </Form.Item>
           )}
-          {charge > 0 && (
-            <Form.Item label="会员免费" name="is_vip_free">
+          {price > 0 && (
+            <Form.Item label="会员免费" name="isVipFree">
               <Space align="baseline" style={{ height: 32 }}>
-                <Form.Item name="is_vip_free" valuePropName="checked">
+                <Form.Item name="isVipFree" valuePropName="checked">
                   <Switch onChange={isVipChange} />
                 </Form.Item>
                 <div className="ml-10">
@@ -305,11 +305,11 @@ function TopicCreatePage() {
           <Form.Item label="上架时间" required={true}>
             <Space align="baseline" style={{ height: 32 }}>
               <Form.Item
-                name="sorted_at"
+                name="groundingTime"
                 rules={[{ required: true, message: '请选择上架时间!' }]}
               >
                 <DatePicker
-                  format="YYYY-MM-DD HH:mm"
+                  format="YYYY-MM-DD HH:mm:ss"
                   style={{ width: 300 }}
                   showTime
                   placeholder="请选择上架时间"
@@ -320,9 +320,9 @@ function TopicCreatePage() {
               </div>
             </Space>
           </Form.Item>
-          <Form.Item label="显示" name="is_show">
+          <Form.Item label="显示" name="isShow">
             <Space align="baseline" style={{ height: 32 }}>
-              <Form.Item name="is_show" valuePropName="checked">
+              <Form.Item name="isShow" valuePropName="checked">
                 <Switch onChange={onSwitch} />
               </Form.Item>
               <div className="ml-10">
@@ -330,11 +330,11 @@ function TopicCreatePage() {
               </div>
             </Space>
           </Form.Item>
-          {charge > 0 && (
+          {price > 0 && (
             <>
               <Form.Item
                 label="免费内容"
-                name="free_content"
+                name="freeContent"
                 rules={[{ required: true, message: '请输入付费内容!' }]}
                 style={{ height: 840 }}
               >
@@ -344,9 +344,9 @@ function TopicCreatePage() {
                       ? (
                         <MdEditor
                           height={800}
-                          defautValue=""
+                          defaultValue=""
                           setContent={(value: string, renderValue: string) => {
-                            form.setFieldsValue({ free_content: value })
+                            form.setFieldsValue({ freeContent: value })
                             setFreeRenderValue(renderValue)
                           }}
                         >
@@ -356,10 +356,10 @@ function TopicCreatePage() {
                         <QuillEditor
                           mode=""
                           height={800}
-                          defautValue=""
+                          defaultValue=""
                           isFormula={false}
                           setContent={(value: string) => {
-                            form.setFieldsValue({ free_content: value })
+                            form.setFieldsValue({ freeContent: value })
                           }}
                         >
                         </QuillEditor>
@@ -394,7 +394,7 @@ function TopicCreatePage() {
               </Form.Item>
               <Form.Item
                 label="付费内容"
-                name="original_content"
+                name="originalContent"
                 rules={[{ required: true, message: '请输入付费内容!' }]}
                 style={{ height: 840 }}
               >
@@ -404,9 +404,9 @@ function TopicCreatePage() {
                       ? (
                         <MdEditor
                           height={800}
-                          defautValue=""
+                          defaultValue=""
                           setContent={(value: string, renderValue: string) => {
-                            form.setFieldsValue({ original_content: value })
+                            form.setFieldsValue({ originalContent: value })
                             setRenderValue(renderValue)
                           }}
                         >
@@ -416,10 +416,10 @@ function TopicCreatePage() {
                         <QuillEditor
                           mode=""
                           height={800}
-                          defautValue=""
+                          defaultValue=""
                           isFormula={false}
                           setContent={(value: string) => {
-                            form.setFieldsValue({ original_content: value })
+                            form.setFieldsValue({ originalContent: value })
                           }}
                         >
                         </QuillEditor>
@@ -454,10 +454,10 @@ function TopicCreatePage() {
               </Form.Item>
             </>
           )}
-          {charge === 0 && (
+          {price === 0 && (
             <Form.Item
               label="文章内容"
-              name="original_content"
+              name="originalContent"
               rules={[{ required: true, message: '请输入文章内容!' }]}
               style={{ height: 840 }}
             >
@@ -467,9 +467,9 @@ function TopicCreatePage() {
                     ? (
                       <MdEditor
                         height={800}
-                        defautValue=""
+                        defaultValue=""
                         setContent={(value: string, renderValue: string) => {
-                          form.setFieldsValue({ original_content: value })
+                          form.setFieldsValue({ originalContent: value })
                           setRenderValue(renderValue)
                         }}
                       >
@@ -479,10 +479,10 @@ function TopicCreatePage() {
                       <QuillEditor
                         mode=""
                         height={800}
-                        defautValue=""
+                        defaultValue=""
                         isFormula={false}
                         setContent={(value: string) => {
-                          form.setFieldsValue({ original_content: value })
+                          form.setFieldsValue({ originalContent: value })
                         }}
                       >
                       </QuillEditor>

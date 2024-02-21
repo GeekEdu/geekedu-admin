@@ -7,15 +7,15 @@ import 'react-quill/dist/quill.snow.css'
 
 interface PropInterface {
   height: number
-  isFormula: boolean
-  defautValue: string
+  isFormula: boolean // 公式
+  defaultValue: string
   mode: string
   setContent: (value: string) => void
 }
 
 // 这个是富文本编辑器
 export const QuillEditor: React.FC<PropInterface> = (props) => {
-  const { height, isFormula, defautValue, mode, setContent } = props
+  const { height, isFormula, defaultValue, mode, setContent } = props
   const refs: any = useRef(null)
   const [loading, setLoading] = useState(false)
   const [videoVisiable, setVideoVisiable] = useState(false)
@@ -81,10 +81,11 @@ export const QuillEditor: React.FC<PropInterface> = (props) => {
   }, [value])
 
   useEffect(() => {
-    if (defautValue)
-      setValue(defautValue)
-  }, [defautValue])
+    if (defaultValue)
+      setValue(defaultValue)
+  }, [defaultValue])
 
+  // 导入视频Iframe
   const importVideoIframe = () => {
     if (!/^<iframe.+<\/iframe>$/.test(videoIframe)) {
       setVideoIframe('')
@@ -101,6 +102,7 @@ export const QuillEditor: React.FC<PropInterface> = (props) => {
     setVideoIframe('')
   }
 
+  // 公式
   const confirmFormula = () => {
     if (!formulaValue) {
       setFormulaValue('')
