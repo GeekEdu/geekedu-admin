@@ -1,120 +1,120 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState } from 'react'
 import {
+  Button,
   Form,
   Input,
-  message,
-  Button,
+  Modal,
   Select,
   Space,
   Switch,
-  Modal,
-} from "antd";
-import { useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import { practice } from "../../../api/index";
-import { titleAction } from "../../../store/user/loginUserSlice";
-import { HelperText, BackBartment } from "../../../components";
+  message,
+} from 'antd'
+import { useNavigate } from 'react-router-dom'
+import { useDispatch, useSelector } from 'react-redux'
+import { practice } from '../../../api/index'
+import { titleAction } from '../../../store/user/loginUserSlice'
+import { BackBartment, HelperText } from '../../../components'
 
-const PracticeCreatePage = () => {
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const [form] = Form.useForm();
-  const [loading, setLoading] = useState<boolean>(false);
-  const [categories, setCategories] = useState<any>([]);
-  const [charge, setCharge] = useState(0);
-  const [isFree, setIsFree] = useState(0);
-  const [visiable, setVisiable] = useState<boolean>(false);
+function PracticeCreatePage() {
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
+  const [form] = Form.useForm()
+  const [loading, setLoading] = useState<boolean>(false)
+  const [categories, setCategories] = useState<any>([])
+  const [charge, setCharge] = useState(0)
+  const [isFree, setIsFree] = useState(0)
+  const [visiable, setVisiable] = useState<boolean>(false)
 
   useEffect(() => {
-    document.title = "新建练习";
-    dispatch(titleAction("新建练习"));
-    form.setFieldsValue({ is_free: 0, is_vip_free: 0 });
-    setIsFree(0);
-    getParams();
-  }, []);
+    document.title = '新建练习'
+    dispatch(titleAction('新建练习'))
+    form.setFieldsValue({ is_free: 0, is_vip_free: 0 })
+    setIsFree(0)
+    getParams()
+  }, [])
 
   const getParams = () => {
     practice.create().then((res: any) => {
-      let categories = res.data.categories;
-      const box: any = [];
+      const categories = res.data.categories
+      const box: any = []
       for (let i = 0; i < categories.length; i++) {
         box.push({
           label: categories[i].name,
           value: categories[i].id,
-        });
+        })
       }
-      setCategories(box);
-    });
-  };
+      setCategories(box)
+    })
+  }
 
   const onFinish = (values: any) => {
-    if (loading) {
-      return;
-    }
-    if (values.is_free === 1) {
-      values.charge = 0;
-    }
+    if (loading)
+      return
+
+    if (values.is_free === 1)
+      values.charge = 0
+
     if (Number(values.charge) % 1 !== 0) {
-      message.error("价格必须为整数型");
-      return;
+      message.error('价格必须为整数型')
+      return
     }
     if (values.is_free === 0 && Number(values.charge) <= 0) {
-      message.error("练习未设置免费时价格应该大于0");
-      return;
+      message.error('练习未设置免费时价格应该大于0')
+      return
     }
-    setLoading(true);
+    setLoading(true)
     practice
       .store(values)
       .then((res: any) => {
-        setLoading(false);
-        setVisiable(true);
+        setLoading(false)
+        setVisiable(true)
       })
       .catch((e) => {
-        setLoading(false);
-      });
-  };
+        setLoading(false)
+      })
+  }
 
   const onFinishFailed = (errorInfo: any) => {
-    console.log("Failed:", errorInfo);
-  };
+    console.log('Failed:', errorInfo)
+  }
 
   const onSwitch = (checked: boolean) => {
-    if (checked) {
-      form.setFieldsValue({ is_vip_free: 1 });
-    } else {
-      form.setFieldsValue({ is_vip_free: 0 });
-    }
-  };
+    if (checked)
+      form.setFieldsValue({ is_vip_free: 1 })
+    else
+      form.setFieldsValue({ is_vip_free: 0 })
+  }
 
   const onFreeSwitch = (checked: boolean) => {
     if (checked) {
-      form.setFieldsValue({ is_free: 1, is_vip_free: 0 });
-      setIsFree(1);
-      setCharge(0);
-    } else {
-      form.setFieldsValue({ is_free: 0 });
-      setIsFree(0);
+      form.setFieldsValue({ is_free: 1, is_vip_free: 0 })
+      setIsFree(1)
+      setCharge(0)
     }
-  };
+    else {
+      form.setFieldsValue({ is_free: 0 })
+      setIsFree(0)
+    }
+  }
 
   const goVideo = () => {
     practice
       .list({
         page: 1,
         size: 10,
-        sort: "id",
-        order: "desc",
+        sort: 'id',
+        order: 'desc',
       })
       .then((res: any) => {
         navigate(
-          "/exam/practice/chapter/index?id=" + res.data.data.data[0].id,
-          { replace: true }
-        );
-      });
-  };
+          `/exam/practice/chapter/index?id=${res.data.data.data[0].id}`,
+          { replace: true },
+        )
+      })
+  }
 
   return (
-    <div className="meedu-main-body">
+    <div className="geekedu-main-body">
       <BackBartment title="新建练习" />
       <div className="float-left mt-30">
         <Form
@@ -130,12 +130,12 @@ const PracticeCreatePage = () => {
           <Form.Item
             label="分类"
             name="category_id"
-            rules={[{ required: true, message: "请选择分类!" }]}
+            rules={[{ required: true, message: '请选择分类!' }]}
           >
             <Space align="baseline" style={{ height: 32 }}>
               <Form.Item
                 name="category_id"
-                rules={[{ required: true, message: "请选择分类!" }]}
+                rules={[{ required: true, message: '请选择分类!' }]}
               >
                 <Select
                   style={{ width: 300 }}
@@ -148,7 +148,7 @@ const PracticeCreatePage = () => {
                 type="link"
                 className="c-primary"
                 onClick={() => {
-                  navigate("/exam/paper/category/index");
+                  navigate('/exam/paper/category/index')
                 }}
               >
                 分类管理
@@ -158,7 +158,7 @@ const PracticeCreatePage = () => {
           <Form.Item
             label="练习名"
             name="name"
-            rules={[{ required: true, message: "请输入练习名!" }]}
+            rules={[{ required: true, message: '请输入练习名!' }]}
           >
             <Input
               style={{ width: 300 }}
@@ -180,12 +180,12 @@ const PracticeCreatePage = () => {
             <Form.Item
               label="价格"
               name="charge"
-              rules={[{ required: true, message: "请输入价格!" }]}
+              rules={[{ required: true, message: '请输入价格!' }]}
             >
               <Space align="baseline" style={{ height: 32 }}>
                 <Form.Item
                   name="charge"
-                  rules={[{ required: true, message: "请输入价格!" }]}
+                  rules={[{ required: true, message: '请输入价格!' }]}
                 >
                   <Input
                     type="number"
@@ -193,7 +193,7 @@ const PracticeCreatePage = () => {
                     placeholder="单位：元"
                     allowClear
                     onChange={(e) => {
-                      setCharge(Number(e.target.value));
+                      setCharge(Number(e.target.value))
                     }}
                   />
                 </Form.Item>
@@ -234,37 +234,39 @@ const PracticeCreatePage = () => {
             </div>
           </div>
         </div>
-        {visiable ? (
-          <Modal
-            title=""
-            onCancel={() => {
-              setVisiable(false);
-              navigate("/exam/practice/index", { replace: true });
-            }}
-            cancelText="暂不组卷"
-            okText="立即组卷"
-            open={true}
-            width={500}
-            maskClosable={false}
-            onOk={() => {
-              setVisiable(false);
-              goVideo();
-            }}
-            centered
-          >
-            <div
-              className="text-center"
-              style={{ marginTop: 30, marginBottom: 30 }}
+        {visiable
+          ? (
+            <Modal
+              title=""
+              onCancel={() => {
+                setVisiable(false)
+                navigate('/exam/practice/index', { replace: true })
+              }}
+              cancelText="暂不组卷"
+              okText="立即组卷"
+              open={true}
+              width={500}
+              maskClosable={false}
+              onOk={() => {
+                setVisiable(false)
+                goVideo()
+              }}
+              centered
             >
-              <span>
-                新建练习成功，请在添加章节后再在试题库中选择试题组卷吧！
-              </span>
-            </div>
-          </Modal>
-        ) : null}
+              <div
+                className="text-center"
+                style={{ marginTop: 30, marginBottom: 30 }}
+              >
+                <span>
+                  新建练习成功，请在添加章节后再在试题库中选择试题组卷吧！
+                </span>
+              </div>
+            </Modal>
+            )
+          : null}
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default PracticeCreatePage;
+export default PracticeCreatePage

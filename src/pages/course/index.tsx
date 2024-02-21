@@ -375,7 +375,7 @@ function CoursePage() {
   }
 
   return (
-    <div className="meedu-main-body">
+    <div className="geekedu-main-body">
       {/* 导航栏 */}
       <div className="float-left j-b-flex mb-30">
         <div className="d-flex">

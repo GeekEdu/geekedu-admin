@@ -179,7 +179,7 @@ const SystemAdministratorPage = () => {
   };
 
   return (
-    <div className="meedu-main-body">
+    <div className="geekedu-main-body">
       <div className="float-left">
         <PerButton
           type="primary"

@@ -69,7 +69,7 @@ const TuangouCreatePage = () => {
   };
 
   return (
-    <div className="meedu-main-body">
+    <div className="geekedu-main-body">
       <BackBartment title="新建团购活动" />
       <SelectResources
         open={showSelectResWin}

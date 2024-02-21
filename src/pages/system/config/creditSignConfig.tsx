@@ -91,7 +91,7 @@ const SystemCreditSignConfigPage = () => {
   };
 
   return (
-    <div className="meedu-main-body">
+    <div className="geekedu-main-body">
       <BackBartment title="积分配置"></BackBartment>
       {loading && (
         <div

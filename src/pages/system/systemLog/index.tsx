@@ -49,7 +49,7 @@ const SystemLogPage = () => {
   };
 
   return (
-    <div className="meedu-main-body">
+    <div className="geekedu-main-body">
       <div className="float-left">
         <Radio.Group
           size="large"

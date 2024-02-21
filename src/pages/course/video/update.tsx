@@ -182,7 +182,7 @@ const CourseVideoUpdatePage = () => {
   };
 
   return (
-    <div className="meedu-main-body">
+    <div className="geekedu-main-body">
       <BackBartment title="编辑课时" />
       <div className="center-tabs mb-30">
         <Tabs

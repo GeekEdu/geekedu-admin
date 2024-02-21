@@ -116,7 +116,7 @@ const SystemIOSConfigPage = () => {
   };
 
   return (
-    <div className="meedu-main-body">
+    <div className="geekedu-main-body">
       <BackBartment title="IOS配置"></BackBartment>
       {loading && (
         <div

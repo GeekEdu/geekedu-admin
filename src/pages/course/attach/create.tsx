@@ -75,7 +75,7 @@ const CourseAttachCreatePage = () => {
   };
 
   return (
-    <div className="meedu-main-body">
+    <div className="geekedu-main-body">
       <BackBartment title="添加课程附件" />
       <div className="float-left mt-30">
         <Form

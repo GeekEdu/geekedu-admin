@@ -33,7 +33,7 @@ const CourseUsersPage = () => {
   };
 
   return (
-    <div className="meedu-main-body">
+    <div className="geekedu-main-body">
       <BackBartment title="录播学员" />
       <div className="float-left mt-30">
         <Tabs

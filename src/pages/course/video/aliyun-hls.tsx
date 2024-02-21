@@ -143,7 +143,7 @@ const CourseAliyunPage = () => {
   };
 
   return (
-    <div className="meedu-main-body">
+    <div className="geekedu-main-body">
       <BackBartment title="阿里云加密" />
       <div className="float-left j-b-flex  mt-30 mb-30">
         <div className="d-flex">

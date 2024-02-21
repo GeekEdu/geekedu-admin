@@ -43,7 +43,7 @@ const PromoCodeCreateMultiPage = () => {
   };
 
   return (
-    <div className="meedu-main-body">
+    <div className="geekedu-main-body">
       <BackBartment title="优惠码批量生成" />
       <div className="float-left mt-30">
         <Form

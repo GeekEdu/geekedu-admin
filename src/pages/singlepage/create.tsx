@@ -49,7 +49,7 @@ const SingleCreatePage = () => {
   };
 
   return (
-    <div className="meedu-main-body">
+    <div className="geekedu-main-body">
       <BackBartment title="添加单页面" />
       <div className="float-left mt-30">
         <Form

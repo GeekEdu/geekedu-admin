@@ -1,54 +1,55 @@
-import { useState, useEffect } from "react";
-import { Table, Modal, message, Space } from "antd";
-import type { ColumnsType } from "antd/es/table";
-import { useDispatch, useSelector } from "react-redux";
-import { question } from "../../../../api/index";
-import { titleAction } from "../../../../store/user/loginUserSlice";
-import { PerButton, BackBartment } from "../../../../components";
-import { ExclamationCircleFilled } from "@ant-design/icons";
-import { CategoryCreateDialog } from "../components/category-create";
-import { CategoryUpdateDialog } from "../components/category-update";
-const { confirm } = Modal;
+import { useEffect, useState } from 'react'
+import { Modal, Space, Table, message } from 'antd'
+import type { ColumnsType } from 'antd/es/table'
+import { useDispatch, useSelector } from 'react-redux'
+import { ExclamationCircleFilled } from '@ant-design/icons'
+import { question } from '../../../../api/index'
+import { titleAction } from '../../../../store/user/loginUserSlice'
+import { BackBartment, PerButton } from '../../../../components'
+import { CategoryCreateDialog } from '../components/category-create'
+import { CategoryUpdateDialog } from '../components/category-update'
+
+const { confirm } = Modal
 
 interface DataType {
-  id: React.Key;
-  name: string;
+  id: React.Key
+  name: string
 }
 
-const QuestionCategoryPage = () => {
-  const dispatch = useDispatch();
-  const [loading, setLoading] = useState<boolean>(false);
-  const [list, setList] = useState<any>([]);
-  const [page, setPage] = useState(1);
-  const [size, setSize] = useState(10);
-  const [total, setTotal] = useState(0);
-  const [refresh, setRefresh] = useState(false);
-  const [showAddWin, setShowAddWin] = useState<boolean>(false);
-  const [showUpdateWin, setShowUpdateWin] = useState<boolean>(false);
-  const [updateId, setUpdateId] = useState<number>(0);
+function QuestionCategoryPage() {
+  const dispatch = useDispatch()
+  const [loading, setLoading] = useState<boolean>(false)
+  const [list, setList] = useState<any>([])
+  const [page, setPage] = useState(1)
+  const [size, setSize] = useState(10)
+  const [total, setTotal] = useState(0)
+  const [refresh, setRefresh] = useState(false)
+  const [showAddWin, setShowAddWin] = useState<boolean>(false)
+  const [showUpdateWin, setShowUpdateWin] = useState<boolean>(false)
+  const [updateId, setUpdateId] = useState<number>(0)
 
   useEffect(() => {
-    document.title = "试题分类";
-    dispatch(titleAction("试题分类"));
-  }, []);
+    document.title = '试题分类'
+    dispatch(titleAction('试题分类'))
+  }, [])
 
   useEffect(() => {
-    getData();
-  }, [page, size, refresh]);
+    getData()
+  }, [page, size, refresh])
 
   const getData = () => {
-    if (loading) {
-      return;
-    }
-    setLoading(true);
+    if (loading)
+      return
+
+    setLoading(true)
     question
       .categoryList({
-        page: page,
-        size: size,
+        page,
+        size,
       })
       .then((res: any) => {
-        const box: any = [];
-        let categories = res.data.data.data;
+        const box: any = []
+        const categories = res.data.data.data
         for (let i = 0; i < categories.length; i++) {
           if (categories[i].children.length > 0) {
             box.push({
@@ -56,52 +57,58 @@ const QuestionCategoryPage = () => {
               id: categories[i].id,
               sort: categories[i].sort,
               children: categories[i].children,
-            });
-          } else {
+            })
+          }
+          else {
             box.push({
               name: categories[i].name,
               id: categories[i].id,
               sort: categories[i].sort,
-            });
+            })
           }
         }
-        setList(box);
-        setTotal(res.data.data.total);
-        setLoading(false);
+        setList(box)
+        setTotal(res.data.data.total)
+        setLoading(false)
       })
       .catch((e) => {
-        setLoading(false);
-      });
-  };
+        setLoading(false)
+      })
+  }
 
   const paginationProps = {
-    current: page, //当前页码
+    current: page, // 当前页码
     pageSize: size,
-    total: total, // 总条数
+    total, // 总条数
     onChange: (page: number, pageSize: number) =>
-      handlePageChange(page, pageSize), //改变页码的函数
+      handlePageChange(page, pageSize), // 改变页码的函数
     showSizeChanger: true,
-  };
+  }
 
   const handlePageChange = (page: number, pageSize: number) => {
-    setPage(page);
-    setSize(pageSize);
-  };
+    setPage(page)
+    setSize(pageSize)
+  }
 
   const columns: ColumnsType<DataType> = [
     {
-      title: "排序",
+      title: '排序',
       width: 150,
       render: (_, record: any) => <span>{record.sort}</span>,
     },
     {
-      title: "分类名",
-      render: (_, record: any) => <span>{record.name} </span>,
+      title: '分类名',
+      render: (_, record: any) => (
+        <span>
+          {record.name}
+          {' '}
+        </span>
+      ),
     },
     {
-      title: "操作",
+      title: '操作',
       width: 160,
-      fixed: "right",
+      fixed: 'right',
       render: (_, record: any) => (
         <Space>
           <PerButton
@@ -111,8 +118,8 @@ const QuestionCategoryPage = () => {
             icon={null}
             p="addons.Paper.paper_category.update"
             onClick={() => {
-              setUpdateId(record.id);
-              setShowUpdateWin(true);
+              setUpdateId(record.id)
+              setShowUpdateWin(true)
             }}
             disabled={null}
           />
@@ -123,76 +130,78 @@ const QuestionCategoryPage = () => {
             icon={null}
             p="addons.Paper.paper_category.delete"
             onClick={() => {
-              destory(record.id);
+              destory(record.id)
             }}
             disabled={null}
           />
         </Space>
       ),
     },
-  ];
+  ]
 
   const resetData = () => {
-    setPage(1);
-    setList([]);
-    setRefresh(!refresh);
-  };
+    setPage(1)
+    setList([])
+    setRefresh(!refresh)
+  }
 
   const destory = (id: number) => {
-    if (id === 0) {
-      return;
-    }
+    if (id === 0)
+      return
+
     confirm({
-      title: "操作确认",
+      title: '操作确认',
       icon: <ExclamationCircleFilled />,
-      content: "确认删除此分类？",
+      content: '确认删除此分类？',
       centered: true,
-      okText: "确认",
-      cancelText: "取消",
+      okText: '确认',
+      cancelText: '取消',
       onOk() {
-        if (loading) {
-          return;
-        }
-        setLoading(true);
+        if (loading)
+          return
+
+        setLoading(true)
         question
           .categoryDestroy(id)
           .then(() => {
-            setLoading(false);
-            message.success("删除成功");
-            resetData();
+            setLoading(false)
+            message.success('删除成功')
+            resetData()
           })
           .catch((e) => {
-            setLoading(false);
-          });
+            setLoading(false)
+          })
       },
       onCancel() {
-        console.log("Cancel");
+        console.log('Cancel')
       },
-    });
-  };
+    })
+  }
 
   return (
-    <div className="meedu-main-body">
+    <div className="geekedu-main-body">
       <BackBartment title="试题分类" />
       <CategoryCreateDialog
         categories={list}
         open={showAddWin}
         onCancel={() => setShowAddWin(false)}
         onSuccess={() => {
-          resetData();
-          setShowAddWin(false);
+          resetData()
+          setShowAddWin(false)
         }}
-      ></CategoryCreateDialog>
+      >
+      </CategoryCreateDialog>
       <CategoryUpdateDialog
         id={updateId}
         categories={list}
         open={showUpdateWin}
         onCancel={() => setShowUpdateWin(false)}
         onSuccess={() => {
-          resetData();
-          setShowUpdateWin(false);
+          resetData()
+          setShowUpdateWin(false)
         }}
-      ></CategoryUpdateDialog>
+      >
+      </CategoryUpdateDialog>
       <div className="float-left  mt-30 mb-30">
         <PerButton
           type="primary"
@@ -209,12 +218,12 @@ const QuestionCategoryPage = () => {
           loading={loading}
           columns={columns}
           dataSource={list}
-          rowKey={(record) => record.id}
+          rowKey={record => record.id}
           pagination={paginationProps}
         />
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default QuestionCategoryPage;
+export default QuestionCategoryPage

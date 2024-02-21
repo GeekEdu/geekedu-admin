@@ -159,7 +159,7 @@ const MultiShareRewardsPage = () => {
   ];
 
   return (
-    <div className="meedu-main-body">
+    <div className="geekedu-main-body">
       <BackBartment title="奖励记录" />
       <div className="float-left j-b-flex mb-30 mt-30">
         <div className="d-flex">

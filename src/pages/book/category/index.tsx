@@ -134,7 +134,7 @@ const BookCategoryPage = () => {
   };
 
   return (
-    <div className="meedu-main-body">
+    <div className="geekedu-main-body">
       <BackBartment title="电子书分类管理" />
       <CourseCategoryCreateDialog
         open={showAddWin}

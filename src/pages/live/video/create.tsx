@@ -1,76 +1,76 @@
-import { useState, useEffect } from "react";
-import { message, DatePicker, Form, Button, Input, Space, Select } from "antd";
-import { useNavigate, useLocation } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import { live } from "../../../api/index";
-import { titleAction } from "../../../store/user/loginUserSlice";
-import { BackBartment, HelperText, PerButton } from "../../../components";
-import moment from "moment";
+import { useEffect, useState } from 'react'
+import { Button, DatePicker, Form, Input, Select, Space, message } from 'antd'
+import { useLocation, useNavigate } from 'react-router-dom'
+import { useDispatch, useSelector } from 'react-redux'
+import moment from 'moment'
+import { live } from '../../../api/index'
+import { titleAction } from '../../../store/user/loginUserSlice'
+import { BackBartment, HelperText, PerButton } from '../../../components'
 
-const LiveVideoCreatePage = () => {
-  const result = new URLSearchParams(useLocation().search);
-  const [form] = Form.useForm();
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const [chapters, setChapters] = useState<any>([]);
-  const [loading, setLoading] = useState<boolean>(false);
-  const [id, setId] = useState(Number(result.get("course_id")));
-
-  useEffect(() => {
-    document.title = "新建直播排课";
-    dispatch(titleAction("新建直播排课"));
-    getParams();
-  }, [id]);
+function LiveVideoCreatePage() {
+  const result = new URLSearchParams(useLocation().search)
+  const [form] = Form.useForm()
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
+  const [chapters, setChapters] = useState<any>([])
+  const [loading, setLoading] = useState<boolean>(false)
+  const [id, setId] = useState(Number(result.get('course_id')))
 
   useEffect(() => {
-    setId(Number(result.get("course_id")));
-  }, [result.get("course_id")]);
+    document.title = '新建直播排课'
+    dispatch(titleAction('新建直播排课'))
+    getParams()
+  }, [id])
+
+  useEffect(() => {
+    setId(Number(result.get('course_id')))
+  }, [result.get('course_id')])
 
   const getParams = () => {
     live.videoCreate().then((res: any) => {
-      var data = res.data.chapters[id];
+      const data = res.data.chapters[id]
       if (data && data.length > 0) {
-        let arr: any = [];
-        for (var i = 0; i < data.length; i++) {
+        const arr: any = []
+        for (let i = 0; i < data.length; i++) {
           arr.push({
             label: data[i].name,
             value: data[i].id,
-          });
+          })
         }
-        setChapters(arr);
+        setChapters(arr)
       }
-    });
-  };
+    })
+  }
 
   const onFinish = (values: any) => {
-    if (loading) {
-      return;
-    }
-    setLoading(true);
+    if (loading)
+      return
+
+    setLoading(true)
     values.published_at = moment(new Date(values.published_at)).format(
-      "YYYY-MM-DD HH:mm"
-    );
-    values.course_id = id;
-    values.estimate_duration = values.estimate_duration * 60;
-    values.is_show = 1;
+      'YYYY-MM-DD HH:mm',
+    )
+    values.course_id = id
+    values.estimate_duration = values.estimate_duration * 60
+    values.is_show = 1
     live
       .videoStore(values)
       .then((res: any) => {
-        setLoading(false);
-        message.success("保存成功！");
-        navigate(-1);
+        setLoading(false)
+        message.success('保存成功！')
+        navigate(-1)
       })
       .catch((e) => {
-        setLoading(false);
-      });
-  };
+        setLoading(false)
+      })
+  }
 
   const onFinishFailed = (errorInfo: any) => {
-    console.log("Failed:", errorInfo);
-  };
+    console.log('Failed:', errorInfo)
+  }
 
   return (
-    <div className="meedu-main-body">
+    <div className="geekedu-main-body">
       <BackBartment title="新建直播排课" />
       <div className="float-left mt-30">
         <Form
@@ -101,7 +101,7 @@ const LiveVideoCreatePage = () => {
                   icon={null}
                   p="addons.Zhibo.course_chapter.list"
                   onClick={() => {
-                    navigate("/live/course/chapter/index?id=" + id);
+                    navigate(`/live/course/chapter/index?id=${id}`)
                   }}
                   disabled={null}
                 />
@@ -111,7 +111,7 @@ const LiveVideoCreatePage = () => {
           <Form.Item
             label="直播标题"
             name="title"
-            rules={[{ required: true, message: "请输入直播标题!" }]}
+            rules={[{ required: true, message: '请输入直播标题!' }]}
           >
             <Input
               style={{ width: 300 }}
@@ -122,7 +122,7 @@ const LiveVideoCreatePage = () => {
           <Form.Item
             label="直播时间"
             name="published_at"
-            rules={[{ required: true, message: "请选择直播时间!" }]}
+            rules={[{ required: true, message: '请选择直播时间!' }]}
           >
             <DatePicker
               format="YYYY-MM-DD HH:mm"
@@ -135,13 +135,13 @@ const LiveVideoCreatePage = () => {
           <Form.Item
             label="预估直播时长"
             name="estimate_duration"
-            rules={[{ required: true, message: "请输入预估直播时长!" }]}
+            rules={[{ required: true, message: '请输入预估直播时长!' }]}
           >
             <Space align="center">
               <Form.Item
                 style={{ marginBottom: 0 }}
                 name="estimate_duration"
-                rules={[{ required: true, message: "请输入预估直播时长!" }]}
+                rules={[{ required: true, message: '请输入预估直播时长!' }]}
               >
                 <Input
                   type="number"
@@ -177,6 +177,6 @@ const LiveVideoCreatePage = () => {
         </div>
       </div>
     </div>
-  );
-};
-export default LiveVideoCreatePage;
+  )
+}
+export default LiveVideoCreatePage

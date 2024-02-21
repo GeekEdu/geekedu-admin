@@ -499,7 +499,7 @@ const OrderPage = () => {
   };
 
   return (
-    <div className="meedu-main-body">
+    <div className="geekedu-main-body">
       <RefundDialog
         open={visiable}
         id={oid}

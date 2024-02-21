@@ -1,64 +1,64 @@
-import { useState, useEffect } from "react";
-import { message, Upload, Button } from "antd";
-import { useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
-import { question } from "../../../api/index";
-import * as XLSX from "xlsx";
-import { CloseCircleOutlined } from "@ant-design/icons";
-import { titleAction } from "../../../store/user/loginUserSlice";
-import { BackBartment } from "../../../components";
-import { getUrl } from "../../../utils/index";
+import { useEffect, useState } from 'react'
+import { Button, Upload, message } from 'antd'
+import { useNavigate } from 'react-router-dom'
+import { useDispatch } from 'react-redux'
+import * as XLSX from 'xlsx'
+import { CloseCircleOutlined } from '@ant-design/icons'
+import { question } from '../../../api/index'
+import { titleAction } from '../../../store/user/loginUserSlice'
+import { BackBartment } from '../../../components'
+import { getUrl } from '../../../utils/index'
 
-const QuestionImportPage = () => {
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const [loading, setLoading] = useState<boolean>(false);
+function QuestionImportPage() {
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
+  const [loading, setLoading] = useState<boolean>(false)
 
   useEffect(() => {
-    document.title = "试题批量导入";
-    dispatch(titleAction("试题批量导入"));
-  }, []);
+    document.title = '试题批量导入'
+    dispatch(titleAction('试题批量导入'))
+  }, [])
 
   const uploadProps = {
-    accept: ".xls,.xlsx,application/vnd.ms-excel",
+    accept: '.xls,.xlsx,application/vnd.ms-excel',
     beforeUpload: (file: any) => {
-      if (loading) {
-        return;
-      }
-      setLoading(true);
-      const f = file;
-      const reader = new FileReader();
+      if (loading)
+        return
+
+      setLoading(true)
+      const f = file
+      const reader = new FileReader()
       reader.onload = (e: any) => {
-        const datas = e.target.result;
+        const datas = e.target.result
         const workbook = XLSX.read(datas, {
-          type: "binary",
-        });
-        const first_worksheet = workbook.Sheets[workbook.SheetNames[0]];
+          type: 'binary',
+        })
+        const first_worksheet = workbook.Sheets[workbook.SheetNames[0]]
         const jsonArr = XLSX.utils.sheet_to_json(first_worksheet, {
           header: 1,
-        });
-        handleImpotedJson(jsonArr, file);
-      };
-      reader.readAsBinaryString(f);
-      return false;
+        })
+        handleImpotedJson(jsonArr, file)
+      }
+      reader.readAsBinaryString(f)
+      return false
     },
-  };
+  }
 
   const handleImpotedJson = (jsonArr: any[], file: any) => {
-    jsonArr.splice(0, 2); // 去掉表头[第一行规则描述,第二行表头名]
-    storeBatchTableCertData(jsonArr);
-  };
+    jsonArr.splice(0, 2) // 去掉表头[第一行规则描述,第二行表头名]
+    storeBatchTableCertData(jsonArr)
+  }
 
   const storeBatchTableCertData = (data: any) => {
     question
-      .importing({ line: 3, data: data })
+      .importing({ line: 3, data })
       .then(() => {
-        setLoading(false);
-        message.success("导入成功！");
-        navigate(-1);
+        setLoading(false)
+        message.success('导入成功！')
+        navigate(-1)
       })
       .catch((e) => {
-        setLoading(false);
+        setLoading(false)
         // let config = {
         //   content: (
         //     <>
@@ -69,16 +69,16 @@ const QuestionImportPage = () => {
         //   duration: 0,
         // };
         // message.error(config);
-      });
-  };
+      })
+  }
 
   const download = () => {
-    let url = getUrl() + "/template/试题批量导入模板.xlsx";
-    window.open(url);
-  };
+    const url = `${getUrl()}/template/试题批量导入模板.xlsx`
+    window.open(url)
+  }
 
   return (
-    <div className="meedu-main-body">
+    <div className="geekedu-main-body">
       <BackBartment title="试题批量导入" />
       <div className="user-import-box">
         <div className="float-left d-flex mb-30x">
@@ -101,7 +101,7 @@ const QuestionImportPage = () => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default QuestionImportPage;
+export default QuestionImportPage

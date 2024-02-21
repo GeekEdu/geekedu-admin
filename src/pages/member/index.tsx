@@ -453,7 +453,7 @@ function MemberPage() {
   }
 
   return (
-    <div className="meedu-main-body">
+    <div className="geekedu-main-body">
       <SendMessageDialog
         open={visiable}
         mid={mid}

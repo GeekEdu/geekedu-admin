@@ -221,7 +221,7 @@ const TuangouPage = () => {
   };
 
   return (
-    <div className="meedu-main-body">
+    <div className="geekedu-main-body">
       <div className="float-left j-b-flex mb-30">
         <div className="d-flex">
           <PerButton

@@ -166,7 +166,7 @@ const WechatPage = () => {
   };
 
   return (
-    <div className="meedu-main-body">
+    <div className="geekedu-main-body">
       <div className="float-left mb-30">
         <PerButton
           type="primary"

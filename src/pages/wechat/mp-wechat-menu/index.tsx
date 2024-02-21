@@ -353,7 +353,7 @@ const WechatMenuPage = () => {
   };
 
   return (
-    <div className="meedu-main-body">
+    <div className="geekedu-main-body">
       <BackBartment title="公众号菜单" />
       <div className="float-left mt-30">
         <h3>常见问题</h3>

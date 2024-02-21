@@ -139,7 +139,7 @@ const SnapshotImagesPage = () => {
   };
 
   return (
-    <div className="meedu-main-body">
+    <div className="geekedu-main-body">
       <BackBartment title="查看照片" />
       <div className="float-left mb-30 mt-30">
         <PerButton

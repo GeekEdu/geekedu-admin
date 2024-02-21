@@ -250,7 +250,7 @@ const CourseVideoRecordsPage = () => {
   };
 
   return (
-    <div className="meedu-main-body">
+    <div className="geekedu-main-body">
       <BackBartment title="课时学习记录" />
       <div className="float-left mt-30">
         <Input

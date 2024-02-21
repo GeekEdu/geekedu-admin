@@ -99,7 +99,7 @@ const SystemNormalConfigPage = () => {
   };
 
   return (
-    <div className="meedu-main-body">
+    <div className="geekedu-main-body">
       <BackBartment title={key === "会员" ? "用户注册" : key}></BackBartment>
       {loading && (
         <div

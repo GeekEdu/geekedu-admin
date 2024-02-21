@@ -72,7 +72,7 @@ const PromoCodeImportPage = () => {
   };
 
   return (
-    <div className="meedu-main-body">
+    <div className="geekedu-main-body">
       <BackBartment title="优惠码批量导入" />
       <div className={styles["user-import-box"]}>
         <div className="float-left d-flex mb-15">

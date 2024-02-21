@@ -182,7 +182,7 @@ const TuangouRefundPage = () => {
   };
 
   return (
-    <div className="meedu-main-body">
+    <div className="geekedu-main-body">
       <BackBartment title="团购商品退款订单" />
       <div className="float-left mb-30 mt-30">
         <div className="float-left d-flex">

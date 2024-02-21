@@ -110,7 +110,7 @@ const LiveVideoUpdatePage = () => {
   };
 
   return (
-    <div className="meedu-main-body">
+    <div className="geekedu-main-body">
       <BackBartment title="编辑直播排课" />
       {init && (
         <div className="float-left text-center mt-30">

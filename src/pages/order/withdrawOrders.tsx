@@ -277,7 +277,7 @@ const WithdrawOrdersPage = () => {
   };
 
   return (
-    <div className="meedu-main-body">
+    <div className="geekedu-main-body">
       <WithdrawDialog
         open={showHandleWin}
         ids={selectedRowKeys}

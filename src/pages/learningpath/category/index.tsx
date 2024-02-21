@@ -173,7 +173,7 @@ const LearnPathCategoryPage = () => {
   };
 
   return (
-    <div className="meedu-main-body">
+    <div className="geekedu-main-body">
       <BackBartment title="学习路径分类" />
       <LearnPathCategoryCreateDialog
         categories={list}

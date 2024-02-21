@@ -163,7 +163,7 @@ function CourseUpdatePage() {
   }
 
   return (
-    <div className="meedu-main-body">
+    <div className="geekedu-main-body">
       <BackBartment title="编辑录播课程" />
       {init && (
         <div className="float-left text-center mt-30">

@@ -180,7 +180,7 @@ function CourseCategoryPage() {
   }
 
   return (
-    <div className="meedu-main-body">
+    <div className="geekedu-main-body">
       <BackBartment title="录播分类管理" />
       <CourseCategoryCreateDialog
         categories={list}

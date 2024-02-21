@@ -157,7 +157,7 @@ const CourseVideoCreatePage = () => {
   };
 
   return (
-    <div className="meedu-main-body">
+    <div className="geekedu-main-body">
       <BackBartment title="新建课时" />
       <div className="center-tabs mb-30">
         <Tabs

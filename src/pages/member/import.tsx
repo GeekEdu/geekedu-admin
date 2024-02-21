@@ -88,7 +88,7 @@ const MemberImportPage = () => {
   };
 
   return (
-    <div className="meedu-main-body">
+    <div className="geekedu-main-body">
       <BackBartment title="学员批量导入" />
       <div className="user-import-box">
         <div className="float-left d-flex mb-30x">

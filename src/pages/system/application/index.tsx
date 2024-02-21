@@ -333,7 +333,7 @@ const SystemApplicationPage = () => {
   };
 
   return (
-    <div className="meedu-main-body">
+    <div className="geekedu-main-body">
       <div className="float-left mb-30">
         <Alert
           style={{ color: "#F56C6C" }}

@@ -166,7 +166,7 @@ function ResourceImagesPage() {
 
   return (
     <>
-      <div className="meedu-main-body">
+      <div className="geekedu-main-body">
         <Row style={{ marginBottom: 24 }}>
           <Col span={24}>
             <div className="j-b-flex">

@@ -123,7 +123,7 @@ const SystemTopicConfigPage = () => {
   };
 
   return (
-    <div className="meedu-main-body">
+    <div className="geekedu-main-body">
       <BackBartment title="图文推荐"></BackBartment>
       <SelectTopicMulti
         selected={selected}

@@ -49,7 +49,7 @@ const MultiShareCreatePage = () => {
   };
 
   return (
-    <div className="meedu-main-body">
+    <div className="geekedu-main-body">
       <BackBartment title="新建分销活动" />
       <SelectResources
         open={showSelectResWin}

@@ -148,7 +148,7 @@ function MemberTagsPage() {
   }
 
   return (
-    <div className="meedu-main-body">
+    <div className="geekedu-main-body">
       <BackBartment title="标签管理" />
       <div className="float-left  mt-30 mb-30">
         <Button type="primary" onClick={() => navigate('/member/tag/create')}>

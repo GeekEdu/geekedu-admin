@@ -177,7 +177,7 @@ const SystemImagesSaveConfigPage = () => {
   };
 
   return (
-    <div className="meedu-main-body">
+    <div className="geekedu-main-body">
       <BackBartment title="图片存储"></BackBartment>
       {loading && (
         <div

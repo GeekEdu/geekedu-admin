@@ -186,7 +186,7 @@ const TopicCommentsPage = () => {
   };
 
   return (
-    <div className="meedu-main-body">
+    <div className="geekedu-main-body">
       <BackBartment title="图文文章评论" />
       <div className="float-left j-b-flex mb-30 mt-30">
         <div className="d-flex"></div>

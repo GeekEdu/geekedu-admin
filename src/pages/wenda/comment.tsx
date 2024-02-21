@@ -152,7 +152,7 @@ function WendaCommentPage() {
   }
 
   return (
-    <div className="meedu-main-body">
+    <div className="geekedu-main-body">
       <BackBartment title="问题评论" />
       <div className="float-left mt-30">
         <Table

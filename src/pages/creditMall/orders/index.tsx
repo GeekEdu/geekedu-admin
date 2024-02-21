@@ -196,7 +196,7 @@ const CreditMallOrdersPage = () => {
   ];
 
   return (
-    <div className="meedu-main-body">
+    <div className="geekedu-main-body">
       <BackBartment title="积分订单" />
       <div className="float-left j-b-flex mt-30 mb-30">
         <div></div>

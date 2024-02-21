@@ -122,7 +122,7 @@ const CreditMallCreatePage = () => {
   };
 
   return (
-    <div className="meedu-main-body">
+    <div className="geekedu-main-body">
       <BackBartment title="新建积分商品" />
       <SelectResources
         open={showSelectResWin}

@@ -246,7 +246,7 @@ const LiveVideoUsersPage = () => {
   };
 
   return (
-    <div className="meedu-main-body">
+    <div className="geekedu-main-body">
       <BackBartment title="直播课时学员" />
       <div className="float-left j-b-flex mb-30">
         <div className="d-flex"></div>

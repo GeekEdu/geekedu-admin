@@ -1,94 +1,95 @@
-import { useState, useEffect } from "react";
-import { Table, Modal, message, Button, Space } from "antd";
-import { useNavigate, useLocation } from "react-router-dom";
-import type { ColumnsType } from "antd/es/table";
-import { useDispatch } from "react-redux";
-import { practice } from "../../../api/index";
-import { titleAction } from "../../../store/user/loginUserSlice";
-import { PerButton, BackBartment, UserAddDialog } from "../../../components";
-import { ExclamationCircleFilled } from "@ant-design/icons";
-const { confirm } = Modal;
-import moment from "moment";
-import * as XLSX from "xlsx";
+import { useEffect, useState } from 'react'
+import { Button, Modal, Space, Table, message } from 'antd'
+import { useLocation, useNavigate } from 'react-router-dom'
+import type { ColumnsType } from 'antd/es/table'
+import { useDispatch } from 'react-redux'
+import { ExclamationCircleFilled } from '@ant-design/icons'
+import moment from 'moment'
+import * as XLSX from 'xlsx'
+import { practice } from '../../../api/index'
+import { titleAction } from '../../../store/user/loginUserSlice'
+import { BackBartment, PerButton, UserAddDialog } from '../../../components'
+
+const { confirm } = Modal
 
 interface DataType {
-  id: React.Key;
-  created_at: string;
+  id: React.Key
+  created_at: string
 }
 
-const PracticeUsersPage = () => {
-  const result = new URLSearchParams(useLocation().search);
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const [loading, setLoading] = useState<boolean>(false);
-  const [list, setList] = useState<any>([]);
-  const [page, setPage] = useState(1);
-  const [size, setSize] = useState(10);
-  const [total, setTotal] = useState(0);
-  const [refresh, setRefresh] = useState(false);
-  const [questionCount, setQuestionCount] = useState(0);
-  const [progress, setProgress] = useState<any>({});
-  const [showUserAddWin, setShowUserAddWin] = useState<boolean>(false);
-  const [id, setId] = useState(Number(result.get("id")));
+function PracticeUsersPage() {
+  const result = new URLSearchParams(useLocation().search)
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
+  const [loading, setLoading] = useState<boolean>(false)
+  const [list, setList] = useState<any>([])
+  const [page, setPage] = useState(1)
+  const [size, setSize] = useState(10)
+  const [total, setTotal] = useState(0)
+  const [refresh, setRefresh] = useState(false)
+  const [questionCount, setQuestionCount] = useState(0)
+  const [progress, setProgress] = useState<any>({})
+  const [showUserAddWin, setShowUserAddWin] = useState<boolean>(false)
+  const [id, setId] = useState(Number(result.get('id')))
 
   useEffect(() => {
-    document.title = "参与学员";
-    dispatch(titleAction("参与学员"));
-  }, []);
+    document.title = '参与学员'
+    dispatch(titleAction('参与学员'))
+  }, [])
 
   useEffect(() => {
-    setId(Number(result.get("id")));
-  }, [result.get("id")]);
+    setId(Number(result.get('id')))
+  }, [result.get('id')])
 
   useEffect(() => {
-    getData();
-  }, [id, page, size, refresh]);
+    getData()
+  }, [id, page, size, refresh])
 
   const getData = () => {
-    if (loading) {
-      return;
-    }
-    setLoading(true);
+    if (loading)
+      return
+
+    setLoading(true)
     practice
       .userList(id, {
-        page: page,
-        size: size,
-        id: id,
+        page,
+        size,
+        id,
       })
       .then((res: any) => {
-        setList(res.data.data.data);
-        setTotal(res.data.data.total);
-        setQuestionCount(res.data.question_count);
-        setProgress(res.data.progress);
-        setLoading(false);
+        setList(res.data.data.data)
+        setTotal(res.data.data.total)
+        setQuestionCount(res.data.question_count)
+        setProgress(res.data.progress)
+        setLoading(false)
       })
       .catch((e) => {
-        setLoading(false);
-      });
-  };
+        setLoading(false)
+      })
+  }
 
   const paginationProps = {
-    current: page, //当前页码
+    current: page, // 当前页码
     pageSize: size,
-    total: total, // 总条数
+    total, // 总条数
     onChange: (page: number, pageSize: number) =>
-      handlePageChange(page, pageSize), //改变页码的函数
+      handlePageChange(page, pageSize), // 改变页码的函数
     showSizeChanger: true,
-  };
+  }
 
   const handlePageChange = (page: number, pageSize: number) => {
-    setPage(page);
-    setSize(pageSize);
-  };
+    setPage(page)
+    setSize(pageSize)
+  }
 
   const columns: ColumnsType<DataType> = [
     {
-      title: "学员ID",
+      title: '学员ID',
       width: 120,
       render: (_, record: any) => <span>{record.user_id}</span>,
     },
     {
-      title: "学员",
+      title: '学员',
       width: 300,
       render: (_, record: any) => (
         <>
@@ -105,43 +106,53 @@ const PracticeUsersPage = () => {
       ),
     },
     {
-      title: "已练习",
+      title: '已练习',
       width: 200,
       render: (_, record: any) => (
         <>
-          <div>总试题：{questionCount}题</div>
-          {progress[record.user_id] ? (
-            <div className="c-red">
-              已练习：{progress[record.user_id].submit_count}题
-            </div>
-          ) : (
-            <div className="c-red">已练习：0题</div>
-          )}
+          <div>
+            总试题：
+            {questionCount}
+            题
+          </div>
+          {progress[record.user_id]
+            ? (
+              <div className="c-red">
+                已练习：
+                {progress[record.user_id].submit_count}
+                题
+              </div>
+              )
+            : (
+              <div className="c-red">已练习：0题</div>
+              )}
         </>
       ),
     },
     {
-      title: "练习进度",
+      title: '练习进度',
       render: (_, record: any) => (
         <>
-          {progress[record.user_id] ? (
-            <div>
-              {(
-                (progress[record.user_id].submit_count * 100) /
-                questionCount
-              ).toFixed(2)}
-              %
-            </div>
-          ) : (
-            <div>0%</div>
-          )}
+          {progress[record.user_id]
+            ? (
+              <div>
+                {(
+                  (progress[record.user_id].submit_count * 100)
+                  / questionCount
+                ).toFixed(2)}
+                %
+              </div>
+              )
+            : (
+              <div>0%</div>
+              )}
         </>
       ),
     },
     {
-      title: "操作",
+      title: '操作',
       width: 120,
-      fixed: "right",
+      fixed: 'right',
       render: (_, record: any) => (
         <Space>
           <PerButton
@@ -152,8 +163,8 @@ const PracticeUsersPage = () => {
             p="addons.Paper.practice.user.progress"
             onClick={() => {
               navigate(
-                "/exam/practice/progress?id=" + id + "&pid=" + record.user_id
-              );
+                `/exam/practice/progress?id=${id}&pid=${record.user_id}`,
+              )
             }}
             disabled={null}
           />
@@ -164,115 +175,114 @@ const PracticeUsersPage = () => {
             icon={null}
             p="addons.Paper.practice.user.delete"
             onClick={() => {
-              destory(record.user_id);
+              destory(record.user_id)
             }}
             disabled={null}
           />
         </Space>
       ),
     },
-  ];
+  ]
 
   const destory = (pid: number) => {
-    if (pid === 0) {
-      return;
-    }
+    if (pid === 0)
+      return
+
     confirm({
-      title: "操作确认",
+      title: '操作确认',
       icon: <ExclamationCircleFilled />,
-      content: "确认删除此学员？",
+      content: '确认删除此学员？',
       centered: true,
-      okText: "确认",
-      cancelText: "取消",
+      okText: '确认',
+      cancelText: '取消',
       onOk() {
-        if (loading) {
-          return;
-        }
-        setLoading(true);
+        if (loading)
+          return
+
+        setLoading(true)
         practice
           .userDel(id, {
-            id: id,
+            id,
             user_id: pid,
           })
           .then(() => {
-            setLoading(false);
-            message.success("删除成功");
-            resetData();
+            setLoading(false)
+            message.success('删除成功')
+            resetData()
           })
           .catch((e) => {
-            setLoading(false);
-          });
+            setLoading(false)
+          })
       },
       onCancel() {
-        console.log("Cancel");
+        console.log('Cancel')
       },
-    });
-  };
+    })
+  }
 
   const userAddChange = (rows: any) => {
-    if (loading) {
-      return;
-    }
-    setLoading(true);
+    if (loading)
+      return
+
+    setLoading(true)
     practice
       .userAdd(id, {
-        id: id,
+        id,
         mobiles: rows,
       })
       .then(() => {
-        setLoading(false);
-        message.success("成功");
-        setShowUserAddWin(false);
-        resetData();
+        setLoading(false)
+        message.success('成功')
+        setShowUserAddWin(false)
+        resetData()
       })
       .catch((e) => {
-        setLoading(false);
-      });
-  };
+        setLoading(false)
+      })
+  }
 
   const resetData = () => {
-    setPage(1);
-    setList([]);
-    setRefresh(!refresh);
-  };
+    setPage(1)
+    setList([])
+    setRefresh(!refresh)
+  }
 
   const exportexcel = () => {
-    if (loading) {
-      return;
-    }
-    setLoading(true);
-    let params = {
+    if (loading)
+      return
+
+    setLoading(true)
+    const params = {
       page: 1,
       size: total,
-    };
+    }
     practice.userList(id, params).then((res: any) => {
       if (res.data.data.total === 0) {
-        message.error("数据为空");
-        setLoading(false);
-        return;
+        message.error('数据为空')
+        setLoading(false)
+        return
       }
 
-      let data = res.data.data.data;
-      let questionCount = res.data.question_count;
-      let practiceProgress = res.data.progress;
-      let filename =
-        "练习进度|" + moment().format("YYYY-MM-DD HH:mm:ss") + ".xlsx";
-      let sheetName = "sheet1";
+      const data = res.data.data.data
+      const questionCount = res.data.question_count
+      const practiceProgress = res.data.progress
+      const filename
+        = `练习进度|${moment().format('YYYY-MM-DD HH:mm:ss')}.xlsx`
+      const sheetName = 'sheet1'
 
-      let rows = [
-        ["用户ID", "用户名", "手机号", "总题目数", "已练习题目数", "进度"],
-      ];
+      const rows = [
+        ['用户ID', '用户名', '手机号', '总题目数', '已练习题目数', '进度'],
+      ]
       data.forEach((item: any) => {
-        if (!item.user) {
-          return;
-        }
+        if (!item.user)
+          return
 
-        let p: any = 0;
+        let p: any = 0
         if (questionCount > 0 && practiceProgress[item.user_id]) {
           p = (
-            (practiceProgress[item.user_id].submit_count / questionCount) *
-            100
-          ).toFixed(2);
+            (practiceProgress[item.user_id].submit_count / questionCount)
+            * 100
+          ).toFixed(2)
         }
 
         rows.push([
@@ -283,24 +293,24 @@ const PracticeUsersPage = () => {
           practiceProgress[item.user_id]
             ? practiceProgress[item.user_id].submit_count
             : 0,
-          p + "%",
-        ]);
-      });
+          `${p}%`,
+        ])
+      })
 
-      const jsonWorkSheet = XLSX.utils.json_to_sheet(rows);
+      const jsonWorkSheet = XLSX.utils.json_to_sheet(rows)
       const workBook: XLSX.WorkBook = {
         SheetNames: [sheetName],
         Sheets: {
           [sheetName]: jsonWorkSheet,
         },
-      };
-      XLSX.writeFile(workBook, filename);
-      setLoading(false);
-    });
-  };
+      }
+      XLSX.writeFile(workBook, filename)
+      setLoading(false)
+    })
+  }
 
   return (
-    <div className="meedu-main-body">
+    <div className="geekedu-main-body">
       <BackBartment title="参与学员" />
       <div className="float-left mb-30 mt-30">
         <PerButton
@@ -322,7 +332,7 @@ const PracticeUsersPage = () => {
           loading={loading}
           columns={columns}
           dataSource={list}
-          rowKey={(record) => record.id}
+          rowKey={record => record.id}
           pagination={paginationProps}
         />
       </div>
@@ -331,11 +341,12 @@ const PracticeUsersPage = () => {
         open={showUserAddWin}
         onCancel={() => setShowUserAddWin(false)}
         onSuccess={(rows: any) => {
-          userAddChange(rows);
+          userAddChange(rows)
         }}
-      ></UserAddDialog>
+      >
+      </UserAddDialog>
     </div>
-  );
-};
+  )
+}
 
-export default PracticeUsersPage;
+export default PracticeUsersPage

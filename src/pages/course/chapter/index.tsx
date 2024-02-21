@@ -141,7 +141,7 @@ const CourseChapterPage = () => {
   };
 
   return (
-    <div className="meedu-main-body">
+    <div className="geekedu-main-body">
       <BackBartment title="课程章节管理" />
       <CourseChapterCreateDialog
         cid={cid}

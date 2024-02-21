@@ -149,7 +149,7 @@ function CourseCreatePage() {
   }
 
   return (
-    <div className="meedu-main-body">
+    <div className="geekedu-main-body">
       <BackBartment title="新建录播课程" />
       <div className="float-left mt-30">
         <Form

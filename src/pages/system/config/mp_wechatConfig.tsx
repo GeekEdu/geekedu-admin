@@ -159,7 +159,7 @@ const SystemMpWechatConfigPage = () => {
   };
 
   return (
-    <div className="meedu-main-body">
+    <div className="geekedu-main-body">
       <BackBartment title="微信公众号"></BackBartment>
       {loading && (
         <div

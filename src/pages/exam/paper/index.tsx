@@ -1,148 +1,161 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from 'react'
 import {
-  Table,
-  Modal,
-  message,
-  Input,
   Button,
-  Space,
   Dropdown,
+  Input,
+  Modal,
   Select,
-} from "antd";
-import type { MenuProps } from "antd";
-import { useNavigate } from "react-router-dom";
-import type { ColumnsType } from "antd/es/table";
-import { useDispatch } from "react-redux";
-import { paper } from "../../../api/index";
-import { DownOutlined } from "@ant-design/icons";
-import { titleAction } from "../../../store/user/loginUserSlice";
-import { PerButton } from "../../../components";
-import { dateFormat } from "../../../utils/index";
-import { ExclamationCircleFilled } from "@ant-design/icons";
-const { confirm } = Modal;
+  Space,
+  Table,
+  message,
+} from 'antd'
+import type { MenuProps } from 'antd'
+import { useNavigate } from 'react-router-dom'
+import type { ColumnsType } from 'antd/es/table'
+import { useDispatch } from 'react-redux'
+import { DownOutlined, ExclamationCircleFilled } from '@ant-design/icons'
+import { paper } from '../../../api/index'
+import { titleAction } from '../../../store/user/loginUserSlice'
+import { PerButton } from '../../../components'
+import { dateFormat } from '../../../utils/index'
+
+const { confirm } = Modal
 
 interface DataType {
-  id: React.Key;
-  created_at: string;
+  id: React.Key
+  created_at: string
 }
 
-const PaperPage = () => {
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const [loading, setLoading] = useState<boolean>(false);
-  const [list, setList] = useState<any>([]);
-  const [page, setPage] = useState(1);
-  const [size, setSize] = useState(20);
-  const [total, setTotal] = useState(0);
-  const [refresh, setRefresh] = useState(false);
-  const [keywords, setKeywords] = useState<string>("");
-  const [category_id, setCategoryId] = useState([]);
-  const [categories, setCategories] = useState<any>([]);
+function PaperPage() {
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
+  const [loading, setLoading] = useState<boolean>(false)
+  const [list, setList] = useState<any>([])
+  const [page, setPage] = useState(1)
+  const [size, setSize] = useState(20)
+  const [total, setTotal] = useState(0)
+  const [refresh, setRefresh] = useState(false)
+  const [keywords, setKeywords] = useState<string>('')
+  const [category_id, setCategoryId] = useState([])
+  const [categories, setCategories] = useState<any>([])
 
   useEffect(() => {
-    document.title = "试卷";
-    dispatch(titleAction("试卷"));
-    getParams();
-  }, []);
+    document.title = '试卷'
+    dispatch(titleAction('试卷'))
+    getParams()
+  }, [])
 
   useEffect(() => {
-    getData();
-  }, [page, size, refresh]);
+    getData()
+  }, [page, size, refresh])
 
   const getData = () => {
-    if (loading) {
-      return;
-    }
-    setLoading(true);
+    if (loading)
+      return
+
+    setLoading(true)
     paper
       .list({
-        page: page,
-        size: size,
-        sort: "id",
-        order: "desc",
-        keywords: keywords,
-        category_id: category_id,
+        page,
+        size,
+        sort: 'id',
+        order: 'desc',
+        keywords,
+        category_id,
       })
       .then((res: any) => {
-        setList(res.data.data.data);
-        setTotal(res.data.data.total);
-        setLoading(false);
+        setList(res.data.data.data)
+        setTotal(res.data.data.total)
+        setLoading(false)
       })
       .catch((e) => {
-        setLoading(false);
-      });
-  };
+        setLoading(false)
+      })
+  }
 
   const getParams = () => {
     paper.create().then((res: any) => {
-      let categories = res.data.categories;
-      const box: any = [];
+      const categories = res.data.categories
+      const box: any = []
       for (let i = 0; i < categories.length; i++) {
         box.push({
           label: categories[i].name,
           value: categories[i].id,
-        });
+        })
       }
-      setCategories(box);
-    });
-  };
+      setCategories(box)
+    })
+  }
 
   const resetList = () => {
-    setPage(1);
-    setSize(20);
-    setList([]);
-    setKeywords("");
-    setCategoryId([]);
-    setRefresh(!refresh);
-  };
+    setPage(1)
+    setSize(20)
+    setList([])
+    setKeywords('')
+    setCategoryId([])
+    setRefresh(!refresh)
+  }
 
   const paginationProps = {
-    current: page, //当前页码
+    current: page, // 当前页码
     pageSize: size,
-    total: total, // 总条数
+    total, // 总条数
     onChange: (page: number, pageSize: number) =>
-      handlePageChange(page, pageSize), //改变页码的函数
+      handlePageChange(page, pageSize), // 改变页码的函数
     showSizeChanger: true,
-  };
+  }
 
   const handlePageChange = (page: number, pageSize: number) => {
-    setPage(page);
-    setSize(pageSize);
-  };
+    setPage(page)
+    setSize(pageSize)
+  }
 
   const columns: ColumnsType<DataType> = [
     {
-      title: "分类",
+      title: '分类',
       width: 200,
-      render: (_, record: any) => <span>{record?.category?.name || "-"}</span>,
+      render: (_, record: any) => <span>{record?.category?.name || '-'}</span>,
     },
     {
-      title: "标题",
+      title: '标题',
       width: 500,
       render: (_, record: any) => <span>{record.title}</span>,
     },
     {
-      title: "分数",
+      title: '分数',
       width: 150,
       render: (_, record: any) => (
         <>
-          <div>总分：{record.score}分</div>
-          <div className="c-red">及格：{record.pass_score}分</div>
+          <div>
+            总分：
+            {record.score}
+            分
+          </div>
+          <div className="c-red">
+            及格：
+            {record.pass_score}
+            分
+          </div>
         </>
       ),
     },
     {
-      title: "时长",
-      render: (_, record: any) => <span>{record.expired_minutes}m</span>,
+      title: '时长',
+      render: (_, record: any) => (
+        <span>
+          {record.expired_minutes}
+          m
+        </span>
+      ),
     },
     {
-      title: "操作",
+      title: '操作',
       width: 160,
-      fixed: "right",
+      fixed: 'right',
       render: (_, record: any) => {
-        const items: MenuProps["items"] = [
+        const items: MenuProps['items'] = [
           {
-            key: "1",
+            key: '1',
             label: (
               <PerButton
                 type="link"
@@ -151,14 +164,14 @@ const PaperPage = () => {
                 icon={null}
                 p="addons.Paper.paper.update"
                 onClick={() => {
-                  navigate("/exam/paper/update?id=" + record.id);
+                  navigate(`/exam/paper/update?id=${record.id}`)
                 }}
                 disabled={null}
               />
             ),
           },
           {
-            key: "2",
+            key: '2',
             label: (
               <PerButton
                 type="link"
@@ -167,13 +180,13 @@ const PaperPage = () => {
                 icon={null}
                 p="addons.Paper.paper.delete"
                 onClick={() => {
-                  destory(record.id);
+                  destory(record.id)
                 }}
                 disabled={null}
               />
             ),
           },
-        ];
+        ]
         return (
           <Space>
             <PerButton
@@ -183,7 +196,7 @@ const PaperPage = () => {
               icon={null}
               p="addons.Paper.paper.questions.list"
               onClick={() => {
-                navigate("/exam/paper/question?id=" + record.id);
+                navigate(`/exam/paper/question?id=${record.id}`)
               }}
               disabled={null}
             />
@@ -193,12 +206,12 @@ const PaperPage = () => {
               class="c-primary"
               icon={null}
               p={[
-                "addons.Paper.paper.userPaper",
-                "addons.Paper.paper.statistics",
-                "addons.Paper.paper.users",
+                'addons.Paper.paper.userPaper',
+                'addons.Paper.paper.statistics',
+                'addons.Paper.paper.users',
               ]}
               onClick={() => {
-                navigate("/exam/paper/user?id=" + record.id);
+                navigate(`/exam/paper/user?id=${record.id}`)
               }}
               disabled={null}
             />
@@ -206,7 +219,7 @@ const PaperPage = () => {
               <Button
                 type="link"
                 className="c-primary"
-                onClick={(e) => e.preventDefault()}
+                onClick={e => e.preventDefault()}
               >
                 <Space size="small" align="center">
                   更多
@@ -215,52 +228,52 @@ const PaperPage = () => {
               </Button>
             </Dropdown>
           </Space>
-        );
+        )
       },
     },
-  ];
+  ]
 
   const resetData = () => {
-    setPage(1);
-    setList([]);
-    setRefresh(!refresh);
-  };
+    setPage(1)
+    setList([])
+    setRefresh(!refresh)
+  }
 
   const destory = (id: number) => {
-    if (id === 0) {
-      return;
-    }
+    if (id === 0)
+      return
+
     confirm({
-      title: "操作确认",
+      title: '操作确认',
       icon: <ExclamationCircleFilled />,
-      content: "确认删除此试卷？",
+      content: '确认删除此试卷？',
       centered: true,
-      okText: "确认",
-      cancelText: "取消",
+      okText: '确认',
+      cancelText: '取消',
       onOk() {
-        if (loading) {
-          return;
-        }
-        setLoading(true);
+        if (loading)
+          return
+
+        setLoading(true)
         paper
           .destroy(id)
           .then(() => {
-            setLoading(false);
-            message.success("删除成功");
-            resetData();
+            setLoading(false)
+            message.success('删除成功')
+            resetData()
           })
           .catch((e) => {
-            setLoading(false);
-          });
+            setLoading(false)
+          })
       },
       onCancel() {
-        console.log("Cancel");
+        console.log('Cancel')
       },
-    });
-  };
+    })
+  }
 
   return (
-    <div className="meedu-main-body">
+    <div className="geekedu-main-body">
       <div className="float-left j-b-flex mb-30">
         <div className="d-flex">
           <PerButton
@@ -269,13 +282,13 @@ const PaperPage = () => {
             class=""
             icon={null}
             p="addons.Paper.paper.store"
-            onClick={() => navigate("/exam/paper/create")}
+            onClick={() => navigate('/exam/paper/create')}
             disabled={null}
           />
           <Button
             type="primary"
             className="ml-10"
-            onClick={() => navigate("/exam/paper/category/index")}
+            onClick={() => navigate('/exam/paper/category/index')}
           >
             分类管理
           </Button>
@@ -284,7 +297,7 @@ const PaperPage = () => {
           <Input
             value={keywords}
             onChange={(e) => {
-              setKeywords(e.target.value);
+              setKeywords(e.target.value)
             }}
             allowClear
             style={{ width: 150 }}
@@ -294,7 +307,7 @@ const PaperPage = () => {
             style={{ width: 150, marginLeft: 10 }}
             value={category_id}
             onChange={(e) => {
-              setCategoryId(e);
+              setCategoryId(e)
             }}
             allowClear
             placeholder="分类"
@@ -307,8 +320,8 @@ const PaperPage = () => {
             className="ml-10"
             type="primary"
             onClick={() => {
-              setPage(1);
-              setRefresh(!refresh);
+              setPage(1)
+              setRefresh(!refresh)
             }}
           >
             筛选
@@ -320,12 +333,12 @@ const PaperPage = () => {
           loading={loading}
           columns={columns}
           dataSource={list}
-          rowKey={(record) => record.id}
+          rowKey={record => record.id}
           pagination={paginationProps}
         />
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default PaperPage;
+export default PaperPage

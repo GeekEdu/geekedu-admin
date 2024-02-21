@@ -143,7 +143,7 @@ const BookCreatePage = () => {
   };
 
   return (
-    <div className="meedu-main-body">
+    <div className="geekedu-main-body">
       <BackBartment title="新建电子书" />
       <div className="float-left mt-30">
         <Form

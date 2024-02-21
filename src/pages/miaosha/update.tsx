@@ -103,7 +103,7 @@ const MiaoshaUpdatePage = () => {
   };
 
   return (
-    <div className="meedu-main-body">
+    <div className="geekedu-main-body">
       <BackBartment title="编辑秒杀活动" />
       {init && (
         <div className="float-left text-center mt-30">

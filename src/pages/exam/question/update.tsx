@@ -1,60 +1,60 @@
-import { useEffect, useState } from "react";
-import { Form, message, Button, Select, Space, Steps, Spin } from "antd";
-import { useNavigate, useLocation } from "react-router-dom";
-import { useDispatch } from "react-redux";
-import { titleAction } from "../../../store/user/loginUserSlice";
-import { PerButton, BackBartment } from "../../../components";
-import { question } from "../../../api/index";
-import { QChoice } from "./components/choice";
-import { QSelect } from "./components/select";
-import { QJudge } from "./components/judge";
-import { QInput } from "./components/input";
-import { QQa } from "./components/qa";
-import { QCap } from "./components/cap";
+import { useEffect, useState } from 'react'
+import { Button, Form, Select, Space, Spin, Steps, message } from 'antd'
+import { useLocation, useNavigate } from 'react-router-dom'
+import { useDispatch } from 'react-redux'
+import { titleAction } from '../../../store/user/loginUserSlice'
+import { BackBartment, PerButton } from '../../../components'
+import { question } from '../../../api/index'
+import { QChoice } from './components/choice'
+import { QSelect } from './components/select'
+import { QJudge } from './components/judge'
+import { QInput } from './components/input'
+import { QQa } from './components/qa'
+import { QCap } from './components/cap'
 
-const QuestionUpdatePage = () => {
-  const result = new URLSearchParams(useLocation().search);
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const [form] = Form.useForm();
-  const [init, setInit] = useState<boolean>(true);
-  const [loading, setLoading] = useState<boolean>(false);
-  const [current, setCurrent] = useState(0);
-  const [categories, setCategories] = useState<any>([]);
-  const [type, setType] = useState<any>([]);
-  const [levels, setLevels] = useState<any>([]);
-  const [formParams, setFormParams] = useState<any>({});
-  const [capList, setCapList] = useState<any>(null);
-  const [id, setId] = useState(Number(result.get("id")));
-
-  useEffect(() => {
-    document.title = "编辑试题";
-    dispatch(titleAction("编辑试题"));
-    initData();
-  }, [id]);
+function QuestionUpdatePage() {
+  const result = new URLSearchParams(useLocation().search)
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
+  const [form] = Form.useForm()
+  const [init, setInit] = useState<boolean>(true)
+  const [loading, setLoading] = useState<boolean>(false)
+  const [current, setCurrent] = useState(0)
+  const [categories, setCategories] = useState<any>([])
+  const [type, setType] = useState<any>([])
+  const [levels, setLevels] = useState<any>([])
+  const [formParams, setFormParams] = useState<any>({})
+  const [capList, setCapList] = useState<any>(null)
+  const [id, setId] = useState(Number(result.get('id')))
 
   useEffect(() => {
-    setId(Number(result.get("id")));
-  }, [result.get("id")]);
+    document.title = '编辑试题'
+    dispatch(titleAction('编辑试题'))
+    initData()
+  }, [id])
+
+  useEffect(() => {
+    setId(Number(result.get('id')))
+  }, [result.get('id')])
 
   const initData = async () => {
-    await getParams();
-    await getDetail();
-    setInit(false);
-  };
+    await getParams()
+    await getDetail()
+    setInit(false)
+  }
 
   const getDetail = async () => {
-    if (id === 0) {
-      return;
-    }
-    const res: any = await question.detail(id);
-    var data = res.data.data;
+    if (id === 0)
+      return
+
+    const res: any = await question.detail(id)
+    const data = res.data.data
     form.setFieldsValue({
       category_id: data.category_id,
       level: data.level,
-    });
-    setType(data.type);
-    setCurrent(1);
+    })
+    setType(data.type)
+    setCurrent(1)
     setFormParams({
       category_id: data.category_id,
       level: data.level,
@@ -73,139 +73,136 @@ const QuestionUpdatePage = () => {
       option9: data.option9,
       option10: data.option10,
       remark: data.remark,
-    });
-  };
+    })
+  }
 
   const getParams = async () => {
-    const res: any = await question.create();
-    let box1: any = [];
-    res.data.categories.length > 0 &&
-      res.data.categories.map((item: any) => {
-        box1.push({
-          label: item.name,
-          value: item.id,
-        });
-      });
-    setCategories(box1);
-    let box3: any = [];
-    res.data.levels.length > 0 &&
-      res.data.levels.map((item: any) => {
-        box3.push({
-          label: item.name,
-          value: item.id,
-        });
-      });
-    setLevels(box3);
-  };
+    const res: any = await question.create()
+    const box1: any = []
+    res.data.categories.length > 0
+    && res.data.categories.map((item: any) => {
+      box1.push({
+        label: item.name,
+        value: item.id,
+      })
+    })
+    setCategories(box1)
+    const box3: any = []
+    res.data.levels.length > 0
+    && res.data.levels.map((item: any) => {
+      box3.push({
+        label: item.name,
+        value: item.id,
+      })
+    })
+    setLevels(box3)
+  }
 
   const onFinish = (values: any) => {
-    if (loading) {
-      return;
-    }
-    setLoading(true);
-    let params = { ...formParams };
-    params.category_id = values.category_id;
-    params.level = values.level;
-    setFormParams(params);
-    setCurrent(current + 1);
-    setLoading(false);
-  };
+    if (loading)
+      return
+
+    setLoading(true)
+    const params = { ...formParams }
+    params.category_id = values.category_id
+    params.level = values.level
+    setFormParams(params)
+    setCurrent(current + 1)
+    setLoading(false)
+  }
 
   const onFinishFailed = (errorInfo: any) => {
-    console.log("Failed:", errorInfo);
-  };
+    console.log('Failed:', errorInfo)
+  }
 
   const save = () => {
-    if (loading) {
-      return;
-    }
+    if (loading)
+      return
+
     if (
-      (formParams.type === 1 || formParams.type === 2) &&
-      !formParams.option2
+      (formParams.type === 1 || formParams.type === 2)
+      && !formParams.option2
     ) {
-      message.error("至少得有两个选项");
-      return;
+      message.error('至少得有两个选项')
+      return
     }
     if (formParams.type === 6 && capList) {
-      let status = false;
+      let status = false
       capList.forEach((item: any, index: number) => {
-        let num = index + 1;
-        if (typeof item.score === "undefined" || item.score === null) {
-          message.error("请填写第" + num + "题子题分数");
-          status = true;
-          return;
+        const num = index + 1
+        if (typeof item.score === 'undefined' || item.score === null) {
+          message.error(`请填写第${num}题子题分数`)
+          status = true
         }
-      });
-      if (status) {
-        return;
-      }
+      })
+      if (status)
+        return
     }
     if (formParams.type === 6 && !formParams.score) {
-      message.warning("请至少添加一个子题");
-      return;
+      message.warning('请至少添加一个子题')
+      return
     }
     if (formParams.type === 3 && !formParams.score) {
-      message.warning("请填写每空分数");
-      return;
+      message.warning('请填写每空分数')
+      return
     }
     if (!formParams.score) {
-      message.warning("试题分数不能为空");
-      return;
+      message.warning('试题分数不能为空')
+      return
     }
     if (!formParams.content) {
-      message.warning("试题内容不能为空");
-      return;
+      message.warning('试题内容不能为空')
+      return
     }
     if (
-      (formParams.type === 1 ||
-        formParams.type === 3 ||
-        formParams.type === 5) &&
-      formParams.answer === null
+      (formParams.type === 1
+      || formParams.type === 3
+      || formParams.type === 5)
+      && formParams.answer === null
     ) {
-      message.warning("试题答案不能为空");
-      return;
+      message.warning('试题答案不能为空')
+      return
     }
 
     if (formParams.type === 2 && formParams.answer.length === 0) {
-      message.warning("试题答案不能为空");
-      return;
+      message.warning('试题答案不能为空')
+      return
     }
-    setLoading(true);
+    setLoading(true)
     question
       .update(id, formParams)
       .then((res: any) => {
-        setLoading(false);
-        message.success("保存成功！");
-        navigate(-1);
+        setLoading(false)
+        message.success('保存成功！')
+        navigate(-1)
       })
       .catch((e) => {
-        setLoading(false);
-      });
-  };
+        setLoading(false)
+      })
+  }
 
   const change = (question: any, list: any) => {
-    let obj = { ...formParams };
-    Object.assign(obj, question);
-    setFormParams(obj);
-    if (list) {
-      setCapList(list);
-    } else {
-      setCapList(null);
-    }
-  };
+    const obj = { ...formParams }
+    Object.assign(obj, question)
+    setFormParams(obj)
+    if (list)
+      setCapList(list)
+    else
+      setCapList(null)
+  }
 
   return (
-    <div className="meedu-main-body">
+    <div className="geekedu-main-body">
       <BackBartment title="编辑试题" />
       <div className="float-left step-box mb-30 mt-30">
         <Steps
           current={current}
           items={[
             {
-              title: "确认试题类型",
+              title: '确认试题类型',
             },
             {
-              title: "完善试题信息",
+              title: '完善试题信息',
             },
           ]}
         />
@@ -217,7 +214,7 @@ const QuestionUpdatePage = () => {
       )}
       <div
         className="float-left"
-        style={{ display: !init && current === 0 ? "block" : "none" }}
+        style={{ display: !init && current === 0 ? 'block' : 'none' }}
       >
         <Form
           form={form}
@@ -232,12 +229,12 @@ const QuestionUpdatePage = () => {
           <Form.Item
             label="所属分类"
             name="category_id"
-            rules={[{ required: true, message: "请选择分类!" }]}
+            rules={[{ required: true, message: '请选择分类!' }]}
           >
             <Space align="baseline" style={{ height: 32 }}>
               <Form.Item
                 name="category_id"
-                rules={[{ required: true, message: "请选择分类!" }]}
+                rules={[{ required: true, message: '请选择分类!' }]}
               >
                 <Select
                   style={{ width: 300 }}
@@ -254,7 +251,7 @@ const QuestionUpdatePage = () => {
                 icon={null}
                 p="addons.Paper.question_category.list"
                 onClick={() => {
-                  navigate("/exam/question/category/index");
+                  navigate('/exam/question/category/index')
                 }}
                 disabled={null}
               />
@@ -263,7 +260,7 @@ const QuestionUpdatePage = () => {
           <Form.Item
             label="试题难度"
             name="level"
-            rules={[{ required: true, message: "请选择试题难度!" }]}
+            rules={[{ required: true, message: '请选择试题难度!' }]}
           >
             <Select
               style={{ width: 300 }}
@@ -281,41 +278,47 @@ const QuestionUpdatePage = () => {
               question={formParams}
               index={null}
               onChange={(question: any, list: any) => change(question, list)}
-            ></QChoice>
+            >
+            </QChoice>
           )}
           {type === 2 && (
             <QSelect
               question={formParams}
               index={null}
               onChange={(question: any, list: any) => change(question, list)}
-            ></QSelect>
+            >
+            </QSelect>
           )}
           {type === 3 && (
             <QInput
               question={formParams}
               index={null}
               onChange={(question: any, list: any) => change(question, list)}
-            ></QInput>
+            >
+            </QInput>
           )}
           {type === 4 && (
             <QQa
               question={formParams}
               index={null}
               onChange={(question: any, list: any) => change(question, list)}
-            ></QQa>
+            >
+            </QQa>
           )}
           {type === 5 && (
             <QJudge
               question={formParams}
               index={null}
               onChange={(question: any, list: any) => change(question, list)}
-            ></QJudge>
+            >
+            </QJudge>
           )}
           {type === 6 && (
             <QCap
               question={formParams}
               onChange={(question: any, list: any) => change(question, list)}
-            ></QCap>
+            >
+            </QCap>
           )}
         </div>
       )}
@@ -346,7 +349,7 @@ const QuestionUpdatePage = () => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default QuestionUpdatePage;
+export default QuestionUpdatePage

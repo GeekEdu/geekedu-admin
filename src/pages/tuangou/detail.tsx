@@ -86,7 +86,7 @@ const TuangouTuanDetailPage = () => {
   ];
 
   return (
-    <div className="meedu-main-body">
+    <div className="geekedu-main-body">
       <BackBartment title="团列表详情" />
       <div className="float-left">
         <div className="float-left mt-30 mb-30">已支付团员：</div>

@@ -262,7 +262,7 @@ const OrderDetailPage = () => {
   };
 
   return (
-    <div className="meedu-main-body">
+    <div className="geekedu-main-body">
       <BackBartment title="订单详情" />
       
       {user && list.status !== 9 && (

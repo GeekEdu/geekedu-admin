@@ -75,7 +75,7 @@ const RoleUpdatePage = () => {
   };
 
   return (
-    <div className="meedu-main-body">
+    <div className="geekedu-main-body">
       <BackBartment title="编辑会员" />
       {init && (
         <div className="float-left text-center mt-30">

@@ -258,7 +258,7 @@ const CourseVideoPage = () => {
   };
 
   return (
-    <div className="meedu-main-body">
+    <div className="geekedu-main-body">
       <BackBartment title={title} />
       <div className="float-left mt-30">
         <PerButton

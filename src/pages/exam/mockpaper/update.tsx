@@ -1,61 +1,61 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState } from 'react'
 import {
+  Button,
   Form,
   Input,
-  message,
-  Button,
   Select,
   Space,
-  Switch,
   Spin,
-} from "antd";
-import { useNavigate, useLocation } from "react-router-dom";
-import { useDispatch } from "react-redux";
-import { mock } from "../../../api/index";
-import { titleAction } from "../../../store/user/loginUserSlice";
-import { HelperText, BackBartment } from "../../../components";
+  Switch,
+  message,
+} from 'antd'
+import { useLocation, useNavigate } from 'react-router-dom'
+import { useDispatch } from 'react-redux'
+import { mock } from '../../../api/index'
+import { titleAction } from '../../../store/user/loginUserSlice'
+import { BackBartment, HelperText } from '../../../components'
 
-const MockPaperUpdatePage = () => {
-  const result = new URLSearchParams(useLocation().search);
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const [form] = Form.useForm();
-  const [init, setInit] = useState<boolean>(true);
-  const [loading, setLoading] = useState<boolean>(false);
-  const [isFree, setIsFree] = useState(0);
-  const [isInvite, setIsInvite] = useState(0);
-  const [charge, setCharge] = useState(0);
-  const [category_ids, setCategoryIds] = useState<any>([]);
-  const [categories, setCategories] = useState<any>([]);
-  const [courses, setCourses] = useState<any>([]);
-  const [countMap, setCountMap] = useState<any>({});
-  const [id, setId] = useState(Number(result.get("id")));
-
-  useEffect(() => {
-    document.title = "编辑模拟试卷";
-    dispatch(titleAction("编辑模拟试卷"));
-    initData();
-  }, [id]);
+function MockPaperUpdatePage() {
+  const result = new URLSearchParams(useLocation().search)
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
+  const [form] = Form.useForm()
+  const [init, setInit] = useState<boolean>(true)
+  const [loading, setLoading] = useState<boolean>(false)
+  const [isFree, setIsFree] = useState(0)
+  const [isInvite, setIsInvite] = useState(0)
+  const [charge, setCharge] = useState(0)
+  const [category_ids, setCategoryIds] = useState<any>([])
+  const [categories, setCategories] = useState<any>([])
+  const [courses, setCourses] = useState<any>([])
+  const [countMap, setCountMap] = useState<any>({})
+  const [id, setId] = useState(Number(result.get('id')))
 
   useEffect(() => {
-    getParams();
-  }, [category_ids]);
+    document.title = '编辑模拟试卷'
+    dispatch(titleAction('编辑模拟试卷'))
+    initData()
+  }, [id])
 
   useEffect(() => {
-    setId(Number(result.get("id")));
-  }, [result.get("id")]);
+    getParams()
+  }, [category_ids])
+
+  useEffect(() => {
+    setId(Number(result.get('id')))
+  }, [result.get('id')])
 
   const initData = async () => {
-    await getDetail();
-    setInit(false);
-  };
+    await getDetail()
+    setInit(false)
+  }
 
   const getDetail = async () => {
-    if (id === 0) {
-      return;
-    }
-    const res: any = await mock.detail(id);
-    var data = res.data;
+    if (id === 0)
+      return
+
+    const res: any = await mock.detail(id)
+    const data = res.data
     form.setFieldsValue({
       category_id: data.category_id,
       title: data.title,
@@ -64,18 +64,19 @@ const MockPaperUpdatePage = () => {
       charge: data.charge,
       expired_minutes: data.expired_minutes,
       pass_score: data.pass_score,
-    });
-    setCharge(data.charge);
-    setIsInvite(data.is_invite);
+    })
+    setCharge(data.charge)
+    setIsInvite(data.is_invite)
     if (data.charge === 0) {
-      setIsFree(1);
-      form.setFieldsValue({ is_free: 1 });
-    } else {
-      setIsFree(0);
-      form.setFieldsValue({ is_free: 0 });
+      setIsFree(1)
+      form.setFieldsValue({ is_free: 1 })
     }
-    let rule = JSON.parse(data.rule);
-    setCategoryIds(rule.category_ids);
+    else {
+      setIsFree(0)
+      form.setFieldsValue({ is_free: 0 })
+    }
+    const rule = JSON.parse(data.rule)
+    setCategoryIds(rule.category_ids)
     form.setFieldsValue({
       category_ids: rule.category_ids,
       choice: Number(rule.num.choice),
@@ -84,127 +85,126 @@ const MockPaperUpdatePage = () => {
       input: Number(rule.num.input),
       qa: Number(rule.num.qa),
       cap: Number(rule.num.cap),
-    });
-  };
+    })
+  }
 
   const getParams = () => {
-    mock.create({ category_ids: category_ids }).then((res: any) => {
-      let categories = res.data.categories;
-      const box: any = [];
+    mock.create({ category_ids }).then((res: any) => {
+      const categories = res.data.categories
+      const box: any = []
       for (let i = 0; i < categories.length; i++) {
         box.push({
           label: categories[i].name,
           value: categories[i].id,
-        });
+        })
       }
-      setCategories(box);
-      let courses = res.data.question_categories;
-      const box2: any = [];
+      setCategories(box)
+      const courses = res.data.question_categories
+      const box2: any = []
       for (let i = 0; i < courses.length; i++) {
         box2.push({
           label: courses[i].name,
           value: courses[i].id,
-        });
+        })
       }
-      setCourses(box2);
-      setCountMap(res.data.count_map);
-    });
-  };
+      setCourses(box2)
+      setCountMap(res.data.count_map)
+    })
+  }
 
   const onFinish = (values: any) => {
-    if (loading) {
-      return;
-    }
+    if (loading)
+      return
+
     if (values.is_invite === 0 && values.is_free === 0 && !values.charge) {
-      message.error("价格不能为空");
-      return;
+      message.error('价格不能为空')
+      return
     }
     if (values.charge < 0) {
-      message.error("价格不能为负数");
-      return;
+      message.error('价格不能为负数')
+      return
     }
     if (
-      values.choice > 0 ||
-      values.select > 0 ||
-      values.input > 0 ||
-      values.qa > 0 ||
-      values.judge > 0 ||
-      values.cap > 0
+      values.choice > 0
+      || values.select > 0
+      || values.input > 0
+      || values.qa > 0
+      || values.judge > 0
+      || values.cap > 0
     ) {
       if (values.choice > countMap[1]) {
-        message.error("单选题数量超出可抽取单选题总量");
-        return;
+        message.error('单选题数量超出可抽取单选题总量')
+        return
       }
       if (values.select > countMap[2]) {
-        message.error("多选题数量超出可抽取多选题总量");
-        return;
+        message.error('多选题数量超出可抽取多选题总量')
+        return
       }
       if (values.input > countMap[3]) {
-        message.error("填空题数量超出可抽取填空题总量");
-        return;
+        message.error('填空题数量超出可抽取填空题总量')
+        return
       }
       if (values.qa > countMap[4]) {
-        message.error("问答题数量超出可抽取问答题总量");
-        return;
+        message.error('问答题数量超出可抽取问答题总量')
+        return
       }
       if (values.judge > countMap[5]) {
-        message.error("判断题数量超出可抽取判断题总量");
-        return;
+        message.error('判断题数量超出可抽取判断题总量')
+        return
       }
       if (values.cap > countMap[6]) {
-        message.error("题帽题数量超出可抽取题帽题总量");
-        return;
+        message.error('题帽题数量超出可抽取题帽题总量')
+        return
       }
       if (values.choice < 0) {
-        message.error("单选题数量不能为负数");
-        return;
+        message.error('单选题数量不能为负数')
+        return
       }
       if (values.select < 0) {
-        message.error("多选题数量不能为负数");
-        return;
+        message.error('多选题数量不能为负数')
+        return
       }
       if (values.input < 0) {
-        message.error("填空题数量不能为负数");
-        return;
+        message.error('填空题数量不能为负数')
+        return
       }
       if (values.qa < 0) {
-        message.error("问答题数量不能为负数");
-        return;
+        message.error('问答题数量不能为负数')
+        return
       }
       if (values.judge < 0) {
-        message.error("判断题数量不能为负数");
-        return;
+        message.error('判断题数量不能为负数')
+        return
       }
       if (values.cap < 0) {
-        message.error("题帽题数量不能为负数");
-        return;
+        message.error('题帽题数量不能为负数')
+        return
       }
       if (values.is_invite === 0 && values.is_free === 1) {
-        values.charge = 0;
-        setCharge(0);
+        values.charge = 0
+        setCharge(0)
       }
-      if (!values.choice) {
-        values.choice = 0;
-      }
-      if (!values.select) {
-        values.select = 0;
-      }
-      if (!values.judge) {
-        values.judge = 0;
-      }
-      if (!values.input) {
-        values.input = 0;
-      }
-      if (!values.qa) {
-        values.qa = 0;
-      }
-      if (!values.cap) {
-        values.cap = 0;
-      }
+      if (!values.choice)
+        values.choice = 0
+
+      if (!values.select)
+        values.select = 0
+
+      if (!values.judge)
+        values.judge = 0
+
+      if (!values.input)
+        values.input = 0
+
+      if (!values.qa)
+        values.qa = 0
+
+      if (!values.cap)
+        values.cap = 0
     }
-    setLoading(true);
-    let rule: any = {
-      category_ids: category_ids,
+    setLoading(true)
+    const rule: any = {
+      category_ids,
       num: {
         choice: values.choice,
         select: values.select,
@@ -213,8 +213,8 @@ const MockPaperUpdatePage = () => {
         judge: values.judge,
         cap: values.cap,
       },
-    };
-    let newRule = JSON.stringify(rule);
+    }
+    const newRule = JSON.stringify(rule)
     mock
       .update(id, {
         rule: newRule,
@@ -223,54 +223,55 @@ const MockPaperUpdatePage = () => {
         is_vip_free: values.is_vip_free,
         expired_minutes: values.expired_minutes,
         is_invite: values.is_invite,
-        charge: charge,
+        charge,
         category_id: values.category_id,
       })
       .then((res: any) => {
-        setLoading(false);
-        message.success("保存成功！");
-        navigate(-1);
+        setLoading(false)
+        message.success('保存成功！')
+        navigate(-1)
       })
       .catch((e) => {
-        setLoading(false);
-      });
-  };
+        setLoading(false)
+      })
+  }
 
   const onFinishFailed = (errorInfo: any) => {
-    console.log("Failed:", errorInfo);
-  };
+    console.log('Failed:', errorInfo)
+  }
 
   const onInviteSwitch = (checked: boolean) => {
     if (checked) {
-      form.setFieldsValue({ is_invite: 1 });
-      setIsInvite(1);
-    } else {
-      form.setFieldsValue({ is_invite: 0 });
-      setIsInvite(0);
+      form.setFieldsValue({ is_invite: 1 })
+      setIsInvite(1)
     }
-  };
+    else {
+      form.setFieldsValue({ is_invite: 0 })
+      setIsInvite(0)
+    }
+  }
 
   const onFreeSwitch = (checked: boolean) => {
     if (checked) {
-      form.setFieldsValue({ is_free: 1, charge: 0 });
-      setCharge(0);
-      setIsFree(1);
-    } else {
-      form.setFieldsValue({ is_free: 0 });
-      setIsFree(0);
+      form.setFieldsValue({ is_free: 1, charge: 0 })
+      setCharge(0)
+      setIsFree(1)
     }
-  };
+    else {
+      form.setFieldsValue({ is_free: 0 })
+      setIsFree(0)
+    }
+  }
 
   const onVipSwitch = (checked: boolean) => {
-    if (checked) {
-      form.setFieldsValue({ is_vip_free: 1 });
-    } else {
-      form.setFieldsValue({ is_vip_free: 0 });
-    }
-  };
+    if (checked)
+      form.setFieldsValue({ is_vip_free: 1 })
+    else
+      form.setFieldsValue({ is_vip_free: 0 })
+  }
 
   return (
-    <div className="meedu-main-body">
+    <div className="geekedu-main-body">
       <BackBartment title="编辑模拟试卷" />
       {init && (
         <div className="float-left text-center mt-30">
@@ -278,7 +279,7 @@ const MockPaperUpdatePage = () => {
         </div>
       )}
       <div
-        style={{ display: init ? "none" : "block" }}
+        style={{ display: init ? 'none' : 'block' }}
         className="float-left mt-30"
       >
         <Form
@@ -294,7 +295,7 @@ const MockPaperUpdatePage = () => {
           <Form.Item
             label="标题"
             name="title"
-            rules={[{ required: true, message: "请输入试卷标题!" }]}
+            rules={[{ required: true, message: '请输入试卷标题!' }]}
           >
             <Input
               style={{ width: 300 }}
@@ -305,12 +306,12 @@ const MockPaperUpdatePage = () => {
           <Form.Item
             label="分类"
             name="category_id"
-            rules={[{ required: true, message: "请选择分类!" }]}
+            rules={[{ required: true, message: '请选择分类!' }]}
           >
             <Space align="baseline" style={{ height: 32 }}>
               <Form.Item
                 name="category_id"
-                rules={[{ required: true, message: "请选择分类!" }]}
+                rules={[{ required: true, message: '请选择分类!' }]}
               >
                 <Select
                   style={{ width: 300 }}
@@ -323,7 +324,7 @@ const MockPaperUpdatePage = () => {
                 type="link"
                 className="c-primary"
                 onClick={() => {
-                  navigate("/exam/paper/category/index");
+                  navigate('/exam/paper/category/index')
                 }}
               >
                 分类管理
@@ -333,7 +334,7 @@ const MockPaperUpdatePage = () => {
           <Form.Item
             label="时间"
             name="expired_minutes"
-            rules={[{ required: true, message: "请输入时间!" }]}
+            rules={[{ required: true, message: '请输入时间!' }]}
           >
             <Input
               type="number"
@@ -345,7 +346,7 @@ const MockPaperUpdatePage = () => {
           <Form.Item
             label="及格分"
             name="pass_score"
-            rules={[{ required: true, message: "请输入及格分!" }]}
+            rules={[{ required: true, message: '请输入及格分!' }]}
           >
             <Input
               type="number"
@@ -380,16 +381,16 @@ const MockPaperUpdatePage = () => {
             <Form.Item
               label="价格"
               name="charge"
-              rules={[{ required: true, message: "请输入价格!" }]}
+              rules={[{ required: true, message: '请输入价格!' }]}
             >
               <Space align="baseline" style={{ height: 32 }}>
                 <Form.Item
                   name="charge"
-                  rules={[{ required: true, message: "请输入价格!" }]}
+                  rules={[{ required: true, message: '请输入价格!' }]}
                 >
                   <Input
                     onChange={(e) => {
-                      setCharge(Number(e.target.value));
+                      setCharge(Number(e.target.value))
                     }}
                     type="number"
                     style={{ width: 300 }}
@@ -418,7 +419,7 @@ const MockPaperUpdatePage = () => {
           <Form.Item
             label="试题随机范围"
             name="category_ids"
-            rules={[{ required: true, message: "请选择试题范围!" }]}
+            rules={[{ required: true, message: '请选择试题范围!' }]}
           >
             <Select
               style={{ width: 300 }}
@@ -427,7 +428,7 @@ const MockPaperUpdatePage = () => {
               placeholder="请选择范围"
               options={courses}
               onChange={(e) => {
-                setCategoryIds(e);
+                setCategoryIds(e)
               }}
             />
           </Form.Item>
@@ -444,7 +445,11 @@ const MockPaperUpdatePage = () => {
                     />
                   </Form.Item>
                   <div className="ml-10">
-                    <span>（共{countMap[1]}题）</span>
+                    <span>
+                      （共
+                      {countMap[1]}
+                      题）
+                    </span>
                   </div>
                   <div className="ml-10">
                     <HelperText text="每次考试抽出的单选题数量"></HelperText>
@@ -462,7 +467,11 @@ const MockPaperUpdatePage = () => {
                     />
                   </Form.Item>
                   <div className="ml-10">
-                    <span>（共{countMap[2]}题）</span>
+                    <span>
+                      （共
+                      {countMap[2]}
+                      题）
+                    </span>
                   </div>
                   <div className="ml-10">
                     <HelperText text="每次考试抽出的多选题数量"></HelperText>
@@ -480,7 +489,11 @@ const MockPaperUpdatePage = () => {
                     />
                   </Form.Item>
                   <div className="ml-10">
-                    <span>（共{countMap[5]}题）</span>
+                    <span>
+                      （共
+                      {countMap[5]}
+                      题）
+                    </span>
                   </div>
                   <div className="ml-10">
                     <HelperText text="每次考试抽出的判断题数量"></HelperText>
@@ -498,7 +511,11 @@ const MockPaperUpdatePage = () => {
                     />
                   </Form.Item>
                   <div className="ml-10">
-                    <span>（共{countMap[3]}题）</span>
+                    <span>
+                      （共
+                      {countMap[3]}
+                      题）
+                    </span>
                   </div>
                   <div className="ml-10">
                     <HelperText text="每次考试抽出填空题数量"></HelperText>
@@ -516,7 +533,11 @@ const MockPaperUpdatePage = () => {
                     />
                   </Form.Item>
                   <div className="ml-10">
-                    <span>（共{countMap[4]}题）</span>
+                    <span>
+                      （共
+                      {countMap[4]}
+                      题）
+                    </span>
                   </div>
                   <div className="ml-10">
                     <HelperText text="每次考试抽出问答题数量"></HelperText>
@@ -534,7 +555,11 @@ const MockPaperUpdatePage = () => {
                     />
                   </Form.Item>
                   <div className="ml-10">
-                    <span>（共{countMap[6]}题）</span>
+                    <span>
+                      （共
+                      {countMap[6]}
+                      题）
+                    </span>
                   </div>
                   <div className="ml-10">
                     <HelperText text="每次考试抽出题帽题数量"></HelperText>
@@ -564,7 +589,7 @@ const MockPaperUpdatePage = () => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default MockPaperUpdatePage;
+export default MockPaperUpdatePage

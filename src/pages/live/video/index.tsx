@@ -281,7 +281,7 @@ const LiveVideoPage = () => {
   };
 
   return (
-    <div className="meedu-main-body">
+    <div className="geekedu-main-body">
       <BackBartment title={title} />
       <div className="float-left mb-30 mt-30">
         <PerButton

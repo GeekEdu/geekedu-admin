@@ -67,7 +67,7 @@ const WechatCreatePage = () => {
 
 
   return (
-    <div className="meedu-main-body">
+    <div className="geekedu-main-body">
       <BackBartment title="新建自动回复" />
       <div className="float-left mt-30">
         <Form

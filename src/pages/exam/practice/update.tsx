@@ -1,131 +1,131 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState } from 'react'
 import {
+  Button,
   Form,
   Input,
-  message,
-  Button,
   Select,
   Space,
-  Switch,
   Spin,
-} from "antd";
-import { useNavigate, useLocation } from "react-router-dom";
-import { useDispatch } from "react-redux";
-import { practice } from "../../../api/index";
-import { titleAction } from "../../../store/user/loginUserSlice";
-import { HelperText, BackBartment } from "../../../components";
+  Switch,
+  message,
+} from 'antd'
+import { useLocation, useNavigate } from 'react-router-dom'
+import { useDispatch } from 'react-redux'
+import { practice } from '../../../api/index'
+import { titleAction } from '../../../store/user/loginUserSlice'
+import { BackBartment, HelperText } from '../../../components'
 
-const PracticeUpdatePage = () => {
-  const result = new URLSearchParams(useLocation().search);
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const [form] = Form.useForm();
-  const [init, setInit] = useState<boolean>(true);
-  const [loading, setLoading] = useState<boolean>(false);
-  const [categories, setCategories] = useState<any>([]);
-  const [charge, setCharge] = useState(0);
-  const [isFree, setIsFree] = useState(0);
-  const [id, setId] = useState(Number(result.get("id")));
-
-  useEffect(() => {
-    document.title = "编辑练习";
-    dispatch(titleAction("编辑练习"));
-    initData();
-  }, [id]);
+function PracticeUpdatePage() {
+  const result = new URLSearchParams(useLocation().search)
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
+  const [form] = Form.useForm()
+  const [init, setInit] = useState<boolean>(true)
+  const [loading, setLoading] = useState<boolean>(false)
+  const [categories, setCategories] = useState<any>([])
+  const [charge, setCharge] = useState(0)
+  const [isFree, setIsFree] = useState(0)
+  const [id, setId] = useState(Number(result.get('id')))
 
   useEffect(() => {
-    setId(Number(result.get("id")));
-  }, [result.get("id")]);
+    document.title = '编辑练习'
+    dispatch(titleAction('编辑练习'))
+    initData()
+  }, [id])
+
+  useEffect(() => {
+    setId(Number(result.get('id')))
+  }, [result.get('id')])
 
   const initData = async () => {
-    await getParams();
-    await getDetail();
-    setInit(false);
-  };
+    await getParams()
+    await getDetail()
+    setInit(false)
+  }
 
   const getDetail = async () => {
-    if (id === 0) {
-      return;
-    }
-    const res: any = await practice.detail(id);
-    var data = res.data.data;
+    if (id === 0)
+      return
+
+    const res: any = await practice.detail(id)
+    const data = res.data.data
     form.setFieldsValue({
       category_id: data.category_id,
       name: data.name,
       is_free: data.is_free,
       is_vip_free: data.is_vip_free,
       charge: data.charge,
-    });
-    setCharge(data.charge);
-    setIsFree(data.is_free);
-  };
+    })
+    setCharge(data.charge)
+    setIsFree(data.is_free)
+  }
 
   const getParams = async () => {
-    const res: any = await practice.create();
-    let categories = res.data.categories;
-    const box: any = [];
+    const res: any = await practice.create()
+    const categories = res.data.categories
+    const box: any = []
     for (let i = 0; i < categories.length; i++) {
       box.push({
         label: categories[i].name,
         value: categories[i].id,
-      });
+      })
     }
-    setCategories(box);
-  };
+    setCategories(box)
+  }
 
   const onFinish = (values: any) => {
-    if (loading) {
-      return;
-    }
-    if (values.is_free === 1) {
-      values.charge = 0;
-    }
+    if (loading)
+      return
+
+    if (values.is_free === 1)
+      values.charge = 0
+
     if (Number(values.charge) % 1 !== 0) {
-      message.error("价格必须为整数型");
-      return;
+      message.error('价格必须为整数型')
+      return
     }
     if (values.is_free === 0 && Number(values.charge) <= 0) {
-      message.error("练习未设置免费时价格应该大于0");
-      return;
+      message.error('练习未设置免费时价格应该大于0')
+      return
     }
-    setLoading(true);
+    setLoading(true)
     practice
       .update(id, values)
       .then((res: any) => {
-        setLoading(false);
-        message.success("保存成功！");
-        navigate(-1);
+        setLoading(false)
+        message.success('保存成功！')
+        navigate(-1)
       })
       .catch((e) => {
-        setLoading(false);
-      });
-  };
+        setLoading(false)
+      })
+  }
 
   const onFinishFailed = (errorInfo: any) => {
-    console.log("Failed:", errorInfo);
-  };
+    console.log('Failed:', errorInfo)
+  }
 
   const onSwitch = (checked: boolean) => {
-    if (checked) {
-      form.setFieldsValue({ is_vip_free: 1 });
-    } else {
-      form.setFieldsValue({ is_vip_free: 0 });
-    }
-  };
+    if (checked)
+      form.setFieldsValue({ is_vip_free: 1 })
+    else
+      form.setFieldsValue({ is_vip_free: 0 })
+  }
 
   const onFreeSwitch = (checked: boolean) => {
     if (checked) {
-      form.setFieldsValue({ is_free: 1, is_vip_free: 0 });
-      setIsFree(1);
-      setCharge(0);
-    } else {
-      form.setFieldsValue({ is_free: 0 });
-      setIsFree(0);
+      form.setFieldsValue({ is_free: 1, is_vip_free: 0 })
+      setIsFree(1)
+      setCharge(0)
     }
-  };
+    else {
+      form.setFieldsValue({ is_free: 0 })
+      setIsFree(0)
+    }
+  }
 
   return (
-    <div className="meedu-main-body">
+    <div className="geekedu-main-body">
       <BackBartment title="编辑练习" />
       {init && (
         <div className="float-left text-center mt-30">
@@ -133,7 +133,7 @@ const PracticeUpdatePage = () => {
         </div>
       )}
       <div
-        style={{ display: init ? "none" : "block" }}
+        style={{ display: init ? 'none' : 'block' }}
         className="float-left mt-30"
       >
         <Form
@@ -149,12 +149,12 @@ const PracticeUpdatePage = () => {
           <Form.Item
             label="分类"
             name="category_id"
-            rules={[{ required: true, message: "请选择分类!" }]}
+            rules={[{ required: true, message: '请选择分类!' }]}
           >
             <Space align="baseline" style={{ height: 32 }}>
               <Form.Item
                 name="category_id"
-                rules={[{ required: true, message: "请选择分类!" }]}
+                rules={[{ required: true, message: '请选择分类!' }]}
               >
                 <Select
                   style={{ width: 300 }}
@@ -167,7 +167,7 @@ const PracticeUpdatePage = () => {
                 type="link"
                 className="c-primary"
                 onClick={() => {
-                  navigate("/exam/paper/category/index");
+                  navigate('/exam/paper/category/index')
                 }}
               >
                 分类管理
@@ -177,7 +177,7 @@ const PracticeUpdatePage = () => {
           <Form.Item
             label="练习名"
             name="name"
-            rules={[{ required: true, message: "请输入练习名!" }]}
+            rules={[{ required: true, message: '请输入练习名!' }]}
           >
             <Input
               style={{ width: 300 }}
@@ -199,12 +199,12 @@ const PracticeUpdatePage = () => {
             <Form.Item
               label="价格"
               name="charge"
-              rules={[{ required: true, message: "请输入价格!" }]}
+              rules={[{ required: true, message: '请输入价格!' }]}
             >
               <Space align="baseline" style={{ height: 32 }}>
                 <Form.Item
                   name="charge"
-                  rules={[{ required: true, message: "请输入价格!" }]}
+                  rules={[{ required: true, message: '请输入价格!' }]}
                 >
                   <Input
                     type="number"
@@ -212,7 +212,7 @@ const PracticeUpdatePage = () => {
                     placeholder="单位：元"
                     allowClear
                     onChange={(e) => {
-                      setCharge(Number(e.target.value));
+                      setCharge(Number(e.target.value))
                     }}
                   />
                 </Form.Item>
@@ -255,7 +255,7 @@ const PracticeUpdatePage = () => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default PracticeUpdatePage;
+export default PracticeUpdatePage

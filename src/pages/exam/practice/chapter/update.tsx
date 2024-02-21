@@ -1,70 +1,69 @@
-import { useEffect, useState } from "react";
-import { Form, Input, message, Button, Space } from "antd";
-import { useNavigate, useLocation } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import { practice } from "../../../../api/index";
-import { titleAction } from "../../../../store/user/loginUserSlice";
-import { BackBartment, HelperText } from "../../../../components";
+import { useEffect, useState } from 'react'
+import { Button, Form, Input, Space, message } from 'antd'
+import { useLocation, useNavigate } from 'react-router-dom'
+import { useDispatch, useSelector } from 'react-redux'
+import { practice } from '../../../../api/index'
+import { titleAction } from '../../../../store/user/loginUserSlice'
+import { BackBartment, HelperText } from '../../../../components'
 
-const PracticeChapterUpdatePage = () => {
-  const result = new URLSearchParams(useLocation().search);
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const [form] = Form.useForm();
-  const [loading, setLoading] = useState<boolean>(false);
-  const [id, setId] = useState(Number(result.get("id")));
-  const [pid, setPid] = useState(Number(result.get("pid")));
-
-  useEffect(() => {
-    document.title = "编辑练习章节";
-    dispatch(titleAction("编辑练习章节"));
-  }, []);
+function PracticeChapterUpdatePage() {
+  const result = new URLSearchParams(useLocation().search)
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
+  const [form] = Form.useForm()
+  const [loading, setLoading] = useState<boolean>(false)
+  const [id, setId] = useState(Number(result.get('id')))
+  const [pid, setPid] = useState(Number(result.get('pid')))
 
   useEffect(() => {
-    setId(Number(result.get("id")));
-    setPid(Number(result.get("pid")));
-    if (result.get("id")) {
-      getDetail();
-    }
-  }, [result.get("id"), result.get("pid")]);
+    document.title = '编辑练习章节'
+    dispatch(titleAction('编辑练习章节'))
+  }, [])
+
+  useEffect(() => {
+    setId(Number(result.get('id')))
+    setPid(Number(result.get('pid')))
+    if (result.get('id'))
+      getDetail()
+  }, [result.get('id'), result.get('pid')])
 
   const getDetail = () => {
-    if (id === 0) {
-      return;
-    }
+    if (id === 0)
+      return
+
     practice.chaptersDetail(id).then((res: any) => {
-      var data = res.data.data;
+      const data = res.data.data
       form.setFieldsValue({
         name: data.name,
         sort: data.sort,
-      });
-    });
-  };
+      })
+    })
+  }
 
   const onFinish = (values: any) => {
-    if (loading) {
-      return;
-    }
-    setLoading(true);
-    values.pid = pid;
+    if (loading)
+      return
+
+    setLoading(true)
+    values.pid = pid
     practice
       .chaptersUpdate(id, values)
       .then((res: any) => {
-        setLoading(false);
-        message.success("保存成功！");
-        navigate(-1);
+        setLoading(false)
+        message.success('保存成功！')
+        navigate(-1)
       })
       .catch((e) => {
-        setLoading(false);
-      });
-  };
+        setLoading(false)
+      })
+  }
 
   const onFinishFailed = (errorInfo: any) => {
-    console.log("Failed:", errorInfo);
-  };
+    console.log('Failed:', errorInfo)
+  }
 
   return (
-    <div className="meedu-main-body">
+    <div className="geekedu-main-body">
       <BackBartment title="编辑练习章节" />
       <div className="float-left mt-30">
         <Form
@@ -80,7 +79,7 @@ const PracticeChapterUpdatePage = () => {
           <Form.Item
             label="章节名"
             name="name"
-            rules={[{ required: true, message: "请输入章节名!" }]}
+            rules={[{ required: true, message: '请输入章节名!' }]}
           >
             <Input
               style={{ width: 300 }}
@@ -124,7 +123,7 @@ const PracticeChapterUpdatePage = () => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default PracticeChapterUpdatePage;
+export default PracticeChapterUpdatePage

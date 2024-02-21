@@ -209,7 +209,7 @@ const CertificateUsersPage = () => {
   };
 
   return (
-    <div className="meedu-main-body">
+    <div className="geekedu-main-body">
       <BackBartment title="证书授予学员" />
       <UserImportDialog
         open={importDialog}

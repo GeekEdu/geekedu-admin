@@ -1,188 +1,188 @@
-import { useState, useEffect } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useEffect, useState } from 'react'
+import { useLocation, useNavigate } from 'react-router-dom'
 import {
   Button,
-  Input,
-  message,
-  Form,
-  Tabs,
-  Switch,
-  Space,
-  Select,
-  Modal,
-  Row,
   Col,
   DatePicker,
-} from "antd";
-import { useDispatch, useSelector } from "react-redux";
-import { live } from "../../api/index";
-import { titleAction } from "../../store/user/loginUserSlice";
+  Form,
+  Input,
+  Modal,
+  Row,
+  Select,
+  Space,
+  Switch,
+  Tabs,
+  message,
+} from 'antd'
+import { useDispatch, useSelector } from 'react-redux'
+import moment from 'moment'
+import { live } from '../../api/index'
+import { titleAction } from '../../store/user/loginUserSlice'
 import {
   BackBartment,
-  UploadImageButton,
   HelperText,
-  QuillEditor,
   PerButton,
-} from "../../components";
-import moment from "moment";
+  QuillEditor,
+  UploadImageButton,
+} from '../../components'
 
-const LiveCreatePage = () => {
-  const [form] = Form.useForm();
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const [loading, setLoading] = useState<boolean>(false);
-  const [resourceActive, setResourceActive] = useState<string>("base");
-  const [categories, setCategories] = useState<any>([]);
-  const [teachers, setTeachers] = useState<any>([]);
-  const [assistants, setAssistants] = useState<any>([]);
-  const [isFree, setIsFree] = useState(0);
-  const [visiable, setVisiable] = useState<boolean>(false);
-  const [thumb, setThumb] = useState<string>("");
-  const [poster, setPoster] = useState<string>("");
+function LiveCreatePage() {
+  const [form] = Form.useForm()
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
+  const [loading, setLoading] = useState<boolean>(false)
+  const [resourceActive, setResourceActive] = useState<string>('base')
+  const [categories, setCategories] = useState<any>([])
+  const [teachers, setTeachers] = useState<any>([])
+  const [assistants, setAssistants] = useState<any>([])
+  const [isFree, setIsFree] = useState(0)
+  const [visiable, setVisiable] = useState<boolean>(false)
+  const [thumb, setThumb] = useState<string>('')
+  const [poster, setPoster] = useState<string>('')
   const types = [
     {
-      key: "base",
-      label: "基础信息",
+      key: 'base',
+      label: '基础信息',
     },
     {
-      key: "dev",
-      label: "可选信息",
+      key: 'dev',
+      label: '可选信息',
     },
-  ];
+  ]
 
   useEffect(() => {
-    document.title = "新建直播课程";
-    dispatch(titleAction("新建直播课程"));
-    form.setFieldsValue({ is_show: 1, vip_can_view: 0 });
-    setIsFree(0);
-    setVisiable(false);
-    getParams();
-  }, []);
+    document.title = '新建直播课程'
+    dispatch(titleAction('新建直播课程'))
+    form.setFieldsValue({ is_show: 1, vip_can_view: 0 })
+    setIsFree(0)
+    setVisiable(false)
+    getParams()
+  }, [])
 
   const getParams = () => {
     live.create().then((res: any) => {
-      let categories = res.data.categories;
-      const box: any = [];
+      const categories = res.data.categories
+      const box: any = []
       for (let i = 0; i < categories.length; i++) {
         if (categories[i].children.length > 0) {
           box.push({
             label: categories[i].name,
             value: categories[i].id,
-          });
-          let children = categories[i].children;
+          })
+          const children = categories[i].children
           for (let j = 0; j < children.length; j++) {
-            children[j].name = "|----" + children[j].name;
+            children[j].name = `|----${children[j].name}`
             box.push({
               label: children[j].name,
               value: children[j].id,
-            });
+            })
           }
-        } else {
+        }
+        else {
           box.push({
             label: categories[i].name,
             value: categories[i].id,
-          });
+          })
         }
       }
-      setCategories(box);
-      let assistants = res.data.teachers.assistant;
-      const box2: any = [];
+      setCategories(box)
+      const assistants = res.data.teachers.assistant
+      const box2: any = []
       for (let i = 0; i < assistants.length; i++) {
         box2.push({
           label: assistants[i].name,
           value: assistants[i].id,
-        });
+        })
       }
-      setAssistants(box2);
-      let teachers = res.data.teachers.teacher;
-      const box3: any = [];
+      setAssistants(box2)
+      const teachers = res.data.teachers.teacher
+      const box3: any = []
       for (let i = 0; i < teachers.length; i++) {
         box3.push({
           label: teachers[i].name,
           value: teachers[i].id,
-        });
+        })
       }
-      setTeachers(box3);
-    });
-  };
+      setTeachers(box3)
+    })
+  }
 
   const onChange = (key: string) => {
-    setResourceActive(key);
-  };
+    setResourceActive(key)
+  }
 
   const onFinish = (values: any) => {
-    if (loading) {
-      return;
-    }
-    if (values.charge == 0) {
-      values.vip_can_view = 0;
-    }
-    values.render_desc = values.original_desc;
+    if (loading)
+      return
+
+    if (values.charge == 0)
+      values.vip_can_view = 0
+
+    values.render_desc = values.original_desc
     values.published_at = moment(new Date(values.published_at)).format(
-      "YYYY-MM-DD HH:mm"
-    );
-    setLoading(true);
+      'YYYY-MM-DD HH:mm',
+    )
+    setLoading(true)
     live
       .store(values)
       .then((res: any) => {
-        setLoading(false);
-        setVisiable(true);
+        setLoading(false)
+        setVisiable(true)
       })
       .catch((e) => {
-        setLoading(false);
-      });
-  };
+        setLoading(false)
+      })
+  }
 
   const onFinishFailed = (errorInfo: any) => {
-    console.log("Failed:", errorInfo);
-  };
+    console.log('Failed:', errorInfo)
+  }
 
   const goVideo = () => {
     live
       .list({
         page: 1,
         size: 1,
-        sort: "id",
-        order: "desc",
+        sort: 'id',
+        order: 'desc',
       })
       .then((res: any) => {
         navigate(
-          "/live/course/video/index?id=" +
-            res.data.data.data[0].id +
-            "&title=" +
-            res.data.data.data[0].title,
-          { replace: true }
-        );
-      });
-  };
+          `/live/course/video/index?id=${
+          res.data.data.data[0].id
+             }&title=${
+             res.data.data.data[0].title}`,
+          { replace: true },
+        )
+      })
+  }
 
   const isFreeChange = (checked: boolean) => {
     if (checked) {
-      form.setFieldsValue({ charge: 0, vip_can_view: 0 });
-      setIsFree(1);
-    } else {
-      setIsFree(0);
+      form.setFieldsValue({ charge: 0, vip_can_view: 0 })
+      setIsFree(1)
     }
-  };
+    else {
+      setIsFree(0)
+    }
+  }
 
   const onSwitch = (checked: boolean) => {
-    if (checked) {
-      form.setFieldsValue({ is_show: 1 });
-    } else {
-      form.setFieldsValue({ is_show: 0 });
-    }
-  };
+    if (checked)
+      form.setFieldsValue({ is_show: 1 })
+    else
+      form.setFieldsValue({ is_show: 0 })
+  }
 
   const onVipChange = (checked: boolean) => {
-    if (checked) {
-      form.setFieldsValue({ vip_can_view: 1 });
-    } else {
-      form.setFieldsValue({ vip_can_view: 0 });
-    }
-  };
+    if (checked)
+      form.setFieldsValue({ vip_can_view: 1 })
+    else
+      form.setFieldsValue({ vip_can_view: 0 })
+  }
 
   return (
-    <div className="meedu-main-body">
+    <div className="geekedu-main-body">
       <BackBartment title="新建直播课程" />
       <div className="center-tabs mb-30">
         <Tabs
@@ -203,17 +203,17 @@ const LiveCreatePage = () => {
           autoComplete="off"
         >
           <div
-            style={{ display: resourceActive === "base" ? "block" : "none" }}
+            style={{ display: resourceActive === 'base' ? 'block' : 'none' }}
           >
             <Form.Item
               label="所属分类"
               name="category_id"
-              rules={[{ required: true, message: "请选择所属分类!" }]}
+              rules={[{ required: true, message: '请选择所属分类!' }]}
             >
               <Space align="baseline" style={{ height: 32 }}>
                 <Form.Item
                   name="category_id"
-                  rules={[{ required: true, message: "请选择所属分类!" }]}
+                  rules={[{ required: true, message: '请选择所属分类!' }]}
                 >
                   <Select
                     style={{ width: 300 }}
@@ -230,7 +230,7 @@ const LiveCreatePage = () => {
                     icon={null}
                     p="addons.Zhibo.course_category.list"
                     onClick={() => {
-                      navigate("/live/course/category/index");
+                      navigate('/live/course/category/index')
                     }}
                     disabled={null}
                   />
@@ -240,12 +240,12 @@ const LiveCreatePage = () => {
             <Form.Item
               label="讲师"
               name="teacher_id"
-              rules={[{ required: true, message: "请选择讲师!" }]}
+              rules={[{ required: true, message: '请选择讲师!' }]}
             >
               <Space align="baseline" style={{ height: 32 }}>
                 <Form.Item
                   name="teacher_id"
-                  rules={[{ required: true, message: "请选择讲师!" }]}
+                  rules={[{ required: true, message: '请选择讲师!' }]}
                 >
                   <Select
                     style={{ width: 300 }}
@@ -262,7 +262,7 @@ const LiveCreatePage = () => {
                     icon={null}
                     p="addons.Zhibo.teacher.list"
                     onClick={() => {
-                      navigate("/live/teacher/index");
+                      navigate('/live/teacher/index')
                     }}
                     disabled={null}
                   />
@@ -287,7 +287,7 @@ const LiveCreatePage = () => {
             <Form.Item
               label="课程名"
               name="title"
-              rules={[{ required: true, message: "请输入课程名!" }]}
+              rules={[{ required: true, message: '请输入课程名!' }]}
             >
               <Input
                 style={{ width: 300 }}
@@ -298,20 +298,21 @@ const LiveCreatePage = () => {
             <Form.Item
               label="课程封面"
               name="thumb"
-              rules={[{ required: true, message: "请上传课程封面!" }]}
+              rules={[{ required: true, message: '请上传课程封面!' }]}
             >
               <Space align="baseline" style={{ height: 32 }}>
                 <Form.Item
                   name="thumb"
-                  rules={[{ required: true, message: "请上传课程封面!" }]}
+                  rules={[{ required: true, message: '请上传课程封面!' }]}
                 >
                   <UploadImageButton
                     text="选择图片"
                     onSelected={(url) => {
-                      form.setFieldsValue({ thumb: url });
-                      setThumb(url);
+                      form.setFieldsValue({ thumb: url })
+                      setThumb(url)
                     }}
-                  ></UploadImageButton>
+                  >
+                  </UploadImageButton>
                 </Form.Item>
                 <div className="ml-10">
                   <HelperText text="推荐尺寸400x300 宽高比4:3"></HelperText>
@@ -329,23 +330,24 @@ const LiveCreatePage = () => {
                       width: 200,
                       height: 150,
                     }}
-                  ></div>
+                  >
+                  </div>
                 </Col>
               </Row>
             )}
             <Form.Item label="免费">
               <Switch onChange={isFreeChange} />
             </Form.Item>
-            <div style={{ display: isFree === 0 ? "block" : "none" }}>
+            <div style={{ display: isFree === 0 ? 'block' : 'none' }}>
               <Form.Item
                 label="价格"
                 name="charge"
-                rules={[{ required: true, message: "请输入价格!" }]}
+                rules={[{ required: true, message: '请输入价格!' }]}
               >
                 <Space align="baseline" style={{ height: 32 }}>
                   <Form.Item
                     name="charge"
-                    rules={[{ required: true, message: "请输入价格!" }]}
+                    rules={[{ required: true, message: '请输入价格!' }]}
                   >
                     <Input
                       style={{ width: 300 }}
@@ -363,7 +365,7 @@ const LiveCreatePage = () => {
             <Form.Item
               label="上架时间"
               name="published_at"
-              rules={[{ required: true, message: "请选择上架时间!" }]}
+              rules={[{ required: true, message: '请选择上架时间!' }]}
             >
               <DatePicker
                 format="YYYY-MM-DD HH:mm"
@@ -382,7 +384,7 @@ const LiveCreatePage = () => {
                 </div>
               </Space>
             </Form.Item>
-            <div style={{ display: isFree === 0 ? "block" : "none" }}>
+            <div style={{ display: isFree === 0 ? 'block' : 'none' }}>
               <Form.Item label="会员免费" name="vip_can_view">
                 <Space align="baseline" style={{ height: 32 }}>
                   <Form.Item name="vip_can_view" valuePropName="checked">
@@ -397,7 +399,7 @@ const LiveCreatePage = () => {
             <Form.Item
               label="简短介绍"
               name="short_description"
-              rules={[{ required: true, message: "请输入简短介绍!" }]}
+              rules={[{ required: true, message: '请输入简短介绍!' }]}
             >
               <Input.TextArea
                 style={{ width: 800 }}
@@ -411,7 +413,7 @@ const LiveCreatePage = () => {
             <Form.Item
               label="详细介绍"
               name="original_desc"
-              rules={[{ required: true, message: "请输入详细介绍!" }]}
+              rules={[{ required: true, message: '请输入详细介绍!' }]}
               style={{ height: 440 }}
             >
               <div className="w-800px">
@@ -421,28 +423,30 @@ const LiveCreatePage = () => {
                   defautValue=""
                   isFormula={false}
                   setContent={(value: string) => {
-                    form.setFieldsValue({ original_desc: value });
+                    form.setFieldsValue({ original_desc: value })
                   }}
-                ></QuillEditor>
+                >
+                </QuillEditor>
               </div>
             </Form.Item>
           </div>
-          <div style={{ display: resourceActive === "dev" ? "block" : "none" }}>
+          <div style={{ display: resourceActive === 'dev' ? 'block' : 'none' }}>
             <Form.Item label="播放封面" name="poster">
               <Space align="baseline" style={{ height: 32 }}>
                 <UploadImageButton
                   text="上传播放封面"
                   onSelected={(url) => {
-                    form.setFieldsValue({ poster: url });
-                    setPoster(url);
+                    form.setFieldsValue({ poster: url })
+                    setPoster(url)
                   }}
-                ></UploadImageButton>
+                >
+                </UploadImageButton>
                 <div className="ml-10">
                   {poster && (
                     <Button
                       onClick={() => {
-                        form.setFieldsValue({ poster: "" });
-                        setPoster("");
+                        form.setFieldsValue({ poster: '' })
+                        setPoster('')
                       }}
                     >
                       清空
@@ -465,7 +469,8 @@ const LiveCreatePage = () => {
                       width: 400,
                       height: 166.7,
                     }}
-                  ></div>
+                  >
+                  </div>
                 </Col>
               </Row>
             )}
@@ -490,34 +495,36 @@ const LiveCreatePage = () => {
           </div>
         </div>
       </div>
-      {visiable ? (
-        <Modal
-          title=""
-          centered
-          onCancel={() => {
-            setVisiable(false);
-            navigate("/live/course/index", { replace: true });
-          }}
-          cancelText="暂不排课"
-          okText="立即排课"
-          open={true}
-          width={500}
-          maskClosable={false}
-          onOk={() => {
-            setVisiable(false);
-            goVideo();
-          }}
-        >
-          <div
-            className="text-center"
-            style={{ marginTop: 30, marginBottom: 30 }}
+      {visiable
+        ? (
+          <Modal
+            title=""
+            centered
+            onCancel={() => {
+              setVisiable(false)
+              navigate('/live/course/index', { replace: true })
+            }}
+            cancelText="暂不排课"
+            okText="立即排课"
+            open={true}
+            width={500}
+            maskClosable={false}
+            onOk={() => {
+              setVisiable(false)
+              goVideo()
+            }}
           >
-            <span>新建直播课成功，请在课程中添加直播排课吧！</span>
-          </div>
-        </Modal>
-      ) : null}
+            <div
+              className="text-center"
+              style={{ marginTop: 30, marginBottom: 30 }}
+            >
+              <span>新建直播课成功，请在课程中添加直播排课吧！</span>
+            </div>
+          </Modal>
+          )
+        : null}
     </div>
-  );
-};
+  )
+}
 
-export default LiveCreatePage;
+export default LiveCreatePage

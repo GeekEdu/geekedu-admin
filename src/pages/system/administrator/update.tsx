@@ -126,7 +126,7 @@ const SystemAdministratorUpdatePage = () => {
   };
 
   return (
-    <div className="meedu-main-body">
+    <div className="geekedu-main-body">
       <BackBartment title="编辑管理员" />
       {init && (
         <div className="float-left text-center mt-30">

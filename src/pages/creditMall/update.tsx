@@ -123,7 +123,7 @@ const CreditMallUpdatePage = () => {
   };
 
   return (
-    <div className="meedu-main-body">
+    <div className="geekedu-main-body">
       <BackBartment title="编辑积分商品" />
       <div className="center-tabs mb-30">
         <Tabs

@@ -1,145 +1,150 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from 'react'
 import {
-  Table,
-  Modal,
-  message,
-  Input,
   Button,
-  Space,
   Dropdown,
+  Input,
+  Modal,
   Select,
-} from "antd";
-import type { MenuProps } from "antd";
-import { useNavigate } from "react-router-dom";
-import type { ColumnsType } from "antd/es/table";
-import { useDispatch } from "react-redux";
-import { practice } from "../../../api/index";
-import { DownOutlined } from "@ant-design/icons";
-import { titleAction } from "../../../store/user/loginUserSlice";
-import { PerButton } from "../../../components";
-import { dateFormat } from "../../../utils/index";
-import { ExclamationCircleFilled } from "@ant-design/icons";
-const { confirm } = Modal;
+  Space,
+  Table,
+  message,
+} from 'antd'
+import type { MenuProps } from 'antd'
+import { useNavigate } from 'react-router-dom'
+import type { ColumnsType } from 'antd/es/table'
+import { useDispatch } from 'react-redux'
+import { DownOutlined, ExclamationCircleFilled } from '@ant-design/icons'
+import { practice } from '../../../api/index'
+import { titleAction } from '../../../store/user/loginUserSlice'
+import { PerButton } from '../../../components'
+import { dateFormat } from '../../../utils/index'
+
+const { confirm } = Modal
 
 interface DataType {
-  id: React.Key;
-  created_at: string;
+  id: React.Key
+  created_at: string
 }
 
-const PracticePage = () => {
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const [loading, setLoading] = useState<boolean>(false);
-  const [list, setList] = useState<any>([]);
-  const [page, setPage] = useState(1);
-  const [size, setSize] = useState(20);
-  const [total, setTotal] = useState(0);
-  const [refresh, setRefresh] = useState(false);
-  const [keywords, setKeywords] = useState<string>("");
-  const [category_id, setCategoryId] = useState([]);
-  const [categories, setCategories] = useState<any>([]);
+function PracticePage() {
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
+  const [loading, setLoading] = useState<boolean>(false)
+  const [list, setList] = useState<any>([])
+  const [page, setPage] = useState(1)
+  const [size, setSize] = useState(20)
+  const [total, setTotal] = useState(0)
+  const [refresh, setRefresh] = useState(false)
+  const [keywords, setKeywords] = useState<string>('')
+  const [category_id, setCategoryId] = useState([])
+  const [categories, setCategories] = useState<any>([])
 
   useEffect(() => {
-    document.title = "练习";
-    dispatch(titleAction("练习"));
-    getParams();
-  }, []);
+    document.title = '练习'
+    dispatch(titleAction('练习'))
+    getParams()
+  }, [])
 
   useEffect(() => {
-    getData();
-  }, [page, size, refresh]);
+    getData()
+  }, [page, size, refresh])
 
   const getData = () => {
-    if (loading) {
-      return;
-    }
-    setLoading(true);
+    if (loading)
+      return
+
+    setLoading(true)
     practice
       .list({
-        page: page,
-        size: size,
-        sort: "id",
-        order: "desc",
+        page,
+        size,
+        sort: 'id',
+        order: 'desc',
         key: keywords,
-        category_id: category_id,
+        category_id,
       })
       .then((res: any) => {
-        setList(res.data.data.data);
-        setTotal(res.data.data.total);
-        setLoading(false);
+        setList(res.data.data.data)
+        setTotal(res.data.data.total)
+        setLoading(false)
       })
       .catch((e) => {
-        setLoading(false);
-      });
-  };
+        setLoading(false)
+      })
+  }
 
   const getParams = () => {
     practice.create().then((res: any) => {
-      let categories = res.data.categories;
-      const box: any = [];
+      const categories = res.data.categories
+      const box: any = []
       for (let i = 0; i < categories.length; i++) {
         box.push({
           label: categories[i].name,
           value: categories[i].id,
-        });
+        })
       }
-      setCategories(box);
-    });
-  };
+      setCategories(box)
+    })
+  }
 
   const resetList = () => {
-    setPage(1);
-    setSize(20);
-    setList([]);
-    setKeywords("");
-    setCategoryId([]);
-    setRefresh(!refresh);
-  };
+    setPage(1)
+    setSize(20)
+    setList([])
+    setKeywords('')
+    setCategoryId([])
+    setRefresh(!refresh)
+  }
 
   const paginationProps = {
-    current: page, //当前页码
+    current: page, // 当前页码
     pageSize: size,
-    total: total, // 总条数
+    total, // 总条数
     onChange: (page: number, pageSize: number) =>
-      handlePageChange(page, pageSize), //改变页码的函数
+      handlePageChange(page, pageSize), // 改变页码的函数
     showSizeChanger: true,
-  };
+  }
 
   const handlePageChange = (page: number, pageSize: number) => {
-    setPage(page);
-    setSize(pageSize);
-  };
+    setPage(page)
+    setSize(pageSize)
+  }
 
   const columns: ColumnsType<DataType> = [
     {
-      title: "分类",
+      title: '分类',
       width: 200,
-      render: (_, record: any) => <span>{record?.category?.name || "-"}</span>,
+      render: (_, record: any) => <span>{record?.category?.name || '-'}</span>,
     },
     {
-      title: "练习名",
+      title: '练习名',
       width: 500,
       render: (_, record: any) => <span>{record.name}</span>,
     },
 
     {
-      title: "题目数",
-      render: (_, record: any) => <div>{record.question_count}个</div>,
+      title: '题目数',
+      render: (_, record: any) => (
+        <div>
+          {record.question_count}
+          个
+        </div>
+      ),
     },
     {
-      title: "时间",
+      title: '时间',
       width: 200,
-      dataIndex: "created_at",
+      dataIndex: 'created_at',
       render: (created_at: string) => <span>{dateFormat(created_at)}</span>,
     },
     {
-      title: "操作",
+      title: '操作',
       width: 160,
-      fixed: "right",
+      fixed: 'right',
       render: (_, record: any) => {
-        const items: MenuProps["items"] = [
+        const items: MenuProps['items'] = [
           {
-            key: "1",
+            key: '1',
             label: (
               <PerButton
                 type="link"
@@ -148,14 +153,14 @@ const PracticePage = () => {
                 icon={null}
                 p="addons.Paper.practice.update"
                 onClick={() => {
-                  navigate("/exam/practice/update?id=" + record.id);
+                  navigate(`/exam/practice/update?id=${record.id}`)
                 }}
                 disabled={null}
               />
             ),
           },
           {
-            key: "2",
+            key: '2',
             label: (
               <PerButton
                 type="link"
@@ -164,13 +169,13 @@ const PracticePage = () => {
                 icon={null}
                 p="addons.Paper.practice.delete"
                 onClick={() => {
-                  destory(record.id);
+                  destory(record.id)
                 }}
                 disabled={null}
               />
             ),
           },
-        ];
+        ]
         return (
           <Space>
             <PerButton
@@ -180,7 +185,7 @@ const PracticePage = () => {
               icon={null}
               p="addons.Paper.practice_chapter.list"
               onClick={() => {
-                navigate("/exam/practice/chapter/index?id=" + record.id);
+                navigate(`/exam/practice/chapter/index?id=${record.id}`)
               }}
               disabled={null}
             />
@@ -191,7 +196,7 @@ const PracticePage = () => {
               icon={null}
               p="addons.Paper.practice.users"
               onClick={() => {
-                navigate("/exam/practice/user?id=" + record.id);
+                navigate(`/exam/practice/user?id=${record.id}`)
               }}
               disabled={null}
             />
@@ -199,7 +204,7 @@ const PracticePage = () => {
               <Button
                 type="link"
                 className="c-primary"
-                onClick={(e) => e.preventDefault()}
+                onClick={e => e.preventDefault()}
               >
                 <Space size="small" align="center">
                   更多
@@ -208,56 +213,56 @@ const PracticePage = () => {
               </Button>
             </Dropdown>
           </Space>
-        );
+        )
       },
     },
-  ];
+  ]
 
   const resetData = () => {
-    setPage(1);
-    setList([]);
-    setRefresh(!refresh);
-  };
+    setPage(1)
+    setList([])
+    setRefresh(!refresh)
+  }
 
   const destory = (id: number) => {
-    if (id === 0) {
-      return;
-    }
+    if (id === 0)
+      return
+
     confirm({
-      title: "操作确认",
+      title: '操作确认',
       icon: <ExclamationCircleFilled />,
-      content: "确认删除此练习？",
+      content: '确认删除此练习？',
       centered: true,
-      okText: "确认",
-      cancelText: "取消",
+      okText: '确认',
+      cancelText: '取消',
       onOk() {
-        if (loading) {
-          return;
-        }
-        setLoading(true);
-        var ids = [];
-        ids.push(id);
+        if (loading)
+          return
+
+        setLoading(true)
+        const ids = []
+        ids.push(id)
         practice
           .destroy({
-            ids: ids,
+            ids,
           })
           .then(() => {
-            setLoading(false);
-            message.success("删除成功");
-            resetData();
+            setLoading(false)
+            message.success('删除成功')
+            resetData()
           })
           .catch((e) => {
-            setLoading(false);
-          });
+            setLoading(false)
+          })
       },
       onCancel() {
-        console.log("Cancel");
+        console.log('Cancel')
       },
-    });
-  };
+    })
+  }
 
   return (
-    <div className="meedu-main-body">
+    <div className="geekedu-main-body">
       <div className="float-left j-b-flex mb-30">
         <div className="d-flex">
           <PerButton
@@ -266,13 +271,13 @@ const PracticePage = () => {
             class=""
             icon={null}
             p="addons.Paper.practice.store"
-            onClick={() => navigate("/exam/practice/create")}
+            onClick={() => navigate('/exam/practice/create')}
             disabled={null}
           />
           <Button
             type="primary"
             className="ml-10"
-            onClick={() => navigate("/exam/paper/category/index")}
+            onClick={() => navigate('/exam/paper/category/index')}
           >
             分类管理
           </Button>
@@ -281,7 +286,7 @@ const PracticePage = () => {
           <Input
             value={keywords}
             onChange={(e) => {
-              setKeywords(e.target.value);
+              setKeywords(e.target.value)
             }}
             allowClear
             style={{ width: 150 }}
@@ -291,7 +296,7 @@ const PracticePage = () => {
             style={{ width: 150, marginLeft: 10 }}
             value={category_id}
             onChange={(e) => {
-              setCategoryId(e);
+              setCategoryId(e)
             }}
             allowClear
             placeholder="分类"
@@ -304,8 +309,8 @@ const PracticePage = () => {
             className="ml-10"
             type="primary"
             onClick={() => {
-              setPage(1);
-              setRefresh(!refresh);
+              setPage(1)
+              setRefresh(!refresh)
             }}
           >
             筛选
@@ -317,12 +322,12 @@ const PracticePage = () => {
           loading={loading}
           columns={columns}
           dataSource={list}
-          rowKey={(record) => record.id}
+          rowKey={record => record.id}
           pagination={paginationProps}
         />
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default PracticePage;
+export default PracticePage

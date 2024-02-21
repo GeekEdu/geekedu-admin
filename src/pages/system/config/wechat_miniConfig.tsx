@@ -74,7 +74,7 @@ const SystemWechatMiniConfigPage = () => {
   };
 
   return (
-    <div className="meedu-main-body">
+    <div className="geekedu-main-body">
       <BackBartment title="微信小程序"></BackBartment>
       {loading && (
         <div

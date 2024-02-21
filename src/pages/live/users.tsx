@@ -1,126 +1,127 @@
-import { useState, useEffect } from "react";
-import { Table, Modal, message, Button, Input, Tabs } from "antd";
-import type { ColumnsType } from "antd/es/table";
-import { useLocation } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import { live } from "../../api/index";
-import { titleAction } from "../../store/user/loginUserSlice";
+import { useEffect, useState } from 'react'
+import { Button, Input, Modal, Table, Tabs, message } from 'antd'
+import type { ColumnsType } from 'antd/es/table'
+import { useLocation } from 'react-router-dom'
+import { useDispatch, useSelector } from 'react-redux'
+import { ExclamationCircleFilled } from '@ant-design/icons'
+import moment from 'moment'
+import * as XLSX from 'xlsx'
+import { live } from '../../api/index'
+import { titleAction } from '../../store/user/loginUserSlice'
 import {
-  PerButton,
   BackBartment,
+  PerButton,
   UserAddDialog,
   UserImportDialog,
-} from "../../components";
-import { dateFormat } from "../../utils/index";
-import { ExclamationCircleFilled } from "@ant-design/icons";
-import LiveWatchUsersPage from "./components/watch-users";
-const { confirm } = Modal;
-import moment from "moment";
-import * as XLSX from "xlsx";
+} from '../../components'
+import { dateFormat } from '../../utils/index'
+import LiveWatchUsersPage from './components/watch-users'
+
+const { confirm } = Modal
 
 interface DataType {
-  id: React.Key;
-  created_at: string;
+  id: React.Key
+  created_at: string
 }
 
-const LiveUsersPage = () => {
-  const result = new URLSearchParams(useLocation().search);
-  const dispatch = useDispatch();
-  const [loading, setLoading] = useState<boolean>(false);
-  const [list, setList] = useState<any>([]);
-  const [page, setPage] = useState(1);
-  const [size, setSize] = useState(10);
-  const [total, setTotal] = useState(0);
-  const [refresh, setRefresh] = useState(false);
-  const [user_id, setUserId] = useState("");
-  const [showUserAddWin, setShowUserAddWin] = useState<boolean>(false);
-  const [importDialog, setImportDialog] = useState<boolean>(false);
-  const [selectedRowKeys, setSelectedRowKeys] = useState<any>([]);
-  const [resourceActive, setResourceActive] = useState<string>("watch-user");
-  const [id, setId] = useState(Number(result.get("id")));
+function LiveUsersPage() {
+  const result = new URLSearchParams(useLocation().search)
+  const dispatch = useDispatch()
+  const [loading, setLoading] = useState<boolean>(false)
+  const [list, setList] = useState<any>([])
+  const [page, setPage] = useState(1)
+  const [size, setSize] = useState(10)
+  const [total, setTotal] = useState(0)
+  const [refresh, setRefresh] = useState(false)
+  const [user_id, setUserId] = useState('')
+  const [showUserAddWin, setShowUserAddWin] = useState<boolean>(false)
+  const [importDialog, setImportDialog] = useState<boolean>(false)
+  const [selectedRowKeys, setSelectedRowKeys] = useState<any>([])
+  const [resourceActive, setResourceActive] = useState<string>('watch-user')
+  const [id, setId] = useState(Number(result.get('id')))
   const avaliableResources = [
     {
-      label: "观看学员",
-      key: "watch-user",
+      label: '观看学员',
+      key: 'watch-user',
     },
     {
-      label: "付费学员",
-      key: "sub-user",
+      label: '付费学员',
+      key: 'sub-user',
     },
-  ];
+  ]
 
   useEffect(() => {
-    document.title = "直播课程学员";
-    dispatch(titleAction("直播课程学员"));
-  }, []);
+    document.title = '直播课程学员'
+    dispatch(titleAction('直播课程学员'))
+  }, [])
 
   useEffect(() => {
-    setId(Number(result.get("id")));
-  }, [result.get("id")]);
+    setId(Number(result.get('id')))
+  }, [result.get('id')])
 
   useEffect(() => {
-    getData();
-  }, [id, page, size, refresh]);
+    getData()
+  }, [id, page, size, refresh])
 
   const getData = () => {
-    if (loading) {
-      return;
-    }
-    setLoading(true);
+    if (loading)
+      return
+
+    setLoading(true)
     live
       .userList(id, {
-        page: page,
-        size: size,
-        user_id: user_id,
+        page,
+        size,
+        user_id,
       })
       .then((res: any) => {
-        setList(res.data.data.data);
-        setTotal(res.data.data.total);
-        setLoading(false);
+        setList(res.data.data.data)
+        setTotal(res.data.data.total)
+        setLoading(false)
       })
       .catch((e) => {
-        setLoading(false);
-      });
-  };
+        setLoading(false)
+      })
+  }
 
   const resetList = () => {
-    setPage(1);
-    setSize(10);
-    setList([]);
-    setUserId("");
-    setSelectedRowKeys([]);
-    setRefresh(!refresh);
-  };
+    setPage(1)
+    setSize(10)
+    setList([])
+    setUserId('')
+    setSelectedRowKeys([])
+    setRefresh(!refresh)
+  }
 
   const resetData = () => {
-    setPage(1);
-    setList([]);
-    setSelectedRowKeys([]);
-    setRefresh(!refresh);
-  };
+    setPage(1)
+    setList([])
+    setSelectedRowKeys([])
+    setRefresh(!refresh)
+  }
 
   const paginationProps = {
-    current: page, //当前页码
+    current: page, // 当前页码
     pageSize: size,
-    total: total, // 总条数
+    total, // 总条数
     onChange: (page: number, pageSize: number) =>
-      handlePageChange(page, pageSize), //改变页码的函数
+      handlePageChange(page, pageSize), // 改变页码的函数
     showSizeChanger: true,
-  };
+  }
 
   const handlePageChange = (page: number, pageSize: number) => {
-    setPage(page);
-    setSize(pageSize);
-  };
+    setPage(page)
+    setSize(pageSize)
+  }
 
   const columns: ColumnsType<DataType> = [
     {
-      title: "学员ID",
+      title: '学员ID',
       width: 120,
       render: (_, record: any) => <span>{record.user_id}</span>,
     },
     {
-      title: "学员",
+      title: '学员',
       render: (_, record: any) => (
         <>
           {record.user && (
@@ -136,136 +137,141 @@ const LiveUsersPage = () => {
       ),
     },
     {
-      title: "价格",
+      title: '价格',
       width: 200,
       render: (_, record: any) => (
         <>
           {record.charge === 0 && <span>-</span>}
-          {record.charge !== 0 && <span>￥{record.charge}</span>}
+          {record.charge !== 0 && (
+            <span>
+              ￥
+              {record.charge}
+            </span>
+          )}
         </>
       ),
     },
     {
-      title: "时间",
+      title: '时间',
       width: 200,
-      dataIndex: "created_at",
+      dataIndex: 'created_at',
       render: (created_at: string) => <span>{dateFormat(created_at)}</span>,
     },
-  ];
+  ]
 
   const delMulti = () => {
     if (selectedRowKeys.length === 0) {
-      message.error("请选择需要操作的数据");
-      return;
+      message.error('请选择需要操作的数据')
+      return
     }
 
     confirm({
-      title: "操作确认",
+      title: '操作确认',
       icon: <ExclamationCircleFilled />,
-      content: "确认删除选中的学员？",
+      content: '确认删除选中的学员？',
       centered: true,
-      okText: "确认",
-      cancelText: "取消",
+      okText: '确认',
+      cancelText: '取消',
       onOk() {
-        if (loading) {
-          return;
-        }
-        setLoading(true);
+        if (loading)
+          return
+
+        setLoading(true)
         live
           .userDel(id, { ids: selectedRowKeys })
           .then(() => {
-            setLoading(false);
-            message.success("成功");
-            resetData();
+            setLoading(false)
+            message.success('成功')
+            resetData()
           })
           .catch((e) => {
-            setLoading(false);
-          });
+            setLoading(false)
+          })
       },
       onCancel() {
-        console.log("Cancel");
+        console.log('Cancel')
       },
-    });
-  };
+    })
+  }
 
   const exportexcel = () => {
-    if (loading) {
-      return;
-    }
-    setLoading(true);
-    let params = {
+    if (loading)
+      return
+
+    setLoading(true)
+    const params = {
       page: 1,
       size: total,
-      user_id: user_id,
-    };
+      user_id,
+    }
 
     live.userList(id, params).then((res: any) => {
       if (res.data.data.total === 0) {
-        message.error("数据为空");
-        setLoading(false);
-        return;
+        message.error('数据为空')
+        setLoading(false)
+        return
       }
-      let filename = "直播课程订阅学员.xlsx";
-      let sheetName = "sheet1";
+      const filename = '直播课程订阅学员.xlsx'
+      const sheetName = 'sheet1'
 
-      let data = [["学员ID", "学员", "手机号", "价格", "时间"]];
+      const data = [['学员ID', '学员', '手机号', '价格', '时间']]
       res.data.data.data.forEach((item: any) => {
         data.push([
           item.user_id,
           item.user.nick_name,
           item.user.mobile,
-          item.charge === 0 ? "-" : "￥" + item.charge,
+          item.charge === 0 ? '-' : `￥${item.charge}`,
           item.created_at
-            ? moment(item.created_at).format("YYYY-MM-DD HH:mm")
-            : "",
-        ]);
-      });
+            ? moment(item.created_at).format('YYYY-MM-DD HH:mm')
+            : '',
+        ])
+      })
 
-      const jsonWorkSheet = XLSX.utils.json_to_sheet(data);
+      const jsonWorkSheet = XLSX.utils.json_to_sheet(data)
       const workBook: XLSX.WorkBook = {
         SheetNames: [sheetName],
         Sheets: {
           [sheetName]: jsonWorkSheet,
         },
-      };
-      XLSX.writeFile(workBook, filename);
-      setLoading(false);
-    });
-  };
+      }
+      XLSX.writeFile(workBook, filename)
+      setLoading(false)
+    })
+  }
 
   const rowSelection = {
-    selectedRowKeys: selectedRowKeys,
+    selectedRowKeys,
     onChange: (selectedRowKeys: React.Key[], selectedRows: DataType[]) => {
-      setSelectedRowKeys(selectedRowKeys);
+      setSelectedRowKeys(selectedRowKeys)
     },
-  };
+  }
 
   const userAddChange = (rows: any) => {
-    if (loading) {
-      return;
-    }
-    setLoading(true);
+    if (loading)
+      return
+
+    setLoading(true)
     live
       .userAdd(id, {
         ids: rows,
       })
       .then(() => {
-        setLoading(false);
-        message.success("成功");
-        setShowUserAddWin(false);
-        resetData();
+        setLoading(false)
+        message.success('成功')
+        setShowUserAddWin(false)
+        resetData()
       })
       .catch((e) => {
-        setLoading(false);
-      });
-  };
+        setLoading(false)
+      })
+  }
 
   const onChange = (key: string) => {
-    setResourceActive(key);
-  };
+    setResourceActive(key)
+  }
 
   return (
-    <div className="meedu-main-body">
+    <div className="geekedu-main-body">
       <BackBartment title="直播课程学员" />
       <div className="float-left">
         <Tabs
@@ -274,10 +280,10 @@ const LiveUsersPage = () => {
           onChange={onChange}
         />
       </div>
-      {resourceActive === "watch-user" && (
+      {resourceActive === 'watch-user' && (
         <LiveWatchUsersPage></LiveWatchUsersPage>
       )}
-      {resourceActive === "sub-user" && (
+      {resourceActive === 'sub-user' && (
         <>
           <div className="float-left j-b-flex mb-30">
             <div className="d-flex">
@@ -306,7 +312,7 @@ const LiveUsersPage = () => {
               <Input
                 value={user_id}
                 onChange={(e) => {
-                  setUserId(e.target.value);
+                  setUserId(e.target.value)
                 }}
                 allowClear
                 style={{ width: 150 }}
@@ -319,8 +325,8 @@ const LiveUsersPage = () => {
                 className="ml-10"
                 type="primary"
                 onClick={() => {
-                  setPage(1);
-                  setRefresh(!refresh);
+                  setPage(1)
+                  setRefresh(!refresh)
                 }}
               >
                 筛选
@@ -337,13 +343,13 @@ const LiveUsersPage = () => {
           <div className="float-left">
             <Table
               rowSelection={{
-                type: "checkbox",
+                type: 'checkbox',
                 ...rowSelection,
               }}
               loading={loading}
               columns={columns}
               dataSource={list}
-              rowKey={(record) => record.id}
+              rowKey={record => record.id}
               pagination={paginationProps}
             />
           </div>
@@ -356,20 +362,22 @@ const LiveUsersPage = () => {
         name="学员批量导入模板"
         onCancel={() => setImportDialog(false)}
         onSuccess={() => {
-          setImportDialog(false);
-          resetData();
+          setImportDialog(false)
+          resetData()
         }}
-      ></UserImportDialog>
+      >
+      </UserImportDialog>
       <UserAddDialog
         type=""
         open={showUserAddWin}
         onCancel={() => setShowUserAddWin(false)}
         onSuccess={(rows: any) => {
-          userAddChange(rows);
+          userAddChange(rows)
         }}
-      ></UserAddDialog>
+      >
+      </UserAddDialog>
     </div>
-  );
-};
+  )
+}
 
-export default LiveUsersPage;
+export default LiveUsersPage

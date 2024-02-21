@@ -227,7 +227,7 @@ const SystemMessageConfigPage = () => {
   };
 
   return (
-    <div className="meedu-main-body">
+    <div className="geekedu-main-body">
       <BackBartment title="短信"></BackBartment>
       {loading && (
         <div

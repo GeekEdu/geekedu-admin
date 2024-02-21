@@ -1,89 +1,89 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState } from 'react'
 import {
+  Button,
   Form,
   Input,
-  message,
-  Button,
+  Modal,
   Select,
   Space,
   Switch,
-  Modal,
-} from "antd";
-import { useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
-import { paper } from "../../../api/index";
-import { titleAction } from "../../../store/user/loginUserSlice";
-import { HelperText, BackBartment } from "../../../components";
+  message,
+} from 'antd'
+import { useNavigate } from 'react-router-dom'
+import { useDispatch } from 'react-redux'
+import { paper } from '../../../api/index'
+import { titleAction } from '../../../store/user/loginUserSlice'
+import { BackBartment, HelperText } from '../../../components'
 
-const PaperCreatePage = () => {
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const [form] = Form.useForm();
-  const [loading, setLoading] = useState<boolean>(false);
-  const [isFree, setIsFree] = useState(0);
-  const [charge, setCharge] = useState(0);
-  const [isInvite, setIsInvite] = useState(0);
-  const [categories, setCategories] = useState<any>([]);
-  const [courses, setCourses] = useState<any>([]);
-  const [visiable, setVisiable] = useState<boolean>(false);
+function PaperCreatePage() {
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
+  const [form] = Form.useForm()
+  const [loading, setLoading] = useState<boolean>(false)
+  const [isFree, setIsFree] = useState(0)
+  const [charge, setCharge] = useState(0)
+  const [isInvite, setIsInvite] = useState(0)
+  const [categories, setCategories] = useState<any>([])
+  const [courses, setCourses] = useState<any>([])
+  const [visiable, setVisiable] = useState<boolean>(false)
 
   useEffect(() => {
-    document.title = "新建试卷";
-    dispatch(titleAction("新建试卷"));
+    document.title = '新建试卷'
+    dispatch(titleAction('新建试卷'))
     form.setFieldsValue({
       enabled_invite: 0,
       is_free: 0,
       is_skip_mark: 0,
       is_vip_free: 0,
       is_random: 0,
-    });
-    setIsFree(0);
-    setIsInvite(0);
-    getParams();
-  }, []);
+    })
+    setIsFree(0)
+    setIsInvite(0)
+    getParams()
+  }, [])
   const getParams = () => {
     paper.create().then((res: any) => {
-      let categories = res.data.categories;
-      const box: any = [];
+      const categories = res.data.categories
+      const box: any = []
       for (let i = 0; i < categories.length; i++) {
         box.push({
           label: categories[i].name,
           value: categories[i].id,
-        });
+        })
       }
-      setCategories(box);
-      let courses = res.data.courses;
-      const box2: any = [];
+      setCategories(box)
+      const courses = res.data.courses
+      const box2: any = []
       for (let i = 0; i < courses.length; i++) {
         box2.push({
           label: courses[i].title,
           value: courses[i].id,
-        });
+        })
       }
-      setCourses(box2);
-    });
-  };
+      setCourses(box2)
+    })
+  }
 
   const onFinish = (values: any) => {
-    if (loading) {
-      return;
-    }
+    if (loading)
+      return
+
     if (values.enabled_invite === 0 && values.is_free === 0 && !values.charge) {
-      message.error("价格不能为空");
-      return;
+      message.error('价格不能为空')
+      return
     }
     if (
-      values.enabled_invite === 0 &&
-      values.is_free === 0 &&
-      parseInt(values.charge) === 0 &&
-      ((values.required_courses && values.required_courses.length === 0) ||
-        !values.required_courses)
+      values.enabled_invite === 0
+      && values.is_free === 0
+      && Number.parseInt(values.charge) === 0
+      && ((values.required_courses && values.required_courses.length === 0)
+      || !values.required_courses)
     ) {
-      message.error("设置价格大于0或者设置有购买录播课程");
-      return;
+      message.error('设置价格大于0或者设置有购买录播课程')
+      return
     }
-    setLoading(true);
-    const ids = values.required_courses && values.required_courses.join(",");
+    setLoading(true)
+    const ids = values.required_courses && values.required_courses.join(',')
     paper
       .store({
         rule: values.newRule,
@@ -92,7 +92,7 @@ const PaperCreatePage = () => {
         is_skip_mark: values.is_skip_mark,
         expired_minutes: values.expired_minutes,
         enabled_invite: values.enabled_invite,
-        charge: charge,
+        charge,
         is_free: isFree,
         required_courses: ids,
         is_vip_free: values.is_vip_free || 0,
@@ -101,72 +101,72 @@ const PaperCreatePage = () => {
         try_times: values.try_times,
       })
       .then((res: any) => {
-        setLoading(false);
-        setVisiable(true);
+        setLoading(false)
+        setVisiable(true)
       })
       .catch((e) => {
-        setLoading(false);
-      });
-  };
+        setLoading(false)
+      })
+  }
 
   const onFinishFailed = (errorInfo: any) => {
-    console.log("Failed:", errorInfo);
-  };
+    console.log('Failed:', errorInfo)
+  }
 
   const onSwitch = (checked: boolean) => {
-    if (checked) {
-      form.setFieldsValue({ is_skip_mark: 1 });
-    } else {
-      form.setFieldsValue({ is_skip_mark: 0 });
-    }
-  };
+    if (checked)
+      form.setFieldsValue({ is_skip_mark: 1 })
+    else
+      form.setFieldsValue({ is_skip_mark: 0 })
+  }
 
   const onInviteSwitch = (checked: boolean) => {
     if (checked) {
-      form.setFieldsValue({ is_invite: 1 });
-      setIsInvite(1);
-    } else {
-      form.setFieldsValue({ is_invite: 0 });
-      setIsInvite(0);
+      form.setFieldsValue({ is_invite: 1 })
+      setIsInvite(1)
     }
-  };
+    else {
+      form.setFieldsValue({ is_invite: 0 })
+      setIsInvite(0)
+    }
+  }
 
   const onFreeSwitch = (checked: boolean) => {
     if (checked) {
-      form.setFieldsValue({ is_free: 1, charge: 0 });
-      setCharge(0);
-      setIsFree(1);
-    } else {
-      form.setFieldsValue({ is_free: 0 });
-      setIsFree(0);
+      form.setFieldsValue({ is_free: 1, charge: 0 })
+      setCharge(0)
+      setIsFree(1)
     }
-  };
+    else {
+      form.setFieldsValue({ is_free: 0 })
+      setIsFree(0)
+    }
+  }
 
   const onVipSwitch = (checked: boolean) => {
-    if (checked) {
-      form.setFieldsValue({ is_vip_free: 1 });
-    } else {
-      form.setFieldsValue({ is_vip_free: 0 });
-    }
-  };
+    if (checked)
+      form.setFieldsValue({ is_vip_free: 1 })
+    else
+      form.setFieldsValue({ is_vip_free: 0 })
+  }
 
   const goVideo = () => {
     paper
       .list({
         page: 1,
         size: 10,
-        sort: "id",
-        order: "desc",
+        sort: 'id',
+        order: 'desc',
       })
       .then((res: any) => {
-        navigate("/exam/paper/question?id=" + res.data.data.data[0].id, {
+        navigate(`/exam/paper/question?id=${res.data.data.data[0].id}`, {
           replace: true,
-        });
-      });
-  };
+        })
+      })
+  }
 
   return (
-    <div className="meedu-main-body">
+    <div className="geekedu-main-body">
       <BackBartment title="新建试卷" />
       <div className="float-left mt-30">
         <Form
@@ -182,7 +182,7 @@ const PaperCreatePage = () => {
           <Form.Item
             label="试卷名"
             name="title"
-            rules={[{ required: true, message: "请输入试卷名!" }]}
+            rules={[{ required: true, message: '请输入试卷名!' }]}
           >
             <Input
               style={{ width: 300 }}
@@ -193,12 +193,12 @@ const PaperCreatePage = () => {
           <Form.Item
             label="分类"
             name="category_id"
-            rules={[{ required: true, message: "请选择分类!" }]}
+            rules={[{ required: true, message: '请选择分类!' }]}
           >
             <Space align="baseline" style={{ height: 32 }}>
               <Form.Item
                 name="category_id"
-                rules={[{ required: true, message: "请选择分类!" }]}
+                rules={[{ required: true, message: '请选择分类!' }]}
               >
                 <Select
                   style={{ width: 300 }}
@@ -211,7 +211,7 @@ const PaperCreatePage = () => {
                 type="link"
                 className="c-primary"
                 onClick={() => {
-                  navigate("/exam/paper/category/index");
+                  navigate('/exam/paper/category/index')
                 }}
               >
                 分类管理
@@ -221,7 +221,7 @@ const PaperCreatePage = () => {
           <Form.Item
             label="及格分"
             name="pass_score"
-            rules={[{ required: true, message: "请输入及格分!" }]}
+            rules={[{ required: true, message: '请输入及格分!' }]}
           >
             <Input
               type="number"
@@ -233,7 +233,7 @@ const PaperCreatePage = () => {
           <Form.Item
             label="时间"
             name="expired_minutes"
-            rules={[{ required: true, message: "请输入时间!" }]}
+            rules={[{ required: true, message: '请输入时间!' }]}
           >
             <Input
               type="number"
@@ -245,12 +245,12 @@ const PaperCreatePage = () => {
           <Form.Item
             label="考试次数"
             name="try_times"
-            rules={[{ required: true, message: "请输入考试次数!" }]}
+            rules={[{ required: true, message: '请输入考试次数!' }]}
           >
             <Space align="baseline" style={{ height: 32 }}>
               <Form.Item
                 name="try_times"
-                rules={[{ required: true, message: "请输入考试次数!" }]}
+                rules={[{ required: true, message: '请输入考试次数!' }]}
               >
                 <Input
                   type="number"
@@ -301,16 +301,16 @@ const PaperCreatePage = () => {
                   <Form.Item
                     label="价格"
                     name="charge"
-                    rules={[{ required: true, message: "请输入价格!" }]}
+                    rules={[{ required: true, message: '请输入价格!' }]}
                   >
                     <Space align="baseline" style={{ height: 32 }}>
                       <Form.Item
                         name="charge"
-                        rules={[{ required: true, message: "请输入价格!" }]}
+                        rules={[{ required: true, message: '请输入价格!' }]}
                       >
                         <Input
                           onChange={(e) => {
-                            setCharge(Number(e.target.value));
+                            setCharge(Number(e.target.value))
                           }}
                           type="number"
                           style={{ width: 300 }}
@@ -375,34 +375,36 @@ const PaperCreatePage = () => {
           </div>
         </div>
       </div>
-      {visiable ? (
-        <Modal
-          title=""
-          onCancel={() => {
-            setVisiable(false);
-            navigate("/exam/paper/index", { replace: true });
-          }}
-          cancelText="暂不组卷"
-          okText="立即组卷"
-          open={true}
-          width={500}
-          maskClosable={false}
-          onOk={() => {
-            setVisiable(false);
-            goVideo();
-          }}
-          centered
-        >
-          <div
-            className="text-center"
-            style={{ marginTop: 30, marginBottom: 30 }}
+      {visiable
+        ? (
+          <Modal
+            title=""
+            onCancel={() => {
+              setVisiable(false)
+              navigate('/exam/paper/index', { replace: true })
+            }}
+            cancelText="暂不组卷"
+            okText="立即组卷"
+            open={true}
+            width={500}
+            maskClosable={false}
+            onOk={() => {
+              setVisiable(false)
+              goVideo()
+            }}
+            centered
           >
-            <span>新建考试成功，请在试题库中选择试题组卷吧！</span>
-          </div>
-        </Modal>
-      ) : null}
+            <div
+              className="text-center"
+              style={{ marginTop: 30, marginBottom: 30 }}
+            >
+              <span>新建考试成功，请在试题库中选择试题组卷吧！</span>
+            </div>
+          </Modal>
+          )
+        : null}
     </div>
-  );
-};
+  )
+}
 
-export default PaperCreatePage;
+export default PaperCreatePage
