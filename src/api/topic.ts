@@ -1,11 +1,13 @@
 import client from './internal/httpClient'
 
+// 返回图文列表
 export function list(params: any) {
-  return client.get(`/backend/addons/meedu_topics/topic/index`, params)
+  return client.get(`/book/api/imageText/getImageTextPageCondition`, params)
 }
 
-export function create() {
-  return client.get(`/backend/addons/meedu_topics/topic/create`, {})
+// 返回图文分类列表
+export function create(params: any) {
+  return client.get(`/label/api/category/getCategoryList`, params)
 }
 
 export function store(params: any) {
@@ -14,7 +16,7 @@ export function store(params: any) {
 
 // 查看某个图文的详情
 export function detail(id: number) {
-  return client.get(`/backend/addons/meedu_topics/topic/${id}`, {})
+  return client.get(`/book/api/imageText/getImageTextById/${id}`, {})
 }
 
 export function destroy(id: number) {

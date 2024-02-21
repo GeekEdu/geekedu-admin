@@ -37,7 +37,7 @@ function TopicUpdatePage() {
   const [categories, setCategories] = useState<any>([])
   const [charge, setCharge] = useState(0)
   const [original_charge, setOriginalCharge] = useState(0)
-  const [isFree, setIsFree] = useState(0)
+  const [isFree, setIsFree] = useState(true)
   const [thumb, setThumb] = useState<string>('')
   const [editor, setEditor] = useState('')
   const [freeValue, setFreeValue] = useState('')
@@ -71,39 +71,39 @@ function TopicUpdatePage() {
     const data = res.data
     // 填充表单
     form.setFieldsValue({
-      cid: data.cid, // 分类id
+      cid: data.categoryId, // 分类id
       title: data.title, // 图文标题
-      thumb: data.thumb, // 封面
-      is_show: data.is_show, // 是否展示
-      is_vip_free: data.is_vip_free, // 是否vip免费
-      short_desc: data.short_desc, //
-      original_content: data.original_content, // 原始内容
-      free_content: data.free_content, // 免费内容
-      charge: data.charge, // 价格
-      sorted_at: dayjs(data.sorted_at, 'YYYY-MM-DD HH:mm'), // 上架时间
+      thumb: data?.coverLink, // 封面
+      is_show: data.isShow, // 是否展示
+      is_vip_free: data?.isVipFree, // 是否vip免费
+      short_desc: data?.short_desc, //
+      original_content: data.originalContent, // 原始内容
+      free_content: data?.freeContent, // 免费内容
+      charge: data.parice, // 价格
+      groundingTime: dayjs(data.groundingTime, 'YYYY-MM-DD HH:mm'), // 上架时间
     })
     // 如果有价格，那么就不是免费的，将付费开关打开
-    if (data.charge > 0) {
-      form.setFieldsValue({ is_free: 0 })
-      setIsFree(0)
+    if (data?.price > 0) {
+      form.setFieldsValue({ is_free: false })
+      setIsFree(false)
     }
     else {
-      form.setFieldsValue({ is_free: 1 })
-      setIsFree(1)
+      form.setFieldsValue({ is_free: true })
+      setIsFree(true)
     }
-    setCharge(data.charge)
-    setDefautValue(data.original_content)
-    setFreeValue(data.free_content)
-    setFreeRenderValue(data.free_content_render)
-    setRenderValue(data.render_content)
-    setOriginalCharge(data.charge)
-    setThumb(data.thumb)
-    setEditor(data.editor)
+    setCharge(data.price)
+    setDefautValue(data.originalContent)
+    setFreeValue(data?.freeContent)
+    setFreeRenderValue(data?.freeContentRender)
+    setRenderValue(data?.renderContent)
+    setOriginalCharge(data.price)
+    setThumb(data?.coverLink)
+    setEditor(data?.editor)
   }
 
   // 获取所有图文分类数据
   const getParams = async () => {
-    const res: any = await topic.create()
+    const res: any = await topic.create({ type: 'IMAGE_TEXT' })
     const categories = res.data
     const box: any = []
     for (let i = 0; i < categories.length; i++) {
@@ -119,7 +119,7 @@ function TopicUpdatePage() {
     if (loading)
       return
 
-    if (values.is_free === 1) { // 若免费 则都滞空
+    if (values.is_free) { // 若免费 则都滞空
       values.charge = 0
       values.is_vip_free = false
       values.free_content = ''
@@ -132,7 +132,7 @@ function TopicUpdatePage() {
       return
     }
 
-    if (values.is_free === 0 && Number(values.charge) <= 0) {
+    if (!values.is_free && Number(values.charge) <= 0) {
       message.error('图文价格必须输入且大于0')
       return
     }
@@ -147,7 +147,7 @@ function TopicUpdatePage() {
       values.free_content_render = values.free_content
     }
     // 格式化上架时间
-    values.sorted_at = moment(new Date(values.sorted_at)).format(
+    values.groundingTime = moment(new Date(values.groundingTime)).format(
       'YYYY-MM-DD HH:mm',
     )
     values.is_need_login = 0
@@ -186,12 +186,12 @@ function TopicUpdatePage() {
 
   const isVChange = (checked: boolean) => {
     if (checked) {
-      form.setFieldsValue({ is_free: 1, charge: 0 })
+      form.setFieldsValue({ is_free: true, charge: 0 })
       setIsFree(1)
       setCharge(0)
     }
     else {
-      form.setFieldsValue({ is_free: 0, original_charge })
+      form.setFieldsValue({ is_free: false, original_charge })
       setCharge(original_charge)
       setIsFree(0)
     }
@@ -347,7 +347,7 @@ function TopicUpdatePage() {
           <Form.Item label="上架时间" required={true}>
             <Space align="baseline" style={{ height: 32 }}>
               <Form.Item
-                name="sorted_at"
+                name="groundingTime"
                 rules={[{ required: true, message: '请选择上架时间!' }]}
               >
                 <DatePicker
@@ -454,7 +454,7 @@ function TopicUpdatePage() {
                   ? (
                     <MdEditor
                       height={800}
-                      defautValue={defautValue}
+                      defaultValue={defautValue}
                       setContent={(value: string, renderValue: string) => {
                         form.setFieldsValue({ original_content: value })
                         setRenderValue(renderValue)

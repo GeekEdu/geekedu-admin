@@ -1,167 +1,167 @@
-import { useState, useEffect } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useEffect, useState } from 'react'
+import { useLocation, useNavigate } from 'react-router-dom'
 import {
   Button,
-  Input,
-  message,
-  Modal,
-  Form,
-  DatePicker,
-  Switch,
-  Row,
   Col,
-  Space,
+  DatePicker,
+  Form,
+  Input,
+  Modal,
+  Row,
   Select,
-} from "antd";
-import { useDispatch, useSelector } from "react-redux";
-import { topic } from "../../api/index";
-import { titleAction } from "../../store/user/loginUserSlice";
+  Space,
+  Switch,
+  message,
+} from 'antd'
+import { useDispatch, useSelector } from 'react-redux'
+import { ExclamationCircleFilled } from '@ant-design/icons'
+import moment from 'moment'
+import { topic } from '../../api/index'
+import { titleAction } from '../../store/user/loginUserSlice'
 import {
   BackBartment,
-  PerButton,
   HelperText,
+  MdEditor,
+  PerButton,
   QuillEditor,
   UploadImageButton,
-  MdEditor,
-} from "../../components";
-import { getEditorKey, saveEditorKey } from "../../utils/index";
-import { ExclamationCircleFilled } from "@ant-design/icons";
-const { confirm } = Modal;
-import moment from "moment";
+} from '../../components'
+import { getEditorKey, saveEditorKey } from '../../utils/index'
 
-const TopicCreatePage = () => {
-  const result = new URLSearchParams(useLocation().search);
-  const [form] = Form.useForm();
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const [loading, setLoading] = useState<boolean>(false);
-  const [categories, setCategories] = useState<any>([]);
-  const [charge, setCharge] = useState(0);
-  const [isFree, setIsFree] = useState(0);
-  const [thumb, setThumb] = useState<string>("");
-  const [current, setCurrent] = useState("");
-  const [editor, setEditor] = useState("");
-  const [renderValue, setRenderValue] = useState("");
-  const [freeRenderValue, setFreeRenderValue] = useState("");
+const { confirm } = Modal
+
+function TopicCreatePage() {
+  const result = new URLSearchParams(useLocation().search)
+  const [form] = Form.useForm()
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
+  const [loading, setLoading] = useState<boolean>(false)
+  const [categories, setCategories] = useState<any>([])
+  const [charge, setCharge] = useState(0)
+  const [isFree, setIsFree] = useState(0)
+  const [thumb, setThumb] = useState<string>('')
+  const [current, setCurrent] = useState('')
+  const [editor, setEditor] = useState('')
+  const [renderValue, setRenderValue] = useState('')
+  const [freeRenderValue, setFreeRenderValue] = useState('')
   const tools = [
-    { label: "Markdown", value: "markdown" },
-    { label: "富文本编辑器", value: "quill" },
-  ];
+    { label: 'Markdown', value: 'markdown' },
+    { label: '富文本编辑器', value: 'quill' },
+  ]
 
   useEffect(() => {
-    document.title = "新建图文";
-    dispatch(titleAction("新建图文"));
-    setIsFree(0);
+    document.title = '新建图文'
+    dispatch(titleAction('新建图文'))
+    setIsFree(0)
     form.setFieldsValue({
       is_show: 1,
       is_free: 0,
       is_vip_free: false,
-    });
-    getParams();
-  }, []);
+    })
+    getParams()
+  }, [])
 
   useEffect(() => {
-    let localCurrent = getEditorKey();
-    if (localCurrent === "markdown") {
-      setEditor("MARKDOWN");
-    } else {
-      setEditor("FULLEDITOR");
-    }
-    let current = localCurrent ? localCurrent : "quill";
-    setCurrent(current);
-  }, [getEditorKey()]);
+    const localCurrent = getEditorKey()
+    if (localCurrent === 'markdown')
+      setEditor('MARKDOWN')
+    else
+      setEditor('FULLEDITOR')
+
+    const current = localCurrent || 'quill'
+    setCurrent(current)
+  }, [getEditorKey()])
 
   const getParams = () => {
     topic.create().then((res: any) => {
-      let categories = res.data;
-      const box: any = [];
+      const categories = res.data
+      const box: any = []
       for (let i = 0; i < categories.length; i++) {
         box.push({
           label: categories[i].name,
           value: categories[i].id,
-        });
+        })
       }
-      setCategories(box);
-    });
-  };
+      setCategories(box)
+    })
+  }
 
   const onFinish = (values: any) => {
-    if (loading) {
-      return;
-    }
+    if (loading)
+      return
 
     if (values.is_free === 1) {
-      values.charge = 0;
-      values.is_vip_free = false;
-      values.free_content = "";
-      values.free_content_render = "";
+      values.charge = 0
+      values.is_vip_free = false
+      values.free_content = ''
+      values.free_content_render = ''
     }
 
     if (Number(values.charge) % 1 !== 0) {
-      message.error("图文价格必须为整数");
-      return;
+      message.error('图文价格必须为整数')
+      return
     }
 
     if (values.is_free === 0 && Number(values.charge) <= 0) {
-      message.error("图文价格必须输入且大于0");
-      return;
+      message.error('图文价格必须输入且大于0')
+      return
     }
-    if (getEditorKey() === "markdown") {
-      values.editor = "MARKDOWN";
-      values.render_content = renderValue;
-      values.free_content_render = freeRenderValue;
-    } else {
-      values.editor = "FULLEDITOR";
-      values.render_content = values.original_content;
-      values.free_content_render = values.free_content;
+    if (getEditorKey() === 'markdown') {
+      values.editor = 'MARKDOWN'
+      values.render_content = renderValue
+      values.free_content_render = freeRenderValue
+    }
+    else {
+      values.editor = 'FULLEDITOR'
+      values.render_content = values.original_content
+      values.free_content_render = values.free_content
     }
     values.sorted_at = moment(new Date(values.sorted_at)).format(
-      "YYYY-MM-DD HH:mm"
-    );
-    values.is_need_login = 0;
-    setLoading(true);
+      'YYYY-MM-DD HH:mm',
+    )
+    values.is_need_login = 0
+    setLoading(true)
     topic
       .store(values)
       .then((res: any) => {
-        setLoading(false);
-        message.success("保存成功！");
-        navigate(-1);
+        setLoading(false)
+        message.success('保存成功！')
+        navigate(-1)
       })
       .catch((e) => {
-        setLoading(false);
-      });
-  };
+        setLoading(false)
+      })
+  }
 
   const onFinishFailed = (errorInfo: any) => {
-    console.log("Failed:", errorInfo);
-  };
+    console.log('Failed:', errorInfo)
+  }
 
   const onSwitch = (checked: boolean) => {
-    if (checked) {
-      form.setFieldsValue({ is_show: 1 });
-    } else {
-      form.setFieldsValue({ is_show: 0 });
-    }
-  };
+    if (checked)
+      form.setFieldsValue({ is_show: 1 })
+    else
+      form.setFieldsValue({ is_show: 0 })
+  }
 
   const isVipChange = (checked: boolean) => {
-    if (checked) {
-      form.setFieldsValue({ is_vip_free: true });
-    } else {
-      form.setFieldsValue({ is_vip_free: false });
-    }
-  };
+    if (checked)
+      form.setFieldsValue({ is_vip_free: true })
+    else
+      form.setFieldsValue({ is_vip_free: false })
+  }
 
   const isVChange = (checked: boolean) => {
     if (checked) {
-      form.setFieldsValue({ is_free: 1, charge: 0 });
-      setIsFree(1);
-      setCharge(0);
-    } else {
-      form.setFieldsValue({ is_free: 0 });
-      setIsFree(0);
+      form.setFieldsValue({ is_free: 1, charge: 0 })
+      setIsFree(1)
+      setCharge(0)
     }
-  };
+    else {
+      form.setFieldsValue({ is_free: 0 })
+      setIsFree(0)
+    }
+  }
 
   return (
     <div className="meedu-main-body">
@@ -180,12 +180,12 @@ const TopicCreatePage = () => {
           <Form.Item
             name="cid"
             label="所属分类"
-            rules={[{ required: true, message: "请选择分类!" }]}
+            rules={[{ required: true, message: '请选择分类!' }]}
           >
             <Space align="baseline" style={{ height: 32 }}>
               <Form.Item
                 name="cid"
-                rules={[{ required: true, message: "请选择分类!" }]}
+                rules={[{ required: true, message: '请选择分类!' }]}
               >
                 <Select
                   style={{ width: 300 }}
@@ -202,7 +202,7 @@ const TopicCreatePage = () => {
                   icon={null}
                   p="addons.meedu_topics.category.list"
                   onClick={() => {
-                    navigate("/topic/category/index");
+                    navigate('/topic/category/index')
                   }}
                   disabled={null}
                 />
@@ -212,7 +212,7 @@ const TopicCreatePage = () => {
           <Form.Item
             label="图文名称"
             name="title"
-            rules={[{ required: true, message: "请输入图文名称!" }]}
+            rules={[{ required: true, message: '请输入图文名称!' }]}
           >
             <Input
               style={{ width: 300 }}
@@ -223,20 +223,21 @@ const TopicCreatePage = () => {
           <Form.Item
             label="图文封面"
             name="thumb"
-            rules={[{ required: true, message: "请上传图文封面!" }]}
+            rules={[{ required: true, message: '请上传图文封面!' }]}
           >
             <Space align="baseline" style={{ height: 32 }}>
               <Form.Item
                 name="thumb"
-                rules={[{ required: true, message: "请上传图文封面!" }]}
+                rules={[{ required: true, message: '请上传图文封面!' }]}
               >
                 <UploadImageButton
                   text="选择图片"
                   onSelected={(url) => {
-                    form.setFieldsValue({ thumb: url });
-                    setThumb(url);
+                    form.setFieldsValue({ thumb: url })
+                    setThumb(url)
                   }}
-                ></UploadImageButton>
+                >
+                </UploadImageButton>
               </Form.Item>
               <div className="ml-10">
                 <HelperText text="建议尺寸400x300 宽高比4:3"></HelperText>
@@ -254,7 +255,8 @@ const TopicCreatePage = () => {
                     width: 200,
                     height: 150,
                   }}
-                ></div>
+                >
+                </div>
               </Col>
             </Row>
           )}
@@ -265,12 +267,12 @@ const TopicCreatePage = () => {
             <Form.Item
               label="价格"
               name="charge"
-              rules={[{ required: true, message: "请输入价格!" }]}
+              rules={[{ required: true, message: '请输入价格!' }]}
             >
               <Space align="baseline" style={{ height: 32 }}>
                 <Form.Item
                   name="charge"
-                  rules={[{ required: true, message: "请输入价格!" }]}
+                  rules={[{ required: true, message: '请输入价格!' }]}
                 >
                   <Input
                     style={{ width: 300 }}
@@ -278,7 +280,7 @@ const TopicCreatePage = () => {
                     allowClear
                     type="number"
                     onChange={(e) => {
-                      setCharge(Number(e.target.value));
+                      setCharge(Number(e.target.value))
                     }}
                   />
                 </Form.Item>
@@ -304,7 +306,7 @@ const TopicCreatePage = () => {
             <Space align="baseline" style={{ height: 32 }}>
               <Form.Item
                 name="sorted_at"
-                rules={[{ required: true, message: "请选择上架时间!" }]}
+                rules={[{ required: true, message: '请选择上架时间!' }]}
               >
                 <DatePicker
                   format="YYYY-MM-DD HH:mm"
@@ -333,31 +335,35 @@ const TopicCreatePage = () => {
               <Form.Item
                 label="免费内容"
                 name="free_content"
-                rules={[{ required: true, message: "请输入付费内容!" }]}
+                rules={[{ required: true, message: '请输入付费内容!' }]}
                 style={{ height: 840 }}
               >
                 <div className="flex flex-row">
                   <div className="w-800px">
-                    {editor === "MARKDOWN" ? (
-                      <MdEditor
-                        height={800}
-                        defautValue=""
-                        setContent={(value: string, renderValue: string) => {
-                          form.setFieldsValue({ free_content: value });
-                          setFreeRenderValue(renderValue);
-                        }}
-                      ></MdEditor>
-                    ) : (
-                      <QuillEditor
-                        mode=""
-                        height={800}
-                        defautValue=""
-                        isFormula={false}
-                        setContent={(value: string) => {
-                          form.setFieldsValue({ free_content: value });
-                        }}
-                      ></QuillEditor>
-                    )}
+                    {editor === 'MARKDOWN'
+                      ? (
+                        <MdEditor
+                          height={800}
+                          defautValue=""
+                          setContent={(value: string, renderValue: string) => {
+                            form.setFieldsValue({ free_content: value })
+                            setFreeRenderValue(renderValue)
+                          }}
+                        >
+                        </MdEditor>
+                        )
+                      : (
+                        <QuillEditor
+                          mode=""
+                          height={800}
+                          defautValue=""
+                          isFormula={false}
+                          setContent={(value: string) => {
+                            form.setFieldsValue({ free_content: value })
+                          }}
+                        >
+                        </QuillEditor>
+                        )}
                   </div>
                   <div className="ml-30">
                     <Select
@@ -365,20 +371,20 @@ const TopicCreatePage = () => {
                       style={{ width: 150 }}
                       onChange={(e) => {
                         confirm({
-                          title: "警告",
+                          title: '警告',
                           icon: <ExclamationCircleFilled />,
-                          content: "切换编辑器将清空已编辑文章内容，是否切换？",
+                          content: '切换编辑器将清空已编辑文章内容，是否切换？',
                           centered: true,
-                          okText: "确认",
-                          cancelText: "取消",
+                          okText: '确认',
+                          cancelText: '取消',
                           onOk() {
-                            setCurrent(e);
-                            saveEditorKey(e);
+                            setCurrent(e)
+                            saveEditorKey(e)
                           },
                           onCancel() {
-                            console.log("Cancel");
+                            console.log('Cancel')
                           },
-                        });
+                        })
                       }}
                       placeholder="请选择"
                       options={tools}
@@ -389,31 +395,35 @@ const TopicCreatePage = () => {
               <Form.Item
                 label="付费内容"
                 name="original_content"
-                rules={[{ required: true, message: "请输入付费内容!" }]}
+                rules={[{ required: true, message: '请输入付费内容!' }]}
                 style={{ height: 840 }}
               >
                 <div className="flex flex-row">
                   <div className="w-800px">
-                    {editor === "MARKDOWN" ? (
-                      <MdEditor
-                        height={800}
-                        defautValue=""
-                        setContent={(value: string, renderValue: string) => {
-                          form.setFieldsValue({ original_content: value });
-                          setRenderValue(renderValue);
-                        }}
-                      ></MdEditor>
-                    ) : (
-                      <QuillEditor
-                        mode=""
-                        height={800}
-                        defautValue=""
-                        isFormula={false}
-                        setContent={(value: string) => {
-                          form.setFieldsValue({ original_content: value });
-                        }}
-                      ></QuillEditor>
-                    )}
+                    {editor === 'MARKDOWN'
+                      ? (
+                        <MdEditor
+                          height={800}
+                          defautValue=""
+                          setContent={(value: string, renderValue: string) => {
+                            form.setFieldsValue({ original_content: value })
+                            setRenderValue(renderValue)
+                          }}
+                        >
+                        </MdEditor>
+                        )
+                      : (
+                        <QuillEditor
+                          mode=""
+                          height={800}
+                          defautValue=""
+                          isFormula={false}
+                          setContent={(value: string) => {
+                            form.setFieldsValue({ original_content: value })
+                          }}
+                        >
+                        </QuillEditor>
+                        )}
                   </div>
                   <div className="ml-30">
                     <Select
@@ -421,20 +431,20 @@ const TopicCreatePage = () => {
                       style={{ width: 150 }}
                       onChange={(e) => {
                         confirm({
-                          title: "警告",
+                          title: '警告',
                           icon: <ExclamationCircleFilled />,
-                          content: "切换编辑器将清空已编辑文章内容，是否切换？",
+                          content: '切换编辑器将清空已编辑文章内容，是否切换？',
                           centered: true,
-                          okText: "确认",
-                          cancelText: "取消",
+                          okText: '确认',
+                          cancelText: '取消',
                           onOk() {
-                            setCurrent(e);
-                            saveEditorKey(e);
+                            setCurrent(e)
+                            saveEditorKey(e)
                           },
                           onCancel() {
-                            console.log("Cancel");
+                            console.log('Cancel')
                           },
-                        });
+                        })
                       }}
                       placeholder="请选择"
                       options={tools}
@@ -448,31 +458,35 @@ const TopicCreatePage = () => {
             <Form.Item
               label="文章内容"
               name="original_content"
-              rules={[{ required: true, message: "请输入文章内容!" }]}
+              rules={[{ required: true, message: '请输入文章内容!' }]}
               style={{ height: 840 }}
             >
               <div className="flex flex-row">
                 <div className="w-800px">
-                  {editor === "MARKDOWN" ? (
-                    <MdEditor
-                      height={800}
-                      defautValue=""
-                      setContent={(value: string, renderValue: string) => {
-                        form.setFieldsValue({ original_content: value });
-                        setRenderValue(renderValue);
-                      }}
-                    ></MdEditor>
-                  ) : (
-                    <QuillEditor
-                      mode=""
-                      height={800}
-                      defautValue=""
-                      isFormula={false}
-                      setContent={(value: string) => {
-                        form.setFieldsValue({ original_content: value });
-                      }}
-                    ></QuillEditor>
-                  )}
+                  {editor === 'MARKDOWN'
+                    ? (
+                      <MdEditor
+                        height={800}
+                        defautValue=""
+                        setContent={(value: string, renderValue: string) => {
+                          form.setFieldsValue({ original_content: value })
+                          setRenderValue(renderValue)
+                        }}
+                      >
+                      </MdEditor>
+                      )
+                    : (
+                      <QuillEditor
+                        mode=""
+                        height={800}
+                        defautValue=""
+                        isFormula={false}
+                        setContent={(value: string) => {
+                          form.setFieldsValue({ original_content: value })
+                        }}
+                      >
+                      </QuillEditor>
+                      )}
                 </div>
                 <div className="ml-30">
                   <Select
@@ -480,20 +494,20 @@ const TopicCreatePage = () => {
                     style={{ width: 150 }}
                     onChange={(e) => {
                       confirm({
-                        title: "警告",
+                        title: '警告',
                         icon: <ExclamationCircleFilled />,
-                        content: "切换编辑器将清空已编辑文章内容，是否切换？",
+                        content: '切换编辑器将清空已编辑文章内容，是否切换？',
                         centered: true,
-                        okText: "确认",
-                        cancelText: "取消",
+                        okText: '确认',
+                        cancelText: '取消',
                         onOk() {
-                          setCurrent(e);
-                          saveEditorKey(e);
+                          setCurrent(e)
+                          saveEditorKey(e)
                         },
                         onCancel() {
-                          console.log("Cancel");
+                          console.log('Cancel')
                         },
-                      });
+                      })
                     }}
                     placeholder="请选择"
                     options={tools}
@@ -523,7 +537,7 @@ const TopicCreatePage = () => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default TopicCreatePage;
+export default TopicCreatePage
