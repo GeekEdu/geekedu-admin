@@ -1,148 +1,152 @@
-import client from "./internal/httpClient";
+import client from './internal/httpClient'
 
 export function list(params: any) {
-  return client.get(`/backend/addons/meedu_books/book/index`, params);
+  return client.get(`/backend/addons/meedu_books/book/index`, params)
 }
 
 export function create() {
-  return client.get(`/backend/addons/meedu_books/book/create`, {});
+  return client.get(`/backend/addons/meedu_books/book/create`, {})
 }
 
 export function store(params: any) {
-  return client.post("/backend/addons/meedu_books/book/create", params);
+  return client.post('/backend/addons/meedu_books/book/create', params)
 }
 
 export function detail(id: number) {
-  return client.get(`/backend/addons/meedu_books/book/${id}`, {});
+  return client.get(`/backend/addons/meedu_books/book/${id}`, {})
 }
 
 export function destroy(id: number) {
-  return client.destroy(`/backend/addons/meedu_books/book/${id}`);
+  return client.destroy(`/backend/addons/meedu_books/book/${id}`)
 }
 
 export function update(id: number, params: any) {
-  return client.put(`/backend/addons/meedu_books/book/${id}`, params);
+  return client.put(`/backend/addons/meedu_books/book/${id}`, params)
 }
 
+// 返回电子书评论列表
 export function comments(params: any) {
-  return client.get(`/backend/addons/meedu_books/book_comment/index`, params);
+  return client.get(`/backend/addons/meedu_books/book_comment/index`, params)
 }
 
+// 批量删除电子书评论
 export function commentDestoryMulti(params: any) {
   return client.post(
     `/backend/addons/meedu_books/book_comment/destroy/multi`,
-    params
-  );
+    params,
+  )
 }
 
 export function commentMulti(params: any) {
   return client.post(
     `/backend/addons/meedu_books/book_comment/checked`,
-    params
-  );
+    params,
+  )
 }
 
 // 返回电子书列表
 export function categoryList(params: any) {
-  return client.get(`/label/api/category/getCategoryList`, params);
+  return client.get(`/label/api/category/getCategoryList`, params)
 }
 
 // 根据id删除指定电子书
 export function categoryDestroy(id: number) {
-  return client.post(`/label/api/category/delete/${id}`, {});
+  return client.post(`/label/api/category/delete/${id}`, {})
 }
 
 // 新增分类
 export function categoryStore(params: any) {
   return client.post(
-    "/label/api/category/add", 
-    params
-  );
+    '/label/api/category/add',
+    params,
+  )
 }
 
 // 根据id查看某一个分类
 export function categoryDetail(params: any) {
-  return client.get(`/label/api/category/getCategoryById`, params);
+  return client.get(`/label/api/category/getCategoryById`, params)
 }
 
 // 根据id更新分类
 export function categoryUpdate(id: number, params: any) {
-  return client.post(`/label/api/category/update/${id}`, params);
+  return client.post(`/label/api/category/update/${id}`, params)
 }
 
 export function articleList(params: any) {
-  return client.get(`/backend/addons/meedu_books/book_article/index`, params);
+  return client.get(`/backend/addons/meedu_books/book_article/index`, params)
 }
 
 export function articleCreate(params: any) {
-  return client.get(`/backend/addons/meedu_books/book_article/create`, params);
+  return client.get(`/backend/addons/meedu_books/book_article/create`, params)
 }
 
 export function articleDestroy(id: number) {
-  return client.destroy(`/backend/addons/meedu_books/book_article/${id}`);
+  return client.destroy(`/backend/addons/meedu_books/book_article/${id}`)
 }
 
 export function articleStore(params: any) {
-  return client.post("/backend/addons/meedu_books/book_article/create", params);
+  return client.post('/backend/addons/meedu_books/book_article/create', params)
 }
 
 export function articleDetail(id: number) {
-  return client.get(`/backend/addons/meedu_books/book_article/${id}`, {});
+  return client.get(`/backend/addons/meedu_books/book_article/${id}`, {})
 }
 
 export function articleUpdate(id: number, params: any) {
-  return client.put(`/backend/addons/meedu_books/book_article/${id}`, params);
+  return client.put(`/backend/addons/meedu_books/book_article/${id}`, params)
 }
 
+// 返回文章评论列表
 export function articleComments(params: any) {
   return client.get(
     `/backend/addons/meedu_books/article_comment/index`,
-    params
-  );
+    params,
+  )
 }
 
+// 批量删除评论
 export function articleCommentDestoryMulti(params: any) {
   return client.post(
     `/backend/addons/meedu_books/article_comment/destroy/multi`,
-    params
-  );
+    params,
+  )
 }
 
 export function articleCommentMulti(params: any) {
   return client.post(
     `/backend/addons/meedu_books/article_comment/checked`,
-    params
-  );
+    params,
+  )
 }
 
 export function userList(id: number, params: any) {
-  return client.get(`/backend/addons/meedu_books/book/${id}/users`, params);
+  return client.get(`/backend/addons/meedu_books/book/${id}/users`, params)
 }
 
 export function userDel(id: number, params: any) {
-  return client.post(`/backend/addons/meedu_books/book/${id}/user/del`, params);
+  return client.post(`/backend/addons/meedu_books/book/${id}/user/del`, params)
 }
 
 export function userAdd(id: number, params: any) {
-  return client.post(`/backend/addons/meedu_books/book/${id}/user/add`, params);
+  return client.post(`/backend/addons/meedu_books/book/${id}/user/add`, params)
 }
 
 export function chaptersList(params: any) {
-  return client.get(`/backend/addons/meedu_books/book_chapter/index`, params);
+  return client.get(`/backend/addons/meedu_books/book_chapter/index`, params)
 }
 
 export function chaptersDestroy(id: number) {
-  return client.destroy(`/backend/addons/meedu_books/book_chapter/${id}`);
+  return client.destroy(`/backend/addons/meedu_books/book_chapter/${id}`)
 }
 
 export function chaptersStore(params: any) {
-  return client.post(`/backend/addons/meedu_books/book_chapter/create`, params);
+  return client.post(`/backend/addons/meedu_books/book_chapter/create`, params)
 }
 
 export function chaptersDetail(id: number) {
-  return client.get(`/backend/addons/meedu_books/book_chapter/${id}`, {});
+  return client.get(`/backend/addons/meedu_books/book_chapter/${id}`, {})
 }
 
 export function chaptersUpdate(id: number, params: any) {
-  return client.put(`/backend/addons/meedu_books/book_chapter/${id}`, params);
+  return client.put(`/backend/addons/meedu_books/book_chapter/${id}`, params)
 }

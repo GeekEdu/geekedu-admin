@@ -209,7 +209,7 @@ function WendaPage() {
   const columns: ColumnsType<DataType> = [
     {
       title: '分类',
-      width: 200,
+      width: 100,
       render: (_, record: any) => <span>{record?.category?.name || '-'}</span>,
     },
     {
@@ -231,9 +231,33 @@ function WendaPage() {
     },
     {
       title: '标题',
-      width: 500,
+      width: 400,
       dataIndex: 'title',
       render: (title: string) => <span>{title}</span>,
+    },
+    {
+      title: '地区',
+      width: 100,
+      render: (_, record: any) => (
+        <>
+          {record.user && (
+            <span>{record?.user.province.split('|')[0]}</span>
+          )}
+          {!record.user && <span className="c-red">地区不存在</span>}
+        </>
+      ),
+    },
+    {
+      title: '浏览器',
+      width: 100,
+      render: (_, record: any) => (
+        <>
+          {record.user && (
+            <span>{record?.user.browser}</span>
+          )}
+          {!record.user && <span className="c-red">未知浏览器</span>}
+        </>
+      ),
     },
     {
       title: '浏览',

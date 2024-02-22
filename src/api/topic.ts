@@ -30,14 +30,17 @@ export function update(id: number, params: any) {
   return client.post(`/book/api/imageText/update/${id}`, params)
 }
 
+// 返回图文评论列表
 export function comments(params: any) {
   return client.get(`/backend/addons/meedu_topics/comment`, params)
 }
 
+// 根据id删除图文
 export function commentDestory(id: number) {
   return client.destroy(`/backend/addons/meedu_topics/comment/${id}`)
 }
 
+//
 export function commentMulti(params: any) {
   return client.post(`/backend/addons/meedu_topics/comment/check`, params)
 }

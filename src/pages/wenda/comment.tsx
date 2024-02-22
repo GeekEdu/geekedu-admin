@@ -62,12 +62,12 @@ function WendaCommentPage() {
   const columns: ColumnsType<DataType> = [
     {
       title: 'ID',
-      width: 120,
+      width: 40,
       render: (_, record: any) => <span>{record.id}</span>,
     },
     {
       title: '学员ID',
-      width: 120,
+      width: 200,
       dataIndex: 'userId',
       render: (userId: number) => <span>{userId}</span>,
     },
@@ -92,6 +92,30 @@ function WendaCommentPage() {
       title: '内容',
       width: 500,
       render: (_, record: any) => <div>{record.content}</div>,
+    },
+    {
+      title: '地区',
+      width: 100,
+      render: (_, record: any) => (
+        <>
+          {record.user && (
+            <span>{record?.user.province.split('|')[0]}</span>
+          )}
+          {!record.user && <span className="c-red">地区不存在</span>}
+        </>
+      ),
+    },
+    {
+      title: '浏览器',
+      width: 100,
+      render: (_, record: any) => (
+        <>
+          {record.user && (
+            <span>{record?.user.browser}</span>
+          )}
+          {!record.user && <span className="c-red">未知浏览器</span>}
+        </>
+      ),
     },
     {
       title: '时间',
