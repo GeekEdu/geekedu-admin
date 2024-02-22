@@ -48,11 +48,12 @@ function BookArticleCommentsPage() {
     setLoading(true)
     book
       .articleComments({
-        page,
-        size,
-        user_id,
+        pageNum: page,
+        pageSize: size,
+        user_id: null,
         article_id: null,
-        created_at,
+        cType: 'E_BOOK_ARTICLE',
+        createdTime: created_at.join(','),
       })
       .then((res: any) => {
         setList(res.data.data.data)
@@ -198,11 +199,10 @@ function BookArticleCommentsPage() {
         <div className="d-flex">
           <RangePicker
             disabledDate={disabledDate}
-            format="YYYY-MM-DD"
+            format="YYYY-MM-DD HH:mm:ss"
             value={createdAts}
             style={{ marginLeft: 10 }}
             onChange={(date, dateString) => {
-              dateString[1] += ' 23:59:59'
               setCreatedAt(dateString)
               setCreatedAts(date)
             }}

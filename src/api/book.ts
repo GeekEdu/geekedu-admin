@@ -26,7 +26,7 @@ export function update(id: number, params: any) {
 
 // 返回电子书评论列表
 export function comments(params: any) {
-  return client.get(`/backend/addons/meedu_books/book_comment/index`, params)
+  return client.get(`/ask/api/comments/getCommentsPage`, params)
 }
 
 // 批量删除电子书评论
@@ -99,7 +99,7 @@ export function articleUpdate(id: number, params: any) {
 // 返回文章评论列表
 export function articleComments(params: any) {
   return client.get(
-    `/backend/addons/meedu_books/article_comment/index`,
+    `/ask/api/comments/getCommentsPage`,
     params,
   )
 }

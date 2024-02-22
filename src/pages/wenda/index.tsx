@@ -107,7 +107,7 @@ function WendaPage() {
         userId: user_id,
         categoryId: category_id,
         status,
-        created_at,
+        createdTime: created_at.join(','),
         keywords,
       })
       .then((res: any) => {
@@ -501,7 +501,7 @@ function WendaPage() {
                 options={statusTypes}
               />
               <RangePicker
-                format="YYYY-MM-DD"
+                format="YYYY-MM-DD HH:mm:ss"
                 value={createdAts}
                 style={{ marginTop: 20 }}
                 onChange={(date, dateString) => {

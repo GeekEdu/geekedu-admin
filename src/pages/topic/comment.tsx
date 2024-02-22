@@ -47,11 +47,12 @@ function TopicCommentsPage() {
     setLoading(true)
     topic
       .comments({
-        page,
-        size,
-        user_id,
-        topic_id: null,
-        created_at,
+        pageNum: page,
+        pageSize: size,
+        cType: 'IMAGE_TEXT',
+        // user_id: null,
+        // topic_id: null,
+        createdTime: created_at.join(','),
       })
       .then((res: any) => {
         setList(res.data.data.data)
@@ -193,10 +194,9 @@ function TopicCommentsPage() {
         <div className="d-flex">
           <RangePicker
             disabledDate={disabledDate}
-            format="YYYY-MM-DD"
+            format="YYYY-MM-DD HH:mm:ss"
             value={createdAts}
             onChange={(date, dateString) => {
-              dateString[1] += ' 23:59:59'
               setCreatedAt(dateString)
               setCreatedAts(date)
             }}

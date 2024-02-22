@@ -32,7 +32,7 @@ export function update(id: number, params: any) {
 
 // 返回图文评论列表
 export function comments(params: any) {
-  return client.get(`/backend/addons/meedu_topics/comment`, params)
+  return client.get(`/ask/api/comments/getCommentsPage`, params)
 }
 
 // 根据id删除图文
