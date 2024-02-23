@@ -32,7 +32,7 @@ export function comments(params: any) {
 // 批量删除电子书评论
 export function commentDestoryMulti(params: any) {
   return client.post(
-    `/backend/addons/meedu_books/book_comment/destroy/multi`,
+    `/ask/api/comments/deleteBatch`,
     params,
   )
 }
@@ -104,10 +104,10 @@ export function articleComments(params: any) {
   )
 }
 
-// 批量删除评论
+// 批量删除文章评论
 export function articleCommentDestoryMulti(params: any) {
   return client.post(
-    `/backend/addons/meedu_books/article_comment/destroy/multi`,
+    `/ask/api/comments/delete/batch`,
     params,
   )
 }

@@ -55,8 +55,8 @@ function TopicCommentsPage() {
         createdTime: created_at.join(','),
       })
       .then((res: any) => {
-        setList(res.data.data.data)
-        setTotal(res.data.data.total)
+        setList(res.data.data)
+        setTotal(res.data.total)
         setLoading(false)
       })
       .catch((e) => {
@@ -138,7 +138,7 @@ function TopicCommentsPage() {
               <div className="avatar">
                 <img src={record.user.avatar} width="40" height="40" />
               </div>
-              <div className="ml-10">{record.user.nick_name}</div>
+              <div className="ml-10">{record.user.userName}</div>
             </div>
           )}
           {!record.user && <span className="c-red">学员不存在</span>}
@@ -161,8 +161,8 @@ function TopicCommentsPage() {
     {
       title: '时间',
       width: 200,
-      dataIndex: 'updated_at',
-      render: (updated_at: string) => <span>{dateFormat(updated_at)}</span>,
+      dataIndex: 'createdTime',
+      render: (createdTime: string) => <span>{dateFormat(createdTime)}</span>,
     },
     {
       title: '操作',

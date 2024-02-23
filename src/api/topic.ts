@@ -35,12 +35,11 @@ export function comments(params: any) {
   return client.get(`/ask/api/comments/getCommentsPage`, params)
 }
 
-// 根据id删除图文
+// 根据id删除图文评论
 export function commentDestory(id: number) {
-  return client.destroy(`/backend/addons/meedu_topics/comment/${id}`)
+  return client.post(`/ask/api/comments/delete/${id}?cType=IMAGE_TEXT`, {})
 }
 
-//
 export function commentMulti(params: any) {
   return client.post(`/backend/addons/meedu_topics/comment/check`, params)
 }

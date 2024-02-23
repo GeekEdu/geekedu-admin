@@ -84,7 +84,10 @@ function BookCommentsPage() {
 
         setLoading(true)
         book
-          .commentDestoryMulti({ ids: selectedRowKeys })
+          .commentDestoryMulti({
+            ids: selectedRowKeys,
+            cType: 'E_BOOK',
+          })
           .then(() => {
             setLoading(false)
             message.success('成功')
