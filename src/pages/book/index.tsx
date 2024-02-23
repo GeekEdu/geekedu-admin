@@ -1,131 +1,132 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from 'react'
 import {
-  Table,
-  Modal,
-  message,
-  Input,
   Button,
-  Space,
   Dropdown,
+  Input,
+  Modal,
   Select,
-} from "antd";
-import type { MenuProps } from "antd";
-import { useNavigate } from "react-router-dom";
-import type { ColumnsType } from "antd/es/table";
-import { useDispatch, useSelector } from "react-redux";
-import { book } from "../../api/index";
-import { DownOutlined } from "@ant-design/icons";
-import { titleAction } from "../../store/user/loginUserSlice";
-import { PerButton, ThumbBar, OptionBar } from "../../components";
-import { dateFormat } from "../../utils/index";
-import { ExclamationCircleFilled } from "@ant-design/icons";
-const { confirm } = Modal;
+  Space,
+  Table,
+  message,
+} from 'antd'
+import type { MenuProps } from 'antd'
+import { useNavigate } from 'react-router-dom'
+import type { ColumnsType } from 'antd/es/table'
+import { useDispatch, useSelector } from 'react-redux'
+import { DownOutlined, ExclamationCircleFilled } from '@ant-design/icons'
+import { book } from '../../api/index'
+import { titleAction } from '../../store/user/loginUserSlice'
+import { OptionBar, PerButton, ThumbBar } from '../../components'
+import { dateFormat } from '../../utils/index'
+
+const { confirm } = Modal
 
 interface DataType {
-  id: React.Key;
-  published_at: string;
+  id: React.Key
+  published_at: string
 }
 
-const BookPage = () => {
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const [loading, setLoading] = useState<boolean>(false);
-  const [list, setList] = useState<any>([]);
-  const [page, setPage] = useState(1);
-  const [size, setSize] = useState(10);
-  const [total, setTotal] = useState(0);
-  const [refresh, setRefresh] = useState(false);
-  const [keywords, setKeywords] = useState<string>("");
-  const [category_id, setCategoryId] = useState([]);
-  const [categories, setCategories] = useState<any>([]);
+function BookPage() {
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
+  const [loading, setLoading] = useState<boolean>(false)
+  const [list, setList] = useState<any>([])
+  const [page, setPage] = useState(1)
+  const [size, setSize] = useState(10)
+  const [total, setTotal] = useState(0)
+  const [refresh, setRefresh] = useState(false)
+  const [keywords, setKeywords] = useState<string>('')
+  const [category_id, setCategoryId] = useState([])
+  const [categories, setCategories] = useState<any>([])
 
   useEffect(() => {
-    document.title = "电子书";
-    dispatch(titleAction("电子书"));
-  }, []);
+    document.title = '电子书'
+    dispatch(titleAction('电子书'))
+  }, [])
 
   useEffect(() => {
-    getData();
-  }, [page, size, refresh]);
+    getData()
+  }, [page, size, refresh])
 
   const getData = () => {
-    if (loading) {
-      return;
-    }
-    setLoading(true);
+    if (loading)
+      return
+
+    setLoading(true)
     book
       .list({
-        page: page,
-        size: size,
-        sort: "id",
-        order: "desc",
-        key: keywords,
-        cid: category_id,
+        pageNum: page,
+        pageSize: size,
+        sort: 'id',
+        order: 'desc',
+        keywords,
+        categoryId: category_id,
       })
       .then((res: any) => {
-        setList(res.data.data.data);
-        setTotal(res.data.data.total);
-        let categories = res.data.categories;
-        const box: any = [];
+        setList(res.data.data.data)
+        setTotal(res.data.data.total)
+        const categories = res.data.categories
+        const box: any = []
         for (let i = 0; i < categories.length; i++) {
           box.push({
             label: categories[i].name,
             value: categories[i].id,
-          });
+          })
         }
-        setCategories(box);
-        setLoading(false);
+        setCategories(box)
+        setLoading(false)
       })
       .catch((e) => {
-        setLoading(false);
-      });
-  };
+        setLoading(false)
+      })
+  }
 
   const resetList = () => {
-    setPage(1);
-    setSize(10);
-    setList([]);
-    setKeywords("");
-    setCategoryId([]);
-    setRefresh(!refresh);
-  };
+    setPage(1)
+    setSize(10)
+    setList([])
+    setKeywords('')
+    setCategoryId([])
+    setRefresh(!refresh)
+  }
 
   const paginationProps = {
-    current: page, //当前页码
+    current: page, // 当前页码
     pageSize: size,
-    total: total, // 总条数
+    total, // 总条数
     onChange: (page: number, pageSize: number) =>
-      handlePageChange(page, pageSize), //改变页码的函数
+      handlePageChange(page, pageSize), // 改变页码的函数
     showSizeChanger: true,
-  };
+  }
 
   const handlePageChange = (page: number, pageSize: number) => {
-    setPage(page);
-    setSize(pageSize);
-  };
+    setPage(page)
+    setSize(pageSize)
+  }
 
   const columns: ColumnsType<DataType> = [
     {
-      title: "ID",
-      width: "6%",
+      title: 'ID',
+      width: '6%',
       render: (_, record: any) => <span>{record.id}</span>,
     },
     {
-      title: "电子书",
-      width: "27%",
+      title: '电子书',
+      width: '27%',
       render: (_, record: any) => (
         <ThumbBar
           width={90}
-          value={record.thumb}
+          value={record.coverLink}
           height={120}
           title={record.name}
           border={4}
-        ></ThumbBar>
+        >
+        </ThumbBar>
       ),
     },
     {
-      title: "分类",
-      width: "10%",
+      title: '分类',
+      width: '10%',
       render: (_, record: any) => (
         <>
           {record.category && <span>{record?.category?.name || '-'}</span>}
@@ -134,45 +135,60 @@ const BookPage = () => {
       ),
     },
     {
-      title: "价格",
-      width: "7%",
-      render: (_, record: any) => <span>{record.charge}元</span>,
-    },
-    {
-      title: "销量",
-      width: "7%",
-      render: (_, record: any) => <span>{record.user_count}</span>,
-    },
-    {
-      title: "阅读",
-      width: "7%",
-      render: (_, record: any) => <span>{record.view_times}次</span>,
-    },
-    {
-      title: "上架时间",
-      width: "14%",
+      title: '价格',
+      width: '7%',
       render: (_, record: any) => (
-        <span>{dateFormat(record.published_at)}</span>
+        <span>
+          {record.price}
+          元
+        </span>
       ),
     },
     {
-      title: "是否显示",
-      width: "8%",
+      title: '销量',
+      width: '7%',
+      render: (_, record: any) => <span>{record.sellCount}</span>,
+    },
+    {
+      title: '阅读',
+      width: '7%',
+      render: (_, record: any) => (
+        <span>
+          {record.readCount}
+          次
+        </span>
+      ),
+    },
+    {
+      title: '收藏',
+      width: '7%',
+      render: (_, record: any) => <span>{record.collectCount}</span>,
+    },
+    {
+      title: '上架时间',
+      width: '14%',
+      render: (_, record: any) => (
+        <span>{dateFormat(record.groundingTime)}</span>
+      ),
+    },
+    {
+      title: '是否显示',
+      width: '8%',
       render: (_, record: any) => (
         <>
-          {record.is_show === 1 && <span className="c-green">· 显示</span>}
-          {record.is_show !== 1 && <span className="c-red">· 隐藏</span>}
+          {record.isShow && <span className="c-green">· 显示</span>}
+          {!record.isShow && <span className="c-red">· 隐藏</span>}
         </>
       ),
     },
     {
-      title: "操作",
-      width: "14%",
-      fixed: "right",
+      title: '操作',
+      width: '14%',
+      fixed: 'right',
       render: (_, record: any) => {
-        const items: MenuProps["items"] = [
+        const items: MenuProps['items'] = [
           {
-            key: "1",
+            key: '1',
             label: (
               <PerButton
                 type="link"
@@ -181,14 +197,14 @@ const BookPage = () => {
                 icon={null}
                 p="addons.meedu_books.book.update"
                 onClick={() => {
-                  navigate("/meedubook/book/update?id=" + record.id);
+                  navigate(`/meedubook/book/update?id=${record.id}`)
                 }}
                 disabled={null}
               />
             ),
           },
           {
-            key: "2",
+            key: '2',
             label: (
               <PerButton
                 type="link"
@@ -197,13 +213,13 @@ const BookPage = () => {
                 icon={null}
                 p="addons.meedu_books.book.delete"
                 onClick={() => {
-                  destory(record.id);
+                  destory(record.id)
                 }}
                 disabled={null}
               />
             ),
           },
-        ];
+        ]
         return (
           <Space>
             <PerButton
@@ -214,11 +230,11 @@ const BookPage = () => {
               p="addons.meedu_books.book_article.list"
               onClick={() => {
                 navigate(
-                  "/meedubook/article/index?bid=" +
-                    record.id +
-                    "&title=" +
-                    record.name
-                );
+                  `/meedubook/article/index?bid=${
+                  record.id
+                     }&title=${
+                     record.name}`,
+                )
               }}
               disabled={null}
             />
@@ -229,7 +245,7 @@ const BookPage = () => {
               icon={null}
               p="addons.meedu_books.book.users"
               onClick={() => {
-                navigate("/meedubook/book/users?bid=" + record.id);
+                navigate(`/meedubook/book/users?bid=${record.id}`)
               }}
               disabled={null}
             />
@@ -237,7 +253,7 @@ const BookPage = () => {
               <Button
                 type="link"
                 className="c-primary"
-                onClick={(e) => e.preventDefault()}
+                onClick={e => e.preventDefault()}
               >
                 <Space size="small" align="center">
                   更多
@@ -246,49 +262,49 @@ const BookPage = () => {
               </Button>
             </Dropdown>
           </Space>
-        );
+        )
       },
     },
-  ];
+  ]
 
   const resetData = () => {
-    setPage(1);
-    setList([]);
-    setRefresh(!refresh);
-  };
+    setPage(1)
+    setList([])
+    setRefresh(!refresh)
+  }
 
   const destory = (id: number) => {
-    if (id === 0) {
-      return;
-    }
+    if (id === 0)
+      return
+
     confirm({
-      title: "操作确认",
+      title: '操作确认',
       icon: <ExclamationCircleFilled />,
-      content: "确认删除此电子书？",
+      content: '确认删除此电子书？',
       centered: true,
-      okText: "确认",
-      cancelText: "取消",
+      okText: '确认',
+      cancelText: '取消',
       onOk() {
-        if (loading) {
-          return;
-        }
-        setLoading(true);
+        if (loading)
+          return
+
+        setLoading(true)
         book
           .destroy(id)
           .then(() => {
-            setLoading(false);
-            message.success("删除成功");
-            resetData();
+            setLoading(false)
+            message.success('删除成功')
+            resetData()
           })
           .catch((e) => {
-            setLoading(false);
-          });
+            setLoading(false)
+          })
       },
       onCancel() {
-        console.log("Cancel");
+        console.log('Cancel')
       },
-    });
-  };
+    })
+  }
 
   return (
     <div className="geekedu-main-body">
@@ -300,7 +316,7 @@ const BookPage = () => {
             class=""
             icon={null}
             p="addons.meedu_books.book.store"
-            onClick={() => navigate("/meedubook/book/create")}
+            onClick={() => navigate('/meedubook/book/create')}
             disabled={null}
           />
           <PerButton
@@ -309,7 +325,7 @@ const BookPage = () => {
             class="ml-10"
             icon={null}
             p="addons.meedu_books.book_category.list"
-            onClick={() => navigate("/meedubook/category/index")}
+            onClick={() => navigate('/meedubook/category/index')}
             disabled={null}
           />
           <PerButton
@@ -318,7 +334,7 @@ const BookPage = () => {
             class="ml-10"
             icon={null}
             p="addons.meedu_books.book.comments.list"
-            onClick={() => navigate("/meedubook/book/comment")}
+            onClick={() => navigate('/meedubook/book/comment')}
             disabled={null}
           />
           <PerButton
@@ -327,19 +343,20 @@ const BookPage = () => {
             class="ml-10"
             icon={null}
             p="addons.meedu_books.book_article.comments.list"
-            onClick={() => navigate("/meedubook/article/comment")}
+            onClick={() => navigate('/meedubook/article/comment')}
             disabled={null}
           />
           <OptionBar
             text="电子书推荐"
             value="/system/bookConfig?referer=%2Fmeedubook%2Fbook%2Findex"
-          ></OptionBar>
+          >
+          </OptionBar>
         </div>
         <div className="d-flex">
           <Input
             value={keywords}
             onChange={(e) => {
-              setKeywords(e.target.value);
+              setKeywords(e.target.value)
             }}
             allowClear
             style={{ width: 150 }}
@@ -349,7 +366,7 @@ const BookPage = () => {
             style={{ width: 150, marginLeft: 10 }}
             value={category_id}
             onChange={(e) => {
-              setCategoryId(e);
+              setCategoryId(e)
             }}
             allowClear
             placeholder="分类"
@@ -362,8 +379,8 @@ const BookPage = () => {
             className="ml-10"
             type="primary"
             onClick={() => {
-              setPage(1);
-              setRefresh(!refresh);
+              setPage(1)
+              setRefresh(!refresh)
             }}
           >
             筛选
@@ -375,12 +392,12 @@ const BookPage = () => {
           loading={loading}
           columns={columns}
           dataSource={list}
-          rowKey={(record) => record.id}
+          rowKey={record => record.id}
           pagination={paginationProps}
         />
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default BookPage;
+export default BookPage
