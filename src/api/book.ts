@@ -83,24 +83,29 @@ export function articleList(params: any) {
   return client.get(`/book/api/eBook/article/list`, params)
 }
 
+// 文章章节列表
 export function articleCreate(params: any) {
-  return client.get(`/backend/addons/meedu_books/book_article/create`, params)
+  return client.get(`/book/api/eBook/chapter/list`, params)
 }
 
+// 根据id删除文章
 export function articleDestroy(id: number) {
-  return client.destroy(`/backend/addons/meedu_books/book_article/${id}`)
+  return client.post(`/book/api/eBook/article/delete/${id}`, {})
 }
 
+// 新建文章
 export function articleStore(params: any) {
-  return client.post('/backend/addons/meedu_books/book_article/create', params)
+  return client.post('/book/api/eBook/article/add', params)
 }
 
+// 根据id查看文章明细
 export function articleDetail(id: number) {
-  return client.get(`/backend/addons/meedu_books/book_article/${id}`, {})
+  return client.get(`/book/api/eBook/getEBookArticleById/${id}`, {})
 }
 
+// 更新文章
 export function articleUpdate(id: number, params: any) {
-  return client.put(`/backend/addons/meedu_books/book_article/${id}`, params)
+  return client.post(`/book/api/eBook/article/update/${id}`, params)
 }
 
 // 返回文章评论列表
@@ -143,18 +148,22 @@ export function chaptersList(params: any) {
   return client.get(`/book/api/eBook/chapter/list`, params)
 }
 
+// 根据id删除章节
 export function chaptersDestroy(id: number) {
-  return client.destroy(`/backend/addons/meedu_books/book_chapter/${id}`)
+  return client.post(`/book/api/eBook/chapter/delete/${id}`, {})
 }
 
+// 新增章节
 export function chaptersStore(params: any) {
-  return client.post(`/backend/addons/meedu_books/book_chapter/create`, params)
+  return client.post(`/book/api/eBook/chapter/add`, params)
 }
 
+// 根据id查看章节明细
 export function chaptersDetail(id: number) {
-  return client.get(`/backend/addons/meedu_books/book_chapter/${id}`, {})
+  return client.get(`/book/api/eBook/chapter/${id}`, {})
 }
 
+// 更新章节
 export function chaptersUpdate(id: number, params: any) {
-  return client.put(`/backend/addons/meedu_books/book_chapter/${id}`, params)
+  return client.post(`/book/api/eBook/chapter/update/${id}`, params)
 }

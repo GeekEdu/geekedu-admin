@@ -1,147 +1,146 @@
-import { useState, useEffect } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useEffect, useState } from 'react'
+import { useLocation, useNavigate } from 'react-router-dom'
 import {
   Button,
-  Input,
-  message,
-  Modal,
-  Form,
   DatePicker,
-  Switch,
-  Space,
+  Form,
+  Input,
+  Modal,
   Select,
-} from "antd";
-import { useDispatch, useSelector } from "react-redux";
-import { book } from "../../../api/index";
-import { titleAction } from "../../../store/user/loginUserSlice";
+  Space,
+  Switch,
+  message,
+} from 'antd'
+import { useDispatch, useSelector } from 'react-redux'
+import { ExclamationCircleFilled } from '@ant-design/icons'
+import moment from 'moment'
+import { book } from '../../../api/index'
+import { titleAction } from '../../../store/user/loginUserSlice'
 import {
   BackBartment,
-  PerButton,
   HelperText,
-  QuillEditor,
   MdEditor,
-} from "../../../components";
-import { getEditorKey, saveEditorKey } from "../../../utils/index";
-import { ExclamationCircleFilled } from "@ant-design/icons";
-const { confirm } = Modal;
-import moment from "moment";
+  PerButton,
+  QuillEditor,
+} from '../../../components'
+import { getEditorKey, saveEditorKey } from '../../../utils/index'
 
-const BookArticleCreatePage = () => {
-  const result = new URLSearchParams(useLocation().search);
-  const [form] = Form.useForm();
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const [loading, setLoading] = useState<boolean>(false);
-  const [categories, setCategories] = useState<any>([]);
-  const [charge, setCharge] = useState(0);
-  const [current, setCurrent] = useState("");
-  const [editor, setEditor] = useState("");
-  const [renderValue, setRenderValue] = useState("");
-  const [bid, setBid] = useState(Number(result.get("book_id")));
+const { confirm } = Modal
+
+function BookArticleCreatePage() {
+  const result = new URLSearchParams(useLocation().search)
+  const [form] = Form.useForm()
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
+  const [loading, setLoading] = useState<boolean>(false)
+  const [categories, setCategories] = useState<any>([])
+  const [tryFree, setTryFree] = useState(false)
+  const [current, setCurrent] = useState('')
+  const [editor, setEditor] = useState('')
+  const [renderValue, setRenderValue] = useState('')
+  const [bid, setBid] = useState(Number(result.get('book_id')))
   const tools = [
-    { label: "Markdown", value: "markdown" },
-    { label: "富文本编辑器", value: "quill" },
-  ];
+    { label: 'Markdown', value: 'markdown' },
+    { label: '富文本编辑器', value: 'quill' },
+  ]
 
   useEffect(() => {
-    document.title = "添加电子书文章";
-    dispatch(titleAction("添加电子书文章"));
+    document.title = '添加电子书文章'
+    dispatch(titleAction('添加电子书文章'))
     form.setFieldsValue({
-      book_cid: [],
-      is_show: 1,
-      trySee: 0,
-    });
+      chapterId: [],
+      isShow: true,
+      isFreeRead: false,
+    })
     if (bid) {
-      getParams();
-      getBook();
+      getParams()
+      getBook()
     }
-  }, [bid]);
+  }, [bid])
 
   useEffect(() => {
-    setBid(Number(result.get("book_id")));
-  }, [result.get("book_id")]);
+    setBid(Number(result.get('book_id')))
+  }, [result.get('book_id')])
 
   useEffect(() => {
-    let localCurrent = getEditorKey();
-    if (localCurrent === "markdown") {
-      setEditor("MARKDOWN");
-    } else {
-      setEditor("FULLEDITOR");
-    }
-    let current = localCurrent ? localCurrent : "quill";
-    setCurrent(current);
-  }, [getEditorKey()]);
+    const localCurrent = getEditorKey()
+    if (localCurrent === 'markdown')
+      setEditor('MARKDOWN')
+    else
+      setEditor('RICHTEXT')
+
+    const current = localCurrent || 'quill'
+    setCurrent(current)
+  }, [getEditorKey()])
 
   const getParams = () => {
-    book.articleCreate({}).then((res: any) => {
-      let categories = res.data.chapters[bid];
+    book.articleCreate({ bookId: bid }).then((res: any) => {
+      const categories = res.data
       if (categories) {
-        const box: any = [];
+        const box: any = []
         for (let i = 0; i < categories.length; i++) {
           box.push({
             label: categories[i].name,
             value: categories[i].id,
-          });
+          })
         }
-        setCategories(box);
+        setCategories(box)
       }
-    });
-  };
+    })
+  }
 
   const getBook = () => {
     book.detail(bid).then((res: any) => {
-      setCharge(res.data.charge);
-    });
-  };
+      setTryFree(res.data.price > 0)
+    })
+  }
 
   const onFinish = (values: any) => {
-    if (loading) {
-      return;
-    }
+    if (loading)
+      return
 
-    if (getEditorKey() === "markdown") {
-      values.editor = "MARKDOWN";
-      values.render_content = renderValue;
-    } else {
-      values.editor = "FULLEDITOR";
-      values.render_content = values.original_content;
+    if (getEditorKey() === 'markdown') {
+      values.editor = 'MARKDOWN'
+      values.renderContent = renderValue
     }
-    values.bid = bid;
-    values.published_at = moment(new Date(values.published_at)).format(
-      "YYYY-MM-DD HH:mm"
-    );
-    setLoading(true);
+    else {
+      values.editor = 'FULLEDITOR'
+      values.renderContent = values.originalContent
+    }
+    values.bookId = bid
+    values.groundingTime = moment(new Date(values.groundingTime)).format(
+      'YYYY-MM-DD HH:mm:ss',
+    )
+    setLoading(true)
     book
       .articleStore(values)
       .then((res: any) => {
-        setLoading(false);
-        message.success("保存成功！");
-        navigate(-1);
+        setLoading(false)
+        message.success('保存成功！')
+        navigate(-1)
       })
       .catch((e) => {
-        setLoading(false);
-      });
-  };
+        setLoading(false)
+      })
+  }
 
   const onFinishFailed = (errorInfo: any) => {
-    console.log("Failed:", errorInfo);
-  };
+    console.log('Failed:', errorInfo)
+  }
 
   const onSwitch = (checked: boolean) => {
-    if (checked) {
-      form.setFieldsValue({ is_show: 1 });
-    } else {
-      form.setFieldsValue({ is_show: 0 });
-    }
-  };
+    if (checked)
+      form.setFieldsValue({ isShow: true })
+    else
+      form.setFieldsValue({ isShow: false })
+  }
 
   const isVipChange = (checked: boolean) => {
-    if (checked) {
-      form.setFieldsValue({ trySee: 1 });
-    } else {
-      form.setFieldsValue({ trySee: 0 });
-    }
-  };
+    if (checked)
+      form.setFieldsValue({ isFreeRead: true })
+    else
+      form.setFieldsValue({ isFreeRead: false })
+  }
 
   return (
     <div className="geekedu-main-body">
@@ -157,9 +156,9 @@ const BookArticleCreatePage = () => {
           onFinishFailed={onFinishFailed}
           autoComplete="off"
         >
-          <Form.Item name="book_cid" label="章节">
+          <Form.Item name="chapterId" label="章节">
             <Space align="baseline" style={{ height: 32 }}>
-              <Form.Item name="book_cid">
+              <Form.Item name="chapterId">
                 <Select
                   style={{ width: 300 }}
                   allowClear
@@ -175,7 +174,7 @@ const BookArticleCreatePage = () => {
                   icon={null}
                   p="addons.meedu_books.book_chapter.list"
                   onClick={() => {
-                    navigate("/meedubook/chapter/index?bid=" + bid);
+                    navigate(`/meedubook/chapter/index?bid=${bid}`)
                   }}
                   disabled={null}
                 />
@@ -185,18 +184,18 @@ const BookArticleCreatePage = () => {
           <Form.Item
             label="标题"
             name="title"
-            rules={[{ required: true, message: "请输入标题!" }]}
+            rules={[{ required: true, message: '请输入标题!' }]}
           >
             <Input style={{ width: 300 }} placeholder="请输入标题" allowClear />
           </Form.Item>
           <Form.Item label="上架时间" required={true}>
             <Space align="baseline" style={{ height: 32 }}>
               <Form.Item
-                name="published_at"
-                rules={[{ required: true, message: "请选择上架时间!" }]}
+                name="groundingTime"
+                rules={[{ required: true, message: '请选择上架时间!' }]}
               >
                 <DatePicker
-                  format="YYYY-MM-DD HH:mm"
+                  format="YYYY-MM-DD HH:mm:ss"
                   style={{ width: 300 }}
                   showTime
                   placeholder="请选择上架时间"
@@ -207,10 +206,10 @@ const BookArticleCreatePage = () => {
               </div>
             </Space>
           </Form.Item>
-          {charge > 0 && (
-            <Form.Item label="试看" name="trySee">
+          {tryFree && (
+            <Form.Item label="试看" name="isFreeRead">
               <Space align="baseline" style={{ height: 32 }}>
-                <Form.Item name="trySee" valuePropName="checked">
+                <Form.Item name="isFreeRead" valuePropName="checked">
                   <Switch onChange={isVipChange} />
                 </Form.Item>
                 <div className="ml-10">
@@ -219,9 +218,9 @@ const BookArticleCreatePage = () => {
               </Space>
             </Form.Item>
           )}
-          <Form.Item label="显示文章" name="is_show">
+          <Form.Item label="显示文章" name="isShow">
             <Space align="baseline" style={{ height: 32 }}>
-              <Form.Item name="is_show" valuePropName="checked">
+              <Form.Item name="isShow" valuePropName="checked">
                 <Switch onChange={onSwitch} />
               </Form.Item>
               <div className="ml-10">
@@ -231,32 +230,36 @@ const BookArticleCreatePage = () => {
           </Form.Item>
           <Form.Item
             label="文章内容"
-            name="original_content"
-            rules={[{ required: true, message: "请输入文章内容!" }]}
+            name="originalContent"
+            rules={[{ required: true, message: '请输入文章内容!' }]}
             style={{ height: 840 }}
           >
             <div className="flex flex-row">
               <div className="w-800px">
-                {editor === "MARKDOWN" ? (
-                  <MdEditor
-                    height={800}
-                    defautValue=""
-                    setContent={(value: string, renderValue: string) => {
-                      form.setFieldsValue({ original_content: value });
-                      setRenderValue(renderValue);
-                    }}
-                  ></MdEditor>
-                ) : (
-                  <QuillEditor
-                    mode=""
-                    height={800}
-                    defautValue=""
-                    isFormula={false}
-                    setContent={(value: string) => {
-                      form.setFieldsValue({ original_content: value });
-                    }}
-                  ></QuillEditor>
-                )}
+                {editor === 'MARKDOWN'
+                  ? (
+                    <MdEditor
+                      height={800}
+                      defautValue=""
+                      setContent={(value: string, renderValue: string) => {
+                        form.setFieldsValue({ originalContent: value })
+                        setRenderValue(renderValue)
+                      }}
+                    >
+                    </MdEditor>
+                    )
+                  : (
+                    <QuillEditor
+                      mode=""
+                      height={800}
+                      defautValue=""
+                      isFormula={false}
+                      setContent={(value: string) => {
+                        form.setFieldsValue({ originalContent: value })
+                      }}
+                    >
+                    </QuillEditor>
+                    )}
               </div>
               <div className="ml-30">
                 <Select
@@ -264,20 +267,20 @@ const BookArticleCreatePage = () => {
                   style={{ width: 150 }}
                   onChange={(e) => {
                     confirm({
-                      title: "警告",
+                      title: '警告',
                       icon: <ExclamationCircleFilled />,
-                      content: "切换编辑器将清空已编辑文章内容，是否切换？",
+                      content: '切换编辑器将清空已编辑文章内容，是否切换？',
                       centered: true,
-                      okText: "确认",
-                      cancelText: "取消",
+                      okText: '确认',
+                      cancelText: '取消',
                       onOk() {
-                        setCurrent(e);
-                        saveEditorKey(e);
+                        setCurrent(e)
+                        saveEditorKey(e)
                       },
                       onCancel() {
-                        console.log("Cancel");
+                        console.log('Cancel')
                       },
-                    });
+                    })
                   }}
                   placeholder="请选择"
                   options={tools}
@@ -306,7 +309,7 @@ const BookArticleCreatePage = () => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default BookArticleCreatePage;
+export default BookArticleCreatePage

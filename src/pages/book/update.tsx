@@ -72,7 +72,7 @@ function BookUpdatePage() {
       shortDesc: data.shortDesc,
       fullDesc: data.fullDesc,
       price: data.price,
-      createdTime: dayjs(data.createdTime, 'YYYY-MM-DD HH:mm:ss'),
+      groundingTime: dayjs(data.groundingTime, 'YYYY-MM-DD HH:mm:ss'),
     })
     if (data.price > 0)
       form.setFieldsValue({ sellType: false })
@@ -114,7 +114,7 @@ function BookUpdatePage() {
       return
     }
     values.render_desc = values.fullDesc
-    values.createdTime = moment(new Date(values.createdTime)).format(
+    values.groundingTime = moment(new Date(values.groundingTime)).format(
       'YYYY-MM-DD HH:mm:ss',
     )
     setLoading(true)
@@ -311,7 +311,7 @@ function BookUpdatePage() {
           <Form.Item label="上架时间" required={true}>
             <Space align="baseline" style={{ height: 32 }}>
               <Form.Item
-                name="createdTime"
+                name="groundingTime"
                 rules={[{ required: true, message: '请选择上架时间!' }]}
               >
                 <DatePicker

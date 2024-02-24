@@ -1,149 +1,154 @@
-import { useState, useEffect } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useEffect, useState } from 'react'
+import { useLocation, useNavigate } from 'react-router-dom'
 import {
   Button,
-  Input,
-  message,
-  Form,
   DatePicker,
-  Switch,
-  Space,
+  Form,
+  Input,
   Select,
+  Space,
   Spin,
-} from "antd";
-import { useDispatch } from "react-redux";
-import { book } from "../../../api/index";
-import { titleAction } from "../../../store/user/loginUserSlice";
+  Switch,
+  message,
+} from 'antd'
+import { useDispatch } from 'react-redux'
+import dayjs from 'dayjs'
+import moment from 'moment'
+import { book } from '../../../api/index'
+import { titleAction } from '../../../store/user/loginUserSlice'
 import {
   BackBartment,
-  PerButton,
   HelperText,
-  QuillEditor,
   MdEditor,
-} from "../../../components";
-import dayjs from "dayjs";
-import moment from "moment";
+  PerButton,
+  QuillEditor,
+} from '../../../components'
 
-const BookArticleUpdatePage = () => {
-  const result = new URLSearchParams(useLocation().search);
-  const [form] = Form.useForm();
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const [init, setInit] = useState<boolean>(true);
-  const [loading, setLoading] = useState<boolean>(false);
-  const [categories, setCategories] = useState<any>([]);
-  const [charge, setCharge] = useState(0);
-  const [defautValue, setDefautValue] = useState("");
-  const [editor, setEditor] = useState("");
-  const [renderValue, setRenderValue] = useState("");
-  const [id, setId] = useState(Number(result.get("id")));
-  const [bid, setBid] = useState(Number(result.get("bid")));
-
-  useEffect(() => {
-    document.title = "编辑电子书文章";
-    dispatch(titleAction("编辑电子书文章"));
-    initData();
-  }, [id, bid]);
+function BookArticleUpdatePage() {
+  const result = new URLSearchParams(useLocation().search)
+  const [form] = Form.useForm()
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
+  const [init, setInit] = useState<boolean>(true)
+  const [loading, setLoading] = useState<boolean>(false)
+  const [categories, setCategories] = useState<any>([])
+  const [tryRead, setTryRead] = useState(false)
+  const [defautValue, setDefautValue] = useState('')
+  const [editor, setEditor] = useState('')
+  const [renderValue, setRenderValue] = useState('')
+  const [id, setId] = useState(Number(result.get('id')))
+  const [bid, setBid] = useState(Number(result.get('bid')))
 
   useEffect(() => {
-    setId(Number(result.get("id")));
-    setBid(Number(result.get("bid")));
-    getDetail();
-  }, [result.get("id"), result.get("bid")]);
+    document.title = '编辑电子书文章'
+    dispatch(titleAction('编辑电子书文章'))
+    initData()
+  }, [id, bid])
+
+  useEffect(() => {
+    setId(Number(result.get('id')))
+    setBid(Number(result.get('bid')))
+    getDetail()
+  }, [result.get('id'), result.get('bid')])
 
   const initData = async () => {
-    await getBook();
-    await getParams();
-    await getDetail();
-    setInit(false);
-  };
+    await getBook()
+    await getParams()
+    await getDetail()
+    setInit(false)
+  }
 
   const getDetail = async () => {
-    if (id === 0) {
-      return;
-    }
-    const res: any = await book.articleDetail(id);
-    var data = res.data;
+    if (id === 0)
+      return
+
+    const res: any = await book.articleDetail(id)
+    const data = res.data
     form.setFieldsValue({
-      book_cid: data.book_cid == 0 ? [] : data.book_cid,
+      chapterId: data.chapterId === 0 ? [] : data.chapterId,
       title: data.title,
-      is_show: data.is_show,
-      trySee: data.charge === 0 ? 1 : 0,
-      original_content: data.original_content,
-      charge: data.charge,
-      published_at: dayjs(data.published_at, "YYYY-MM-DD HH:mm"),
-    });
-    setEditor(data.editor);
-    setDefautValue(data.original_content);
-    setRenderValue(data.render_content);
-  };
+      isShow: data.isShow,
+      isFreeRead: data.isFreeRead,
+      originalContent: data.originalContent,
+      // charge: data.charge,
+      groundingTime: dayjs(data.groundingTime, 'YYYY-MM-DD HH:mm:ss'),
+    })
+    setEditor(data.editor)
+    setDefautValue(data.originalContent)
+    setRenderValue(data.renderContent)
+    setTryRead(data.isFreeRead)
+  }
 
   const getParams = async () => {
-    const res: any = await book.articleCreate({});
-    let categories = res.data.chapters[bid];
+    const res: any = await book.articleCreate({
+      bookId: bid,
+    })
+    const categories = res.data
     if (categories) {
-      const box: any = [];
+      const box: any = []
       for (let i = 0; i < categories.length; i++) {
         box.push({
           label: categories[i].name,
           value: categories[i].id,
-        });
+        })
       }
-      setCategories(box);
+      setCategories(box)
     }
-  };
+  }
 
   const getBook = async () => {
-    const res: any = await book.detail(bid);
-    setCharge(res.data.charge);
-  };
+    const res: any = await book.detail(bid)
+    setTryRead(res.data.price > 0)
+  }
 
   const onFinish = (values: any) => {
-    if (loading) {
-      return;
-    }
-    values.editor = editor;
-    if (editor === "MARKDOWN") {
-      values.render_content = renderValue;
-    } else {
-      values.render_content = values.original_content;
-    }
-    values.bid = bid;
-    values.published_at = moment(new Date(values.published_at)).format(
-      "YYYY-MM-DD HH:mm"
-    );
-    setLoading(true);
+    if (loading)
+      return
+
+    values.editor = editor
+    if (editor === 'MARKDOWN')
+      values.renderContent = renderValue
+    else
+      values.renderContent = values.originalContent
+
+    values.bookId = bid
+    values.groundingTime = moment(new Date(values.groundingTime)).format(
+      'YYYY-MM-DD HH:mm:ss',
+    )
+    setLoading(true)
     book
       .articleUpdate(id, values)
       .then((res: any) => {
-        setLoading(false);
-        message.success("保存成功！");
-        navigate(-1);
+        setLoading(false)
+        message.success('保存成功！')
+        navigate(-1)
       })
       .catch((e) => {
-        setLoading(false);
-      });
-  };
+        setLoading(false)
+      })
+  }
 
   const onFinishFailed = (errorInfo: any) => {
-    console.log("Failed:", errorInfo);
-  };
+    console.log('Failed:', errorInfo)
+  }
 
   const onSwitch = (checked: boolean) => {
-    if (checked) {
-      form.setFieldsValue({ is_show: 1 });
-    } else {
-      form.setFieldsValue({ is_show: 0 });
-    }
-  };
+    if (checked)
+      form.setFieldsValue({ isShow: true })
+    else
+      form.setFieldsValue({ isShow: false })
+  }
 
   const isVipChange = (checked: boolean) => {
     if (checked) {
-      form.setFieldsValue({ trySee: 1 });
-    } else {
-      form.setFieldsValue({ trySee: 0 });
+      form.setFieldsValue({ isFreeRead: true })
+      setTryRead(true)
     }
-  };
+    else {
+      form.setFieldsValue({ isFreeRead: false })
+      setTryRead(false)
+    }
+  }
 
   return (
     <div className="geekedu-main-body">
@@ -154,7 +159,7 @@ const BookArticleUpdatePage = () => {
         </div>
       )}
       <div
-        style={{ display: init ? "none" : "block" }}
+        style={{ display: init ? 'none' : 'block' }}
         className="float-left mt-30"
       >
         <Form
@@ -167,9 +172,9 @@ const BookArticleUpdatePage = () => {
           onFinishFailed={onFinishFailed}
           autoComplete="off"
         >
-          <Form.Item name="book_cid" label="章节">
+          <Form.Item name="chapterId" label="章节">
             <Space align="baseline" style={{ height: 32 }}>
-              <Form.Item name="book_cid">
+              <Form.Item name="chapterId">
                 <Select
                   style={{ width: 300 }}
                   allowClear
@@ -185,7 +190,7 @@ const BookArticleUpdatePage = () => {
                   icon={null}
                   p="addons.meedu_books.book_chapter.list"
                   onClick={() => {
-                    navigate("/meedubook/chapter/index?bid=" + bid);
+                    navigate(`/meedubook/chapter/index?bid=${bid}`)
                   }}
                   disabled={null}
                 />
@@ -195,18 +200,18 @@ const BookArticleUpdatePage = () => {
           <Form.Item
             label="标题"
             name="title"
-            rules={[{ required: true, message: "请输入标题!" }]}
+            rules={[{ required: true, message: '请输入标题!' }]}
           >
             <Input style={{ width: 300 }} placeholder="请输入标题" allowClear />
           </Form.Item>
           <Form.Item label="上架时间" required={true}>
             <Space align="baseline" style={{ height: 32 }}>
               <Form.Item
-                name="published_at"
-                rules={[{ required: true, message: "请选择上架时间!" }]}
+                name="groundingTime"
+                rules={[{ required: true, message: '请选择上架时间!' }]}
               >
                 <DatePicker
-                  format="YYYY-MM-DD HH:mm"
+                  format="YYYY-MM-DD HH:mm:ss"
                   style={{ width: 300 }}
                   showTime
                   placeholder="请选择上架时间"
@@ -217,10 +222,10 @@ const BookArticleUpdatePage = () => {
               </div>
             </Space>
           </Form.Item>
-          {charge > 0 && (
-            <Form.Item label="试看" name="trySee">
+          {tryRead && (
+            <Form.Item label="试看" name="isFreeRead">
               <Space align="baseline" style={{ height: 32 }}>
-                <Form.Item name="trySee" valuePropName="checked">
+                <Form.Item name="isFreeRead" valuePropName="checked">
                   <Switch onChange={isVipChange} />
                 </Form.Item>
                 <div className="ml-10">
@@ -229,9 +234,9 @@ const BookArticleUpdatePage = () => {
               </Space>
             </Form.Item>
           )}
-          <Form.Item label="显示文章" name="is_show">
+          <Form.Item label="显示文章" name="isShow">
             <Space align="baseline" style={{ height: 32 }}>
-              <Form.Item name="is_show" valuePropName="checked">
+              <Form.Item name="isShow" valuePropName="checked">
                 <Switch onChange={onSwitch} />
               </Form.Item>
               <div className="ml-10">
@@ -241,31 +246,35 @@ const BookArticleUpdatePage = () => {
           </Form.Item>
           <Form.Item
             label="文章内容"
-            name="original_content"
-            rules={[{ required: true, message: "请输入文章内容!" }]}
+            name="originalContent"
+            rules={[{ required: true, message: '请输入文章内容!' }]}
             style={{ height: 840 }}
           >
             <div className="w-800px">
-              {editor === "MARKDOWN" ? (
-                <MdEditor
-                  height={800}
-                  defautValue={defautValue}
-                  setContent={(value: string, renderValue: string) => {
-                    form.setFieldsValue({ original_content: value });
-                    setRenderValue(renderValue);
-                  }}
-                ></MdEditor>
-              ) : (
-                <QuillEditor
-                  mode=""
-                  height={800}
-                  defautValue={defautValue}
-                  isFormula={false}
-                  setContent={(value: string) => {
-                    form.setFieldsValue({ original_content: value });
-                  }}
-                ></QuillEditor>
-              )}
+              {editor === 'MARKDOWN'
+                ? (
+                  <MdEditor
+                    height={800}
+                    defaultValue={defautValue}
+                    setContent={(value: string, renderValue: string) => {
+                      form.setFieldsValue({ originalContent: value })
+                      setRenderValue(renderValue)
+                    }}
+                  >
+                  </MdEditor>
+                  )
+                : (
+                  <QuillEditor
+                    mode=""
+                    height={800}
+                    defaultValue={defautValue}
+                    isFormula={false}
+                    setContent={(value: string) => {
+                      form.setFieldsValue({ originalContent: value })
+                    }}
+                  >
+                  </QuillEditor>
+                  )}
             </div>
           </Form.Item>
         </Form>
@@ -289,7 +298,7 @@ const BookArticleUpdatePage = () => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default BookArticleUpdatePage;
+export default BookArticleUpdatePage

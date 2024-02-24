@@ -139,8 +139,8 @@ function BookArticlePage() {
     },
     {
       title: '上架时间',
-      dataIndex: 'createdTime',
-      render: (createdTime: string) => <span>{dateFormat(createdTime)}</span>,
+      dataIndex: 'groundingTime',
+      render: (groundingTime: string) => <span>{dateFormat(groundingTime)}</span>,
     },
     {
       title: '操作',
