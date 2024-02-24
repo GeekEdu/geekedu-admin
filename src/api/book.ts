@@ -1,27 +1,33 @@
 import client from './internal/httpClient'
 
+// 返回电子书列表
 export function list(params: any) {
   return client.get(`/book/api/eBook/getEBookPage`, params)
 }
 
-export function create() {
-  return client.get(`/backend/addons/meedu_books/book/create`, {})
+// 电子书分类
+export function create(params: any) {
+  return client.get(`/label/api/category/getCategoryList`, params)
 }
 
+// 新建电子书
 export function store(params: any) {
-  return client.post('/backend/addons/meedu_books/book/create', params)
+  return client.post('/book/api/eBook/add', params)
 }
 
+// 根据id查看电子书明细
 export function detail(id: number) {
-  return client.get(`/backend/addons/meedu_books/book/${id}`, {})
+  return client.get(`/book/api/eBook/getEBookById/${id}`, {})
 }
 
+// 根据id删除电子书
 export function destroy(id: number) {
-  return client.destroy(`/backend/addons/meedu_books/book/${id}`)
+  return client.post(`/book/api/eBook/delete/${id}`, {})
 }
 
+// 更新电子书
 export function update(id: number, params: any) {
-  return client.put(`/backend/addons/meedu_books/book/${id}`, params)
+  return client.post(`/book/api/eBook/update/${id}`, params)
 }
 
 // 返回电子书评论列表

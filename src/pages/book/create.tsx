@@ -1,146 +1,145 @@
-import { useState, useEffect } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useEffect, useState } from 'react'
+import { useLocation, useNavigate } from 'react-router-dom'
 import {
   Button,
-  Input,
-  message,
-  Form,
-  DatePicker,
-  Switch,
-  Space,
-  Select,
-  Row,
   Col,
+  DatePicker,
+  Form,
+  Input,
   Modal,
-} from "antd";
-import { useDispatch, useSelector } from "react-redux";
-import { book } from "../../api/index";
-import { titleAction } from "../../store/user/loginUserSlice";
+  Row,
+  Select,
+  Space,
+  Switch,
+  message,
+} from 'antd'
+import { useDispatch, useSelector } from 'react-redux'
+import moment from 'moment'
+import { book } from '../../api/index'
+import { titleAction } from '../../store/user/loginUserSlice'
 import {
   BackBartment,
-  PerButton,
-  UploadImageButton,
   HelperText,
+  PerButton,
   QuillEditor,
-} from "../../components";
-import moment from "moment";
+  UploadImageButton,
+} from '../../components'
 
-const BookCreatePage = () => {
-  const [form] = Form.useForm();
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const [loading, setLoading] = useState<boolean>(false);
-  const [categories, setCategories] = useState<any>([]);
-  const [isFree, setIsFree] = useState(0);
-  const [charge, setCharge] = useState(0);
-  const [thumb, setThumb] = useState<string>("");
-  const [visiable, setVisiable] = useState<boolean>(false);
+function BookCreatePage() {
+  const [form] = Form.useForm()
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
+  const [loading, setLoading] = useState<boolean>(false)
+  const [categories, setCategories] = useState<any>([])
+  const [isFree, setIsFree] = useState(0)
+  const [price, setPrice] = useState(0)
+  const [coverLink, setCoverLink] = useState<string>('')
+  const [visiable, setVisiable] = useState<boolean>(false)
 
   useEffect(() => {
-    document.title = "新建电子书";
-    dispatch(titleAction("新建电子书"));
-    form.setFieldsValue({ is_show: 1, is_free: 0, is_vip_free: 0 });
-    setIsFree(0);
-    setVisiable(false);
-    getParams();
-  }, []);
+    document.title = '新建电子书'
+    dispatch(titleAction('新建电子书'))
+    form.setFieldsValue({ isShow: true, sellType: false, isVipFree: false })
+    setIsFree(0)
+    setVisiable(false)
+    getParams()
+  }, [])
 
   const getParams = () => {
-    book.create().then((res: any) => {
-      let categories = res.data.categories;
-      const box: any = [];
+    book.create({ type: 'E_BOOK' }).then((res: any) => {
+      const categories = res.data
+      const box: any = []
       for (let i = 0; i < categories.length; i++) {
         box.push({
           label: categories[i].name,
           value: categories[i].id,
-        });
+        })
       }
-      setCategories(box);
-    });
-  };
+      setCategories(box)
+    })
+  }
 
   const onFinish = (values: any) => {
-    if (loading) {
-      return;
+    if (loading)
+      return
+
+    if (values.sellType)
+      values.price = 0
+
+    if (Number(values.price) % 1 !== 0) {
+      message.error('电子书价格必须为整数')
+      return
     }
-    if (values.is_free === 1) {
-      values.charge = 0;
+    if (!values.sellType && Number(values.price) <= 0) {
+      message.error('电子书未设置免费时价格应该大于0')
+      return
     }
-    if (Number(values.charge) % 1 !== 0) {
-      message.error("电子书价格必须为整数");
-      return;
-    }
-    if (values.is_free === 0 && Number(values.charge) <= 0) {
-      message.error("电子书未设置免费时价格应该大于0");
-      return;
-    }
-    values.render_desc = values.original_desc;
-    values.published_at = moment(new Date(values.published_at)).format(
-      "YYYY-MM-DD HH:mm"
-    );
-    setLoading(true);
+    // values.fullDesc = values.fullDesc
+    values.groundingTime = moment(new Date(values.groundingTime)).format(
+      'YYYY-MM-DD HH:mm:ss',
+    )
+    setLoading(true)
     book
       .store(values)
       .then((res: any) => {
-        setLoading(false);
-        setVisiable(true);
+        setLoading(false)
+        setVisiable(true)
       })
       .catch((e) => {
-        setLoading(false);
-      });
-  };
+        setLoading(false)
+      })
+  }
 
   const onFinishFailed = (errorInfo: any) => {
-    console.log("Failed:", errorInfo);
-  };
+    console.log('Failed:', errorInfo)
+  }
 
   const onSwitch = (checked: boolean) => {
-    if (checked) {
-      form.setFieldsValue({ is_show: 1 });
-    } else {
-      form.setFieldsValue({ is_show: 0 });
-    }
-  };
+    if (checked)
+      form.setFieldsValue({ isShow: true })
+    else
+      form.setFieldsValue({ isShow: false })
+  }
 
   const isVChange = (checked: boolean) => {
     if (checked) {
-      form.setFieldsValue({ is_free: 1, charge: 0 });
-      setIsFree(1);
-      setCharge(0);
-    } else {
-      form.setFieldsValue({ is_free: 0 });
-      setIsFree(0);
+      form.setFieldsValue({ sellType: true, price: 0 })
+      setIsFree(1)
+      setPrice(0)
     }
-  };
+    else {
+      form.setFieldsValue({ sellType: false })
+      setIsFree(0)
+    }
+  }
 
   const isVipChange = (checked: boolean) => {
-    if (checked) {
-      form.setFieldsValue({ is_vip_free: 1 });
-    } else {
-      form.setFieldsValue({ is_vip_free: 0 });
-    }
-  };
+    if (checked)
+      form.setFieldsValue({ isVipFree: true })
+    else
+      form.setFieldsValue({ isVipFree: false })
+  }
 
   const goVideo = () => {
     book
       .list({
         page: 1,
         size: 1,
-        sort: "id",
-        order: "desc",
+        sort: 'id',
+        order: 'desc',
       })
       .then((res: any) => {
         navigate(
-          "/meedubook/article/index?bid=" +
-            res.data.data.data[0].id +
-            "&title=" +
-            res.data.data.data[0].name,
+          `/meedubook/article/index?bid=${
+          res.data.data.data[0].id
+             }&title=${
+             res.data.data.data[0].name}`,
           {
             replace: true,
-          }
-        );
-      });
-  };
+          },
+        )
+      })
+  }
 
   return (
     <div className="geekedu-main-body">
@@ -157,14 +156,14 @@ const BookCreatePage = () => {
           autoComplete="off"
         >
           <Form.Item
-            name="cid"
+            name="categoryId"
             label="所属分类"
-            rules={[{ required: true, message: "请选择所属分类!" }]}
+            rules={[{ required: true, message: '请选择所属分类!' }]}
           >
             <Space align="baseline" style={{ height: 32 }}>
               <Form.Item
-                name="cid"
-                rules={[{ required: true, message: "请选择所属分类!" }]}
+                name="categoryId"
+                rules={[{ required: true, message: '请选择所属分类!' }]}
               >
                 <Select
                   style={{ width: 300 }}
@@ -181,7 +180,7 @@ const BookCreatePage = () => {
                   icon={null}
                   p="addons.meedu_books.book_category.list"
                   onClick={() => {
-                    navigate("/meedubook/category/index");
+                    navigate('/meedubook/category/index')
                   }}
                   disabled={null}
                 />
@@ -191,7 +190,7 @@ const BookCreatePage = () => {
           <Form.Item
             label="电子书名称"
             name="name"
-            rules={[{ required: true, message: "请输入电子书名称!" }]}
+            rules={[{ required: true, message: '请输入电子书名称!' }]}
           >
             <Input
               style={{ width: 300 }}
@@ -201,55 +200,57 @@ const BookCreatePage = () => {
           </Form.Item>
           <Form.Item
             label="电子书封面"
-            name="thumb"
-            rules={[{ required: true, message: "请上传电子书封面!" }]}
+            name="coverLink"
+            rules={[{ required: true, message: '请上传电子书封面!' }]}
           >
             <Space align="baseline" style={{ height: 32 }}>
               <Form.Item
-                name="thumb"
-                rules={[{ required: true, message: "请上传电子书封面!" }]}
+                name="coverLink"
+                rules={[{ required: true, message: '请上传电子书封面!' }]}
               >
                 <UploadImageButton
                   text="选择图片"
                   onSelected={(url) => {
-                    form.setFieldsValue({ thumb: url });
-                    setThumb(url);
+                    form.setFieldsValue({ coverLink: url })
+                    setCoverLink(url)
                   }}
-                ></UploadImageButton>
+                >
+                </UploadImageButton>
               </Form.Item>
               <div className="ml-10">
                 <HelperText text="长宽比3:4，建议尺寸：300x400像素"></HelperText>
               </div>
             </Space>
           </Form.Item>
-          {thumb && (
+          {coverLink && (
             <Row style={{ marginBottom: 22 }}>
               <Col span={3}></Col>
               <Col span={21}>
                 <div
                   className="normal-thumb-box"
                   style={{
-                    backgroundImage: `url(${thumb})`,
+                    backgroundImage: `url(${coverLink})`,
                     width: 90,
                     height: 120,
                   }}
-                ></div>
+                >
+                </div>
               </Col>
             </Row>
           )}
-          <Form.Item label="免费" name="is_free" valuePropName="checked">
+          <Form.Item label="免费" name="sellType" valuePropName="checked">
             <Switch onChange={isVChange} />
           </Form.Item>
           {isFree === 0 && (
             <Form.Item
               label="价格"
-              name="charge"
-              rules={[{ required: true, message: "请输入价格!" }]}
+              name="price"
+              rules={[{ required: true, message: '请输入价格!' }]}
             >
               <Space align="baseline" style={{ height: 32 }}>
                 <Form.Item
-                  name="charge"
-                  rules={[{ required: true, message: "请输入价格!" }]}
+                  name="price"
+                  rules={[{ required: true, message: '请输入价格!' }]}
                 >
                   <Input
                     style={{ width: 300 }}
@@ -257,7 +258,7 @@ const BookCreatePage = () => {
                     allowClear
                     type="number"
                     onChange={(e) => {
-                      setCharge(Number(e.target.value));
+                      setPrice(Number(e.target.value))
                     }}
                   />
                 </Form.Item>
@@ -267,10 +268,10 @@ const BookCreatePage = () => {
               </Space>
             </Form.Item>
           )}
-          {charge > 0 && (
-            <Form.Item label="会员免费" name="is_vip_free">
+          {price > 0 && (
+            <Form.Item label="会员免费" name="isVipFree">
               <Space align="baseline" style={{ height: 32 }}>
-                <Form.Item name="is_vip_free" valuePropName="checked">
+                <Form.Item name="isVipFree" valuePropName="checked">
                   <Switch onChange={isVipChange} />
                 </Form.Item>
                 <div className="ml-10">
@@ -282,11 +283,11 @@ const BookCreatePage = () => {
           <Form.Item label="上架时间" required={true}>
             <Space align="baseline" style={{ height: 32 }}>
               <Form.Item
-                name="published_at"
-                rules={[{ required: true, message: "请选择上架时间!" }]}
+                name="groundingTime"
+                rules={[{ required: true, message: '请选择上架时间!' }]}
               >
                 <DatePicker
-                  format="YYYY-MM-DD HH:mm"
+                  format="YYYY-MM-DD HH:mm:ss"
                   style={{ width: 300 }}
                   showTime
                   placeholder="请选择上架时间"
@@ -297,9 +298,9 @@ const BookCreatePage = () => {
               </div>
             </Space>
           </Form.Item>
-          <Form.Item label="显示" name="is_show">
+          <Form.Item label="显示" name="isShow">
             <Space align="baseline" style={{ height: 32 }}>
-              <Form.Item name="is_show" valuePropName="checked">
+              <Form.Item name="isShow" valuePropName="checked">
                 <Switch onChange={onSwitch} />
               </Form.Item>
               <div className="ml-10">
@@ -309,8 +310,8 @@ const BookCreatePage = () => {
           </Form.Item>
           <Form.Item
             label="简短介绍"
-            name="short_desc"
-            rules={[{ required: true, message: "请输入简短介绍!" }]}
+            name="shortDesc"
+            rules={[{ required: true, message: '请输入简短介绍!' }]}
           >
             <Input.TextArea
               style={{ width: 800 }}
@@ -323,20 +324,21 @@ const BookCreatePage = () => {
           </Form.Item>
           <Form.Item
             label="详情介绍"
-            name="original_desc"
-            rules={[{ required: true, message: "请输入详情介绍!" }]}
+            name="fullDesc"
+            rules={[{ required: true, message: '请输入详情介绍!' }]}
             style={{ height: 840 }}
           >
             <div className="w-800px">
               <QuillEditor
                 mode=""
                 height={800}
-                defautValue=""
+                defaultValue=""
                 isFormula={false}
                 setContent={(value: string) => {
-                  form.setFieldsValue({ original_desc: value });
+                  form.setFieldsValue({ fullDesc: value })
                 }}
-              ></QuillEditor>
+              >
+              </QuillEditor>
             </div>
           </Form.Item>
         </Form>
@@ -359,34 +361,36 @@ const BookCreatePage = () => {
           </div>
         </div>
       </div>
-      {visiable ? (
-        <Modal
-          title=""
-          centered
-          onCancel={() => {
-            setVisiable(false);
-            navigate("/meedubook/book/index", { replace: true });
-          }}
-          cancelText="暂不添加"
-          okText="立即添加"
-          open={true}
-          width={500}
-          maskClosable={false}
-          onOk={() => {
-            setVisiable(false);
-            goVideo();
-          }}
-        >
-          <div
-            className="text-center"
-            style={{ marginTop: 30, marginBottom: 30 }}
+      {visiable
+        ? (
+          <Modal
+            title=""
+            centered
+            onCancel={() => {
+              setVisiable(false)
+              navigate('/meedubook/book/index', { replace: true })
+            }}
+            cancelText="暂不添加"
+            okText="立即添加"
+            open={true}
+            width={500}
+            maskClosable={false}
+            onOk={() => {
+              setVisiable(false)
+              goVideo()
+            }}
           >
-            <span>新建电子书成功，请在电子书中添加文章吧！</span>
-          </div>
-        </Modal>
-      ) : null}
+            <div
+              className="text-center"
+              style={{ marginTop: 30, marginBottom: 30 }}
+            >
+              <span>新建电子书成功，请在电子书中添加文章吧！</span>
+            </div>
+          </Modal>
+          )
+        : null}
     </div>
-  );
-};
+  )
+}
 
-export default BookCreatePage;
+export default BookCreatePage
