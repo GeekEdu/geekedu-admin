@@ -44,7 +44,7 @@ export function commentMulti(params: any) {
   )
 }
 
-// 返回电子书列表
+// 返回电子书分类列表
 export function categoryList(params: any) {
   return client.get(`/label/api/category/getCategoryList`, params)
 }
@@ -72,8 +72,9 @@ export function categoryUpdate(id: number, params: any) {
   return client.post(`/label/api/category/update/${id}`, params)
 }
 
+// 返回文章列表
 export function articleList(params: any) {
-  return client.get(`/backend/addons/meedu_books/book_article/index`, params)
+  return client.get(`/book/api/eBook/article/list`, params)
 }
 
 export function articleCreate(params: any) {
@@ -131,8 +132,9 @@ export function userAdd(id: number, params: any) {
   return client.post(`/backend/addons/meedu_books/book/${id}/user/add`, params)
 }
 
+// 返回章节列表
 export function chaptersList(params: any) {
-  return client.get(`/backend/addons/meedu_books/book_chapter/index`, params)
+  return client.get(`/book/api/eBook/chapter/list`, params)
 }
 
 export function chaptersDestroy(id: number) {
