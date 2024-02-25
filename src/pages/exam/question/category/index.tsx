@@ -44,14 +44,15 @@ function QuestionCategoryPage() {
     setLoading(true)
     question
       .categoryList({
-        page,
-        size,
+        pageNum: page,
+        pageSize: size,
+        type: 'QUESTIONS',
       })
       .then((res: any) => {
         const box: any = []
-        const categories = res.data.data.data
+        const categories = res.data.data
         for (let i = 0; i < categories.length; i++) {
-          if (categories[i].children.length > 0) {
+          if (categories[i]?.children.length > 0) {
             box.push({
               name: categories[i].name,
               id: categories[i].id,
@@ -68,7 +69,7 @@ function QuestionCategoryPage() {
           }
         }
         setList(box)
-        setTotal(res.data.data.total)
+        setTotal(res.data.total)
         setLoading(false)
       })
       .catch((e) => {

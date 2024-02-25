@@ -16,6 +16,22 @@ interface DataType {
   created_at: string
 }
 
+const levelsObj: any = {
+  1: '简单',
+  2: '中等',
+  3: '难',
+  4: '非常难',
+}
+
+const typesObj: any = {
+  1: '单选题',
+  2: '多选题',
+  3: '判断题',
+  4: '填空题',
+  5: '问答题',
+  6: '题帽题',
+}
+
 function QuestionPage() {
   const dispatch = useDispatch()
   const navigate = useNavigate()
@@ -37,6 +53,7 @@ function QuestionPage() {
   const [visiable, setVisiable] = useState(false)
   const [showDialog, setShowDialog] = useState(false)
   const [failureResult, setFailureResult] = useState<any>(null)
+  const [firstFetch, setFirstFetch] = useState(true) // 是否第一次请求
 
   useEffect(() => {
     document.title = '题库'
@@ -54,42 +71,45 @@ function QuestionPage() {
     setLoading(true)
     question
       .list({
-        page,
-        size,
-        category_id,
+        pageNum: page,
+        pageSize: size,
+        categoryId: category_id,
         type,
         level,
       })
       .then((res: any) => {
         setList(res.data.data.data)
         setTotal(res.data.data.total)
-        const box1: any = []
-        res.data.categories.length > 0
-        && res.data.categories.map((item: any) => {
-          box1.push({
-            label: item.name,
-            value: item.id,
+        if (firstFetch) {
+          const box1: any = []
+          res.data.categories.length > 0
+          && res.data.categories.map((item: any) => {
+            box1.push({
+              label: item.name,
+              value: item.id,
+            })
           })
-        })
-        setCategories(box1)
-        const box2: any = []
-        res.data.types.length > 0
-        && res.data.types.map((item: any) => {
-          box2.push({
-            label: item.name,
-            value: item.id,
+          setCategories(box1)
+          const box2: any = []
+          res.data.types.length > 0
+          && res.data.types.map((item: any) => {
+            box2.push({
+              label: item.name,
+              value: item.id,
+            })
           })
-        })
-        setTypes(box2)
-        const box3: any = []
-        res.data.levels.length > 0
-        && res.data.levels.map((item: any) => {
-          box3.push({
-            label: item.name,
-            value: item.id,
+          setTypes(box2)
+          const box3: any = []
+          res.data.levels.length > 0
+          && res.data.levels.map((item: any) => {
+            box3.push({
+              label: item.name,
+              value: item.id,
+            })
           })
-        })
-        setLevels(box3)
+          setLevels(box3)
+          setFirstFetch(false)
+        }
         setLoading(false)
       })
       .catch((e) => {
@@ -122,12 +142,12 @@ function QuestionPage() {
     {
       title: '类型',
       width: 200,
-      render: (_, record: any) => <span>{record.type_text}</span>,
+      render: (_, record: any) => <span>{typesObj[record?.types]}</span>,
     },
     {
       title: '难度',
       width: 200,
-      render: (_, record: any) => <span>{record.level_text}</span>,
+      render: (_, record: any) => <span>{levelsObj[record?.levels]}</span>,
     },
     {
       title: '内容',

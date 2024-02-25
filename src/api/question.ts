@@ -1,53 +1,60 @@
-import client from "./internal/httpClient";
+import client from './internal/httpClient'
 
+// 返回题库列表数据
 export function list(params: any) {
-  return client.get(`/backend/addons/Paper/question/index`, params);
+  return client.get(`/exam/api/questions/getQuestionsPage`, params)
 }
 
 export function create() {
-  return client.get(`/backend/addons/Paper/question/create`, {});
+  return client.get(`/backend/addons/Paper/question/create`, {})
 }
 
 export function store(params: any) {
-  return client.post("/backend/addons/Paper/question/create", params);
+  return client.post('/backend/addons/Paper/question/create', params)
 }
 
 export function detail(id: number) {
-  return client.get(`/backend/addons/Paper/question/${id}`, {});
+  return client.get(`/backend/addons/Paper/question/${id}`, {})
 }
 
 export function destroyMulti(params: any) {
-  return client.post(`/backend/addons/Paper/question/destroy/multi`, params);
+  return client.post(`/backend/addons/Paper/question/destroy/multi`, params)
 }
 
 export function update(id: number, params: any) {
-  return client.put(`/backend/addons/Paper/question/${id}`, params);
+  return client.put(`/backend/addons/Paper/question/${id}`, params)
 }
 
 export function importing(param: any) {
-  return client.post("/backend/addons/Paper/question/import/csv", param);
+  return client.post('/backend/addons/Paper/question/import/csv', param)
 }
 
+// 试题分类列表
 export function categoryList(params: any) {
-  return client.get(`/backend/addons/Paper/question_category/index`, params);
+  return client.get(`/exam/api//questions/category/list`, params)
 }
 
+//
 export function categoryCreate() {
-  return client.get(`/backend/addons/Paper/question_category/create`, {});
+  return client.get(`/backend/addons/Paper/question_category/create`, {})
 }
 
+// 根据id删除分类
 export function categoryDestroy(id: number) {
-  return client.destroy(`/backend/addons/Paper/question_category/${id}`);
+  return client.post(`/exam/api/questions/category/delete/${id}?type=QUESTIONS`, {})
 }
 
+// 新建试题分类
 export function categoryStore(params: any) {
-  return client.post("/backend/addons/Paper/question_category/create", params);
+  return client.post('/exam/api/questions/category/add', params)
 }
 
-export function categoryDetail(id: number) {
-  return client.get(`/backend/addons/Paper/question_category/${id}`, {});
+// 根据id返回分类明细
+export function categoryDetail(id: number, params: any) {
+  return client.get(`/exam/api/questions/category/${id}`, params)
 }
 
+// 更新分类
 export function categoryUpdate(id: number, params: any) {
-  return client.put(`/backend/addons/Paper/question_category/${id}`, params);
+  return client.post(`/exam/api/questions/category/update/${id}`, params)
 }

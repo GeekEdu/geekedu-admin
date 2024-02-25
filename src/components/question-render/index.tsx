@@ -1,38 +1,39 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from 'react'
 
 interface PropInterface {
-  question: any;
+  question: any
 }
 
-export const QuestionRender = (props: PropInterface) => {
-  const [title, setTitle] = useState("");
+export function QuestionRender(props: PropInterface) {
+  const [title, setTitle] = useState('')
 
   useEffect(() => {
     if (!props.question) {
-      setTitle("");
-      return;
+      setTitle('')
+      return
     }
-    let defaultTypes: any = {
-      1: 1,
-      2: 1,
-      3: 1,
-      4: 1,
-      5: 1,
-    };
-    if (defaultTypes[props.question.type]) {
-      setTitle(props.question.content);
-      return;
+    const defaultTypes: any = {
+      1: 1, // 单选题
+      2: 1, // 多选题
+      3: 1, // 判断题
+      4: 1, // 填空题
+      5: 1, // 问答题
     }
-    let content = JSON.parse(props.question.content);
-    setTitle(content.header);
-  }, [props.question]);
+    if (defaultTypes[props.question.types]) {
+      setTitle(props.question.content)
+      return
+    }
+    const content = JSON.parse(props.question.content)
+    setTitle(content.header)
+  }, [props.question])
 
   return (
     <div
       className="question-list-render"
       dangerouslySetInnerHTML={{
-        __html: title.length > 130 ? title.slice(0, 130) + "..." : title,
+        __html: title.length > 130 ? `${title.slice(0, 130)}...` : title,
       }}
-    ></div>
-  );
-};
+    >
+    </div>
+  )
+}
