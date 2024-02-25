@@ -5,8 +5,9 @@ export function list(params: any) {
   return client.get(`/exam/api/questions/getQuestionsPage`, params)
 }
 
+// 返回题目数据中的类型、分类、等级
 export function create() {
-  return client.get(`/backend/addons/Paper/question/create`, {})
+  return client.get(`/exam/api/questions/questionTypeList`, {})
 }
 
 export function store(params: any) {

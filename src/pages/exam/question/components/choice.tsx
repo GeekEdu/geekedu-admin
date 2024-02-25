@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from "react";
-import { QuestionQuillEditor, HelperText } from "../../../../components";
-import { Select, Button, Input, message } from "antd";
+import React, { useEffect, useState } from 'react'
+import { Button, Input, Select, message } from 'antd'
+import { HelperText, QuestionQuillEditor } from '../../../../components'
 
 interface PropInterface {
-  question: any;
-  index: any;
-  onChange: (question: any, list: any) => void;
+  question: any
+  index: any
+  onChange: (question: any, list: any) => void
 }
 
 export const QChoice: React.FC<PropInterface> = ({
@@ -13,42 +13,40 @@ export const QChoice: React.FC<PropInterface> = ({
   index,
   onChange,
 }) => {
-  const [answers, setAnswers] = useState<any>([]);
-  const [length, setLength] = useState(4);
+  const [answers, setAnswers] = useState<any>([])
+  const [length, setLength] = useState(4)
   const [form, setForm] = useState<any>(
-    question
-      ? question
-      : {
-          score: null,
-          content: null,
-          answer: null,
-          option1: null,
-          option2: null,
-          option3: null,
-          option4: null,
-          option5: null,
-          option6: null,
-          option7: null,
-          option8: null,
-          option9: null,
-          option10: null,
-          remark: null,
-        }
-  );
+    question || {
+      score: null,
+      content: null,
+      answer: null,
+      option1: null,
+      option2: null,
+      option3: null,
+      option4: null,
+      option5: null,
+      option6: null,
+      option7: null,
+      option8: null,
+      option9: null,
+      option10: null,
+      remark: null,
+    },
+  )
 
   useEffect(() => {
-    let rows = [];
+    const rows = []
     for (let i = 0; i < length; i++) {
       rows.push({
-        label: "选项" + (i + 1),
-        value: "option" + (i + 1),
-      });
+        label: `选项${i + 1}`,
+        value: `option${i + 1}`,
+      })
     }
-    setAnswers(rows);
-  }, [length]);
+    setAnswers(rows)
+  }, [length])
 
   useEffect(() => {
-    onChange(form, index);
+    onChange(form, index)
   }, [
     form.score,
     form.content,
@@ -64,42 +62,41 @@ export const QChoice: React.FC<PropInterface> = ({
     form.option8,
     form.option9,
     form.option10,
-  ]);
+  ])
 
   useEffect(() => {
-    if (question) {
-      lengthComp();
-    }
-  }, [question]);
+    if (question)
+      lengthComp()
+  }, [question])
 
   const lengthComp = () => {
     for (let i = 1; i <= 10; i++) {
-      if (!question["option" + i]) {
-        setLength(Number(i - 1));
-        break;
+      if (!question[`option${i}`]) {
+        setLength(Number(i - 1))
+        break
       }
     }
-  };
+  }
 
   const add = () => {
     if (length >= 10) {
-      message.error("最多10个选项");
-      return;
+      message.error('最多10个选项')
+      return
     }
-    setLength(length + 1);
-  };
+    setLength(length + 1)
+  }
 
   const del = () => {
     if (length <= 2) {
-      message.error("至少得有两个选项");
-      return;
+      message.error('至少得有两个选项')
+      return
     }
-    let obj = { ...form };
-    obj.answer = null;
-    obj["option" + length] = null;
-    setForm(obj);
-    setLength(length - 1);
-  };
+    const obj = { ...form }
+    obj.answer = null
+    obj[`option${length}`] = null
+    setForm(obj)
+    setLength(length - 1)
+  }
 
   return (
     <div className="float-left">
@@ -114,9 +111,9 @@ export const QChoice: React.FC<PropInterface> = ({
               type="number"
               value={form.score}
               onChange={(e) => {
-                let obj = { ...form };
-                obj.score = e.target.value;
-                setForm(obj);
+                const obj = { ...form }
+                obj.score = e.target.value
+                setForm(obj)
               }}
               allowClear
               style={{ width: 200 }}
@@ -132,9 +129,9 @@ export const QChoice: React.FC<PropInterface> = ({
               type="link"
               className="c-primary"
               onClick={() => {
-                let obj = { ...form };
-                obj.score = 1;
-                setForm(obj);
+                const obj = { ...form }
+                obj.score = 1
+                setForm(obj)
               }}
             >
               1分
@@ -143,9 +140,9 @@ export const QChoice: React.FC<PropInterface> = ({
               type="link"
               className="c-primary"
               onClick={() => {
-                let obj = { ...form };
-                obj.score = 2;
-                setForm(obj);
+                const obj = { ...form }
+                obj.score = 2
+                setForm(obj)
               }}
             >
               2分
@@ -154,9 +151,9 @@ export const QChoice: React.FC<PropInterface> = ({
               type="link"
               className="c-primary"
               onClick={() => {
-                let obj = { ...form };
-                obj.score = 5;
-                setForm(obj);
+                const obj = { ...form }
+                obj.score = 5
+                setForm(obj)
               }}
             >
               5分
@@ -165,9 +162,9 @@ export const QChoice: React.FC<PropInterface> = ({
               type="link"
               className="c-primary"
               onClick={() => {
-                let obj = { ...form };
-                obj.score = 10;
-                setForm(obj);
+                const obj = { ...form }
+                obj.score = 10
+                setForm(obj)
               }}
             >
               10分
@@ -186,30 +183,35 @@ export const QChoice: React.FC<PropInterface> = ({
             height={40}
             defautValue={form.content}
             setContent={(value: string) => {
-              let obj = { ...form };
-              obj.content = value;
-              setForm(obj);
+              const obj = { ...form }
+              obj.content = value
+              setForm(obj)
             }}
-          ></QuestionQuillEditor>
+          >
+          </QuestionQuillEditor>
         </div>
       </div>
-      {Array.from({ length: length }).map((_, i) => (
+      {Array.from({ length }).map((_, i) => (
         <div className="float-left mb-15" key={i}>
           <div className="float-left helper-label mb-10">
             <span className="c-red">*</span>
-            <span className="ml-5">选项{i + 1}</span>
+            <span className="ml-5">
+              选项
+              {i + 1}
+            </span>
           </div>
           <div className="float-left">
             <QuestionQuillEditor
               isFormula={true}
               height={40}
-              defautValue={form["option" + Number(i + 1)]}
+              defautValue={form[`option${Number(i + 1)}`]}
               setContent={(value: string) => {
-                let obj = { ...form };
-                obj["option" + Number(i + 1)] = value;
-                setForm(obj);
+                const obj = { ...form }
+                obj[`option${Number(i + 1)}`] = value
+                setForm(obj)
               }}
-            ></QuestionQuillEditor>
+            >
+            </QuestionQuillEditor>
           </div>
         </div>
       ))}
@@ -231,9 +233,9 @@ export const QChoice: React.FC<PropInterface> = ({
             style={{ width: 400 }}
             value={form.answer}
             onChange={(e) => {
-              let obj = { ...form };
-              obj.answer = e;
-              setForm(obj);
+              const obj = { ...form }
+              obj.answer = e
+              setForm(obj)
             }}
             allowClear
             placeholder="答案"
@@ -249,13 +251,14 @@ export const QChoice: React.FC<PropInterface> = ({
             height={40}
             defautValue={form.remark}
             setContent={(value: string) => {
-              let obj = { ...form };
-              obj.remark = value;
-              setForm(obj);
+              const obj = { ...form }
+              obj.remark = value
+              setForm(obj)
             }}
-          ></QuestionQuillEditor>
+          >
+          </QuestionQuillEditor>
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
