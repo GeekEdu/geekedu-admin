@@ -73,12 +73,14 @@ export function categoryUpdate(id: number, params: any) {
   return client.post(`/label/api/category/update/${id}`, params)
 }
 
+// 返回课程评论列表
 export function commentList(params: any) {
-  return client.get(`/backend/api/v1/course_comment`, params)
+  return client.get(`/course/api/getCommentsList`, params)
 }
 
+// 批量删除课程评论
 export function commentDestroy(params: any) {
-  return client.post(`/backend/api/v1/course_comment/delete`, params)
+  return client.post(`/course/api/delete/batch`, params)
 }
 
 export function videoList(params: any) {

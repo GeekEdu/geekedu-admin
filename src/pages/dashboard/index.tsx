@@ -21,8 +21,16 @@ function funDate(day: number) {
   const date1 = new Date()
   const date2 = new Date(date1)
   date2.setDate(date1.getDate() + day)
-  time2
-    = `${date2.getFullYear()}-${date2.getMonth() + 1}-${date2.getDate()}`
+  // time2
+  //   = `${date2.getFullYear()}-${date2.getMonth() + 1}-${date2.getDate()}`
+  const year = date2.getFullYear()
+  const month = String(date2.getMonth() + 1).padStart(2, '0') // 补齐为两位数
+  const dayOfMonth = String(date2.getDate()).padStart(2, '0') // 补齐为两位数
+  const hours = String(date2.getHours()).padStart(2, '0') // 补齐为两位数
+  const minutes = String(date2.getMinutes()).padStart(2, '0') // 补齐为两位数
+  const seconds = String(date2.getSeconds()).padStart(2, '0') // 补齐为两位数
+
+  time2 = `${year}-${month}-${dayOfMonth} ${hours}:${minutes}:${seconds}`
   return time2
 }
 
@@ -151,7 +159,7 @@ function DashboardPage() {
       xAxis: {
         type: 'category',
         boundaryGap: false,
-        data: changeObjectKey(params.order_created),
+        data: changeObjectKey(params.orderCreated),
       },
       yAxis: {
         type: 'value',
@@ -160,22 +168,22 @@ function DashboardPage() {
         {
           name: '每日注册用户',
           type: 'line',
-          data: changeObject(params.user_register),
+          data: changeObject(params.userRegister),
         },
         {
           name: '每日创建订单',
           type: 'line',
-          data: changeObject(params.order_created),
+          data: changeObject(params.orderCreated),
         },
         {
           name: '每日已支付订单',
           type: 'line',
-          data: changeObject(params.order_paid),
+          data: changeObject(params.orderPaid),
         },
         {
           name: '每日营收',
           type: 'line',
-          data: changeObject(params.order_sum),
+          data: changeObject(params.orderSum),
         },
       ],
     })
@@ -186,6 +194,7 @@ function DashboardPage() {
   }
 
   const onChange = (date: any, dateString: any) => {
+    dateString[0] += ' 00:00:00'
     dateString[1] += ' 23:59:59'
     setStartAt(dateString[0])
     setEndAt(dateString[1])
@@ -410,7 +419,7 @@ function DashboardPage() {
         <div className={styles.el_top_row3}>
           <div className={styles.tit}>统计分析</div>
           <div className={styles.selcharttimebox}>
-            <RangePicker format="YYYY-MM-DD" onChange={onChange} />
+            <RangePicker format="YYYY-MM-DD HH:mm:ss" onChange={onChange} />
             <Button
               type="primary"
               className="ml-10"
