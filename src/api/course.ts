@@ -80,7 +80,7 @@ export function commentList(params: any) {
 
 // 批量删除课程评论
 export function commentDestroy(params: any) {
-  return client.post(`/course/api/delete/batch`, params)
+  return client.post(`/course/api/comments/delete/batch`, params)
 }
 
 export function videoList(params: any) {
@@ -173,24 +173,29 @@ export function attachDestory(id: number) {
   return client.destroy(`/backend/api/v1/course_attach/${id}`)
 }
 
-export function chaptersList(id: number, params: any) {
-  return client.get(`/backend/api/v1/course_chapter/${id}`, params)
+// 返回章节列表
+export function chaptersList(id: number) {
+  return client.get(`/course/api/${id}/chapter/getChapterList`, {})
 }
 
-export function chaptersDestroy(id: number, ids: any) {
-  return client.destroy(`/backend/api/v1/course_chapter/${id}/${ids}`)
+// 删除章节
+export function chaptersDestroy(cId: number, id: number) {
+  return client.post(`/course/api/${cId}/chapter/delete/${id}`, {})
 }
 
-export function chaptersStore(id: number, params: any) {
-  return client.post(`/backend/api/v1/course_chapter/${id}`, params)
+// 新增章节
+export function chaptersStore(cId: number, params: any) {
+  return client.post(`/course/api/${cId}/chapter/add`, params)
 }
 
-export function chaptersDetail(id: number, ids: any) {
-  return client.get(`/backend/api/v1/course_chapter/${id}/${ids}`, {})
+// 获取章节明细
+export function chaptersDetail(cId: number, id: number) {
+  return client.get(`/course/api/${cId}/chapter/getChapterById/${id}`, {})
 }
 
-export function chaptersUpdate(id: number, ids: any, params: any) {
-  return client.put(`/backend/api/v1/course_chapter/${id}/${ids}`, params)
+// 更新章节
+export function chaptersUpdate(cId: number, id: number, params: any) {
+  return client.post(`/course/api/${cId}/chapter/update/${id}`, params)
 }
 
 export function aliyunHlsList(params: any) {

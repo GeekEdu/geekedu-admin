@@ -1,77 +1,81 @@
-import { useState, useEffect } from "react";
-import { Table, Modal, message, Space } from "antd";
-import type { ColumnsType } from "antd/es/table";
-import { useLocation } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import { course } from "../../../api/index";
-import { titleAction } from "../../../store/user/loginUserSlice";
-import { PerButton, BackBartment } from "../../../components";
-import { ExclamationCircleFilled } from "@ant-design/icons";
-import { CourseChapterCreateDialog } from "../components/chapter-create";
-import { CourseChapterUpdateDialog } from "../components/chapter-update";
-const { confirm } = Modal;
+import { useEffect, useState } from 'react'
+import { Modal, Space, Table, message } from 'antd'
+import type { ColumnsType } from 'antd/es/table'
+import { useLocation } from 'react-router-dom'
+import { useDispatch, useSelector } from 'react-redux'
+import { ExclamationCircleFilled } from '@ant-design/icons'
+import { course } from '../../../api/index'
+import { titleAction } from '../../../store/user/loginUserSlice'
+import { BackBartment, PerButton } from '../../../components'
+import { CourseChapterCreateDialog } from '../components/chapter-create'
+import { CourseChapterUpdateDialog } from '../components/chapter-update'
+
+const { confirm } = Modal
 
 interface DataType {
-  id: React.Key;
-  title: string;
+  id: React.Key
+  title: string
 }
 
-const CourseChapterPage = () => {
-  const dispatch = useDispatch();
-  const result = new URLSearchParams(useLocation().search);
-  const [loading, setLoading] = useState<boolean>(false);
-  const [list, setList] = useState<any>([]);
-  const [refresh, setRefresh] = useState(false);
-  const [showAddWin, setShowAddWin] = useState<boolean>(false);
-  const [showUpdateWin, setShowUpdateWin] = useState<boolean>(false);
-  const [updateId, setUpdateId] = useState<number>(0);
-  const [cid, setCid] = useState(Number(result.get("course_id")));
+function CourseChapterPage() {
+  const dispatch = useDispatch()
+  const result = new URLSearchParams(useLocation().search)
+  const [loading, setLoading] = useState<boolean>(false)
+  const [list, setList] = useState<any>([])
+  const [refresh, setRefresh] = useState(false)
+  const [showAddWin, setShowAddWin] = useState<boolean>(false)
+  const [showUpdateWin, setShowUpdateWin] = useState<boolean>(false)
+  const [updateId, setUpdateId] = useState<number>(0)
+  const [cid, setCid] = useState(Number(result.get('course_id')))
 
   useEffect(() => {
-    document.title = "课程章节管理";
-    dispatch(titleAction("课程章节管理"));
-  }, []);
+    document.title = '课程章节管理'
+    dispatch(titleAction('课程章节管理'))
+  }, [])
 
   useEffect(() => {
-    setCid(Number(result.get("course_id")));
-  }, [result.get("course_id")]);
+    setCid(Number(result.get('course_id')))
+  }, [result.get('course_id')])
 
   useEffect(() => {
-    getData();
-  }, [cid, refresh]);
+    getData()
+  }, [cid, refresh])
 
   const getData = () => {
-    if (loading) {
-      return;
-    }
-    setLoading(true);
+    if (loading)
+      return
+
+    setLoading(true)
     course
-      .chaptersList(cid, {
-        course_id: cid,
-      })
+      .chaptersList(cid)
       .then((res: any) => {
-        setList(res.data.chapters);
-        setLoading(false);
+        setList(res.data)
+        setLoading(false)
       })
       .catch((e) => {
-        setLoading(false);
-      });
-  };
+        setLoading(false)
+      })
+  }
 
   const columns: ColumnsType<DataType> = [
     {
-      title: "排序",
+      title: '排序',
       width: 150,
       render: (_, record: any) => <span>{record.sort}</span>,
     },
     {
-      title: "章节",
-      render: (_, record: any) => <span>{record.title} </span>,
+      title: '章节',
+      render: (_, record: any) => (
+        <span>
+          {record.name}
+          {' '}
+        </span>
+      ),
     },
     {
-      title: "操作",
+      title: '操作',
       width: 160,
-      fixed: "right",
+      fixed: 'right',
       render: (_, record: any) => (
         <Space>
           <PerButton
@@ -81,8 +85,8 @@ const CourseChapterPage = () => {
             icon={null}
             p="course_chapter.update"
             onClick={() => {
-              setUpdateId(record.id);
-              setShowUpdateWin(true);
+              setUpdateId(record.id)
+              setShowUpdateWin(true)
             }}
             disabled={null}
           />
@@ -93,52 +97,52 @@ const CourseChapterPage = () => {
             icon={null}
             p="course_chapter.destroy"
             onClick={() => {
-              destory(record.id);
+              destory(record.id)
             }}
             disabled={null}
           />
         </Space>
       ),
     },
-  ];
+  ]
 
   const resetData = () => {
-    setList([]);
-    setRefresh(!refresh);
-  };
+    setList([])
+    setRefresh(!refresh)
+  }
 
   const destory = (id: number) => {
-    if (id === 0) {
-      return;
-    }
+    if (id === 0)
+      return
+
     confirm({
-      title: "操作确认",
+      title: '操作确认',
       icon: <ExclamationCircleFilled />,
-      content: "确认删除此章节？",
+      content: '确认删除此章节？',
       centered: true,
-      okText: "确认",
-      cancelText: "取消",
+      okText: '确认',
+      cancelText: '取消',
       onOk() {
-        if (loading) {
-          return;
-        }
-        setLoading(true);
+        if (loading)
+          return
+
+        setLoading(true)
         course
           .chaptersDestroy(cid, id)
           .then(() => {
-            setLoading(false);
-            message.success("删除成功");
-            resetData();
+            setLoading(false)
+            message.success('删除成功')
+            resetData()
           })
           .catch((e) => {
-            setLoading(false);
-          });
+            setLoading(false)
+          })
       },
       onCancel() {
-        console.log("Cancel");
+        console.log('Cancel')
       },
-    });
-  };
+    })
+  }
 
   return (
     <div className="geekedu-main-body">
@@ -148,20 +152,22 @@ const CourseChapterPage = () => {
         open={showAddWin}
         onCancel={() => setShowAddWin(false)}
         onSuccess={() => {
-          resetData();
-          setShowAddWin(false);
+          resetData()
+          setShowAddWin(false)
         }}
-      ></CourseChapterCreateDialog>
+      >
+      </CourseChapterCreateDialog>
       <CourseChapterUpdateDialog
         id={updateId}
         cid={cid}
         open={showUpdateWin}
         onCancel={() => setShowUpdateWin(false)}
         onSuccess={() => {
-          resetData();
-          setShowUpdateWin(false);
+          resetData()
+          setShowUpdateWin(false)
         }}
-      ></CourseChapterUpdateDialog>
+      >
+      </CourseChapterUpdateDialog>
       <div className="float-left  mt-30 mb-30">
         <PerButton
           type="primary"
@@ -178,12 +184,12 @@ const CourseChapterPage = () => {
           loading={loading}
           columns={columns}
           dataSource={list}
-          rowKey={(record) => record.id}
+          rowKey={record => record.id}
           pagination={false}
         />
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default CourseChapterPage;
+export default CourseChapterPage

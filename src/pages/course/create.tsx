@@ -48,7 +48,7 @@ function CourseCreatePage() {
     course.getCourseCategory({
       type: 'REPLAY_COURSE',
     }).then((res: any) => {
-      const categories = res.data.categories
+      const categories = res.data
       const box: any = []
       for (let i = 0; i < categories.length; i++) {
         if (categories[i].children.length > 0) {
