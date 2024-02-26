@@ -16,12 +16,14 @@ export function store(params: any) {
   return client.post('/backend/api/v1/course', params)
 }
 
+// 根据id获取课程明细
 export function detail(id: number) {
-  return client.get(`/backend/api/v1/course/${id}`, {})
+  return client.get(`/course/api/getCourseById/${id}`, {})
 }
 
+// 根据id删除课程
 export function destroy(id: number) {
-  return client.destroy(`/backend/api/v1/course/${id}`)
+  return client.destroy(`/course/api/delete/${id}`)
 }
 
 export function update(id: number, params: any) {
@@ -83,26 +85,32 @@ export function commentDestroy(params: any) {
   return client.post(`/course/api/comments/delete/batch`, params)
 }
 
+// 返回课时列表
 export function videoList(params: any) {
-  return client.get(`/backend/api/v1/video`, params)
+  return client.get(`/course/api/section/getSectionList`, params)
 }
 
+// 批量删除课时
 export function videoDestoryMulti(params: any) {
-  return client.post(`/backend/api/v1/video/delete/multi`, params)
+  return client.post(`/course/api/section/delete/batch`, params)
 }
 
+// 返回课程章节列表
 export function videoCreate(id: number) {
-  return client.get(`/backend/api/v1/course_chapter/${id}`, {})
+  return client.get(`/course/api/${id}/chapter/getChapterList`, {})
 }
 
+// 新建课时
 export function videoStore(params: any) {
   return client.post('/backend/api/v1/video', params)
 }
 
+// 返回课时明细
 export function videoDetail(id: number) {
-  return client.get(`/backend/api/v1/video/${id}`, {})
+  return client.get(`/course/api/section/getSectionById/${id}`, {})
 }
 
+// 更新课时
 export function videoUpdate(id: number, params: any) {
   return client.put(`/backend/api/v1/video/${id}`, params)
 }

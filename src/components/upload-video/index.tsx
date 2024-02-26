@@ -92,8 +92,8 @@ export const UploadVideoDialog: React.FC<PropInterface> = ({
     setLoading(true)
     media
       .newVideoList({
-        page,
-        size,
+        pageNum: page,
+        pageSize: size,
         sort: 'id',
         order: 'desc',
         keywords,
@@ -127,7 +127,7 @@ export const UploadVideoDialog: React.FC<PropInterface> = ({
   const columns2: ColumnsType<DataType> = [
     {
       title: '视频名称',
-      render: (_, record: any) => <span>{record.title}</span>,
+      render: (_, record: any) => <span>{record.mediaName}</span>,
     },
     {
       title: '时长',
@@ -149,8 +149,8 @@ export const UploadVideoDialog: React.FC<PropInterface> = ({
     {
       title: '上传时间',
       width: 120,
-      dataIndex: 'created_at',
-      render: (created_at: string) => <span>{yearFormat(created_at)}</span>,
+      dataIndex: 'createdTime',
+      render: (createdTime: string) => <span>{yearFormat(createdTime)}</span>,
     },
     {
       title: '操作',

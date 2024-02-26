@@ -167,7 +167,7 @@ function CoursePage() {
       render: (_, record: any) => (
         <ThumbBar
           width={120}
-          value={record.pictureLink}
+          value={record.coverLink}
           height={90}
           title={record.title}
           border={4}

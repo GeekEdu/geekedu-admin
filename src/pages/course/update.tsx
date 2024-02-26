@@ -35,7 +35,7 @@ function CourseUpdatePage() {
   const [loading, setLoading] = useState<boolean>(false)
   const [categories, setCategories] = useState<any>([])
   const [isFree, setIsFree] = useState(0)
-  const [thumb, setThumb] = useState<string>('')
+  const [coverLink, setCoverLink] = useState<string>('')
   const [defautValue, setDefautValue] = useState('')
   const [id, setId] = useState(Number(result.get('id')))
 
@@ -62,26 +62,26 @@ function CourseUpdatePage() {
     const res: any = await course.detail(id)
     const data = res.data
     form.setFieldsValue({
-      category_id: data.category_id,
+      categoryId: data.categoryId,
       title: data.title,
-      thumb: data.thumb,
-      is_show: data.is_show,
-      is_free: data.is_free,
-      short_description: data.short_description,
-      original_desc: data.original_desc,
-      charge: data.charge,
-      published_at: dayjs(data.published_at, 'YYYY-MM-DD HH:mm'),
+      coverLink: data.coverLink,
+      isShow: data.isShow,
+      isFree: data.isFree,
+      description: data.description,
+      intro: data.intro,
+      price: data.price,
+      groundingTime: dayjs(data.groundingTime, 'YYYY-MM-DD HH:mm:ss'),
     })
-    setIsFree(data.is_free)
-    setDefautValue(data.original_desc)
-    setThumb(data.thumb)
+    setIsFree(data.isFree)
+    setDefautValue(data.intro)
+    setCoverLink(data.coverLink)
   }
 
   const getParams = async () => {
     const res: any = await course.getCourseCategory({
       type: 'REPLAY_COURSE',
     })
-    const categories = res.data.categories
+    const categories = res.data
     const box: any = []
     for (let i = 0; i < categories.length; i++) {
       if (categories[i].children.length > 0) {
@@ -112,20 +112,20 @@ function CourseUpdatePage() {
     if (loading)
       return
 
-    if (values.is_free === 1)
-      values.charge = 0
+    if (values.isFree)
+      values.price = 0
 
-    if (Number(values.charge) % 1 !== 0) {
+    if (Number(values.price) % 1 !== 0) {
       message.error('课程价格必须为整数型')
       return
     }
-    if (values.is_free === 0 && Number(values.charge) <= 0) {
+    if (!values.isFree && Number(values.price) <= 0) {
       message.error('课程未设置免费时价格应该大于0')
       return
     }
-    values.render_desc = values.original_desc
-    values.published_at = moment(new Date(values.published_at)).format(
-      'YYYY-MM-DD HH:mm',
+    values.render_desc = values.intro
+    values.groundingTime = moment(new Date(values.groundingTime)).format(
+      'YYYY-MM-DD HH:mm:ss',
     )
     setLoading(true)
     course
@@ -146,18 +146,18 @@ function CourseUpdatePage() {
 
   const onSwitch = (checked: boolean) => {
     if (checked)
-      form.setFieldsValue({ is_show: 1 })
+      form.setFieldsValue({ isShow: true })
     else
-      form.setFieldsValue({ is_show: 0 })
+      form.setFieldsValue({ isShow: false })
   }
 
   const isVChange = (checked: boolean) => {
     if (checked) {
-      form.setFieldsValue({ is_free: 1 })
+      form.setFieldsValue({ isFree: true })
       setIsFree(1)
     }
     else {
-      form.setFieldsValue({ is_free: 0 })
+      form.setFieldsValue({ isFree: false })
       setIsFree(0)
     }
   }
@@ -185,13 +185,13 @@ function CourseUpdatePage() {
           autoComplete="off"
         >
           <Form.Item
-            name="category_id"
+            name="categoryId"
             label="所属分类"
             rules={[{ required: true, message: '请选择所属分类!' }]}
           >
             <Space align="baseline" style={{ height: 32 }}>
               <Form.Item
-                name="category_id"
+                name="categoryId"
                 rules={[{ required: true, message: '请选择所属分类!' }]}
               >
                 <Select
@@ -229,19 +229,19 @@ function CourseUpdatePage() {
           </Form.Item>
           <Form.Item
             label="课程封面"
-            name="thumb"
+            name="coverLink"
             rules={[{ required: true, message: '请上传课程封面!' }]}
           >
             <Space align="baseline" style={{ height: 32 }}>
               <Form.Item
-                name="thumb"
+                name="coverLink"
                 rules={[{ required: true, message: '请上传课程封面!' }]}
               >
                 <UploadImageButton
                   text="选择图片"
                   onSelected={(url) => {
-                    form.setFieldsValue({ thumb: url })
-                    setThumb(url)
+                    form.setFieldsValue({ coverLink: url })
+                    setCoverLink(url)
                   }}
                 >
                 </UploadImageButton>
@@ -251,14 +251,14 @@ function CourseUpdatePage() {
               </div>
             </Space>
           </Form.Item>
-          {thumb && (
+          {coverLink && (
             <Row style={{ marginBottom: 22 }}>
               <Col span={3}></Col>
               <Col span={21}>
                 <div
                   className="contain-thumb-box"
                   style={{
-                    backgroundImage: `url(${thumb})`,
+                    backgroundImage: `url(${coverLink})`,
                     width: 200,
                     height: 150,
                   }}
@@ -267,18 +267,18 @@ function CourseUpdatePage() {
               </Col>
             </Row>
           )}
-          <Form.Item label="免费" name="is_free" valuePropName="checked">
+          <Form.Item label="免费" name="isFree" valuePropName="checked">
             <Switch onChange={isVChange} />
           </Form.Item>
-          {isFree === 0 && (
+          {!isFree && (
             <Form.Item
               label="价格"
-              name="charge"
+              name="price"
               rules={[{ required: true, message: '请输入价格!' }]}
             >
               <Space align="baseline" style={{ height: 32 }}>
                 <Form.Item
-                  name="charge"
+                  name="price"
                   rules={[{ required: true, message: '请输入价格!' }]}
                 >
                   <Input
@@ -286,6 +286,7 @@ function CourseUpdatePage() {
                     placeholder="单位：元"
                     allowClear
                     type="number"
+                    step="0.01"
                   />
                 </Form.Item>
                 <div className="ml-10">
@@ -297,11 +298,11 @@ function CourseUpdatePage() {
           <Form.Item label="上架时间" required={true}>
             <Space align="baseline" style={{ height: 32 }}>
               <Form.Item
-                name="published_at"
+                name="groundingTime"
                 rules={[{ required: true, message: '请选择上架时间!' }]}
               >
                 <DatePicker
-                  format="YYYY-MM-DD HH:mm"
+                  format="YYYY-MM-DD HH:mm:ss"
                   style={{ width: 300 }}
                   showTime
                   placeholder="请选择上架时间"
@@ -312,9 +313,9 @@ function CourseUpdatePage() {
               </div>
             </Space>
           </Form.Item>
-          <Form.Item label="显示" name="is_show">
+          <Form.Item label="显示" name="isShow">
             <Space align="baseline" style={{ height: 32 }}>
-              <Form.Item name="is_show" valuePropName="checked">
+              <Form.Item name="isShow" valuePropName="checked">
                 <Switch onChange={onSwitch} />
               </Form.Item>
               <div className="ml-10">
@@ -324,7 +325,7 @@ function CourseUpdatePage() {
           </Form.Item>
           <Form.Item
             label="简短介绍"
-            name="short_description"
+            name="description"
             rules={[{ required: true, message: '请输入简短介绍!' }]}
           >
             <Input.TextArea
@@ -338,7 +339,7 @@ function CourseUpdatePage() {
           </Form.Item>
           <Form.Item
             label="详情介绍"
-            name="original_desc"
+            name="intro"
             rules={[{ required: true, message: '请输入详情介绍!' }]}
             style={{ height: 840 }}
           >
@@ -346,10 +347,10 @@ function CourseUpdatePage() {
               <QuillEditor
                 mode=""
                 height={800}
-                defautValue={defautValue}
+                defaultValue={defautValue}
                 isFormula={false}
                 setContent={(value: string) => {
-                  form.setFieldsValue({ original_desc: value })
+                  form.setFieldsValue({ intro: value })
                 }}
               >
               </QuillEditor>
