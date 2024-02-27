@@ -50,13 +50,13 @@ function PaperUpdatePage() {
       return
 
     const res: any = await paper.detail(id)
-    const data = res.data.data
+    const data = res.data
     form.setFieldsValue({
-      category_id: data.category_id,
+      category_id: data.categoryId,
       title: data.title,
-      enabled_invite: data.enabled_invite,
-      is_vip_free: data.is_vip_free,
-      charge: data.charge,
+      enabled_invite: data.enableInvite,
+      is_vip_free: data.isVipFree,
+      charge: data.price,
       expired_minutes: data.expired_minutes,
       pass_score: data.pass_score,
       is_skip_mark: data.is_skip_mark,
@@ -88,7 +88,7 @@ function PaperUpdatePage() {
 
   const getParams = async () => {
     const res: any = await paper.create()
-    const categories = res.data
+    const categories = res.data.categories
     const box: any = []
     for (let i = 0; i < categories.length; i++) {
       box.push({

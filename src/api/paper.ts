@@ -14,12 +14,14 @@ export function store(params: any) {
   return client.post('/backend/addons/Paper/paper/create', params)
 }
 
+// 根据id查看试卷明细
 export function detail(id: number) {
-  return client.get(`/backend/addons/Paper/paper/${id}`, {})
+  return client.get(`/exam/api/papers/getPaperById/${id}`, {})
 }
 
+// 根据id删除试卷
 export function destroy(id: number) {
-  return client.destroy(`/backend/addons/Paper/paper/${id}`)
+  return client.post(`/exam/api/papers/delete/${id}`, {})
 }
 
 export function update(id: number, params: any) {
