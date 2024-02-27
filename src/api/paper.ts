@@ -5,6 +5,7 @@ export function list(params: any) {
   return client.get(`/exam/api/papers/getPapersPage`, params)
 }
 
+// 分类列表
 export function create() {
   return client.get(`/exam/api/papers/sTag/list`, {})
 }

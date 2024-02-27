@@ -88,7 +88,7 @@ function PaperUpdatePage() {
 
   const getParams = async () => {
     const res: any = await paper.create()
-    const categories = res.data.categories
+    const categories = res.data
     const box: any = []
     for (let i = 0; i < categories.length; i++) {
       box.push({
