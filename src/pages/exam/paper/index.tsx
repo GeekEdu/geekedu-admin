@@ -56,12 +56,12 @@ function PaperPage() {
     setLoading(true)
     paper
       .list({
-        page,
-        size,
+        pageNum: page,
+        pageSize: size,
         sort: 'id',
         order: 'desc',
         keywords,
-        category_id,
+        categoryId: category_id,
       })
       .then((res: any) => {
         setList(res.data.data.data)
@@ -75,7 +75,7 @@ function PaperPage() {
 
   const getParams = () => {
     paper.create().then((res: any) => {
-      const categories = res.data.categories
+      const categories = res.data
       const box: any = []
       for (let i = 0; i < categories.length; i++) {
         box.push({
@@ -133,7 +133,7 @@ function PaperPage() {
           </div>
           <div className="c-red">
             及格：
-            {record.pass_score}
+            {record.passScore}
             分
           </div>
         </>
@@ -143,7 +143,7 @@ function PaperPage() {
       title: '时长',
       render: (_, record: any) => (
         <span>
-          {record.expired_minutes}
+          {record.examTime}
           m
         </span>
       ),

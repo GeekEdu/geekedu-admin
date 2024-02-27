@@ -44,12 +44,12 @@ function PaperCategoryPage() {
     setLoading(true)
     paper
       .categoryList({
-        page,
-        size,
+        pageNum: page,
+        pageSize: size,
       })
       .then((res: any) => {
         const box: any = []
-        const categories = res.data.data.data
+        const categories = res.data.data
         for (let i = 0; i < categories.length; i++) {
           if (categories[i].children.length > 0) {
             box.push({
@@ -68,7 +68,7 @@ function PaperCategoryPage() {
           }
         }
         setList(box)
-        setTotal(res.data.data.total)
+        setTotal(res.data.total)
         setLoading(false)
       })
       .catch((e) => {
