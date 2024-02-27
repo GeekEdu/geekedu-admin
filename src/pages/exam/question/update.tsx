@@ -48,17 +48,17 @@ function QuestionUpdatePage() {
       return
 
     const res: any = await question.detail(id)
-    const data = res.data.data
+    const data = res.data
     form.setFieldsValue({
-      category_id: data.category_id,
-      level: data.level,
+      category_id: data.categoryId,
+      level: data.levels,
     })
-    setType(data.type)
+    setType(data.types)
     setCurrent(1)
     setFormParams({
-      category_id: data.category_id,
-      level: data.level,
-      type: data.type,
+      category_id: data.categoryId,
+      level: data.levels,
+      type: data.types,
       content: data.content,
       score: data.score,
       answer: data.answer,
@@ -72,7 +72,7 @@ function QuestionUpdatePage() {
       option8: data.option8,
       option9: data.option9,
       option10: data.option10,
-      remark: data.remark,
+      remark: data.analysis,
     })
   }
 

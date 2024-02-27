@@ -181,7 +181,7 @@ export const QChoice: React.FC<PropInterface> = ({
           <QuestionQuillEditor
             isFormula={true}
             height={40}
-            defautValue={form.content}
+            defaultValue={form.content}
             setContent={(value: string) => {
               const obj = { ...form }
               obj.content = value
@@ -204,7 +204,7 @@ export const QChoice: React.FC<PropInterface> = ({
             <QuestionQuillEditor
               isFormula={true}
               height={40}
-              defautValue={form[`option${Number(i + 1)}`]}
+              defaultValue={form[`option${Number(i + 1)}`]}
               setContent={(value: string) => {
                 const obj = { ...form }
                 obj[`option${Number(i + 1)}`] = value
@@ -249,7 +249,7 @@ export const QChoice: React.FC<PropInterface> = ({
           <QuestionQuillEditor
             isFormula={true}
             height={40}
-            defautValue={form.remark}
+            defaultValue={form.remark}
             setContent={(value: string) => {
               const obj = { ...form }
               obj.remark = value

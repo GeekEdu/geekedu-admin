@@ -8,12 +8,12 @@ import 'react-quill/dist/quill.snow.css'
 interface PropInterface {
   height: number
   isFormula: boolean
-  defautValue: string
+  defaultValue: string
   setContent: (value: string) => void
 }
 
 export const QuestionQuillEditor: React.FC<PropInterface> = (props) => {
-  const { height, isFormula, defautValue, setContent } = props
+  const { height, isFormula, defaultValue, setContent } = props
   const refs: any = useRef(null)
   const [loading, setLoading] = useState<boolean>(false)
   const [value, setValue] = useState('')
@@ -58,9 +58,9 @@ export const QuestionQuillEditor: React.FC<PropInterface> = (props) => {
   }, [value])
 
   useEffect(() => {
-    if (defautValue)
-      setValue(defautValue)
-  }, [defautValue])
+    if (defaultValue)
+      setValue(defaultValue)
+  }, [defaultValue])
 
   const confirmFormula = () => {
     if (!formulaValue) {

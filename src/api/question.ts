@@ -15,7 +15,7 @@ export function store(params: any) {
 }
 
 export function detail(id: number) {
-  return client.get(`/backend/addons/Paper/question/${id}`, {})
+  return client.get(`/exam/api/questions/getQuestionById/${id}`, {})
 }
 
 export function destroyMulti(params: any) {
@@ -27,7 +27,7 @@ export function update(id: number, params: any) {
 }
 
 export function importing(param: any) {
-  return client.post('/backend/addons/Paper/question/import/csv', param)
+  return client.post('/exam/api/questions/import/add', param)
 }
 
 // 试题分类列表
