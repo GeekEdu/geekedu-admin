@@ -55,12 +55,12 @@ function MockPaperPage() {
     setLoading(true)
     mock
       .list({
-        page,
-        size,
+        pageNum: page,
+        pageSize: size,
         sort: 'id',
         order: 'desc',
         keywords,
-        category_id,
+        categoryId: category_id,
       })
       .then((res: any) => {
         setList(res.data.data)
@@ -74,7 +74,7 @@ function MockPaperPage() {
 
   const getParams = () => {
     mock.create({}).then((res: any) => {
-      const categories = res.data.categories
+      const categories = res.data
       const box: any = []
       for (let i = 0; i < categories.length; i++) {
         box.push({
@@ -125,16 +125,16 @@ function MockPaperPage() {
       width: 150,
       render: (_, record: any) => (
         <span className="c-red">
-          {record.pass_score}
+          {record.passScore}
           分
         </span>
       ),
     },
     {
-      title: '时长',
+      title: '考试时长',
       render: (_, record: any) => (
         <span>
-          {record.expired_minutes}
+          {record.examTime}
           m
         </span>
       ),

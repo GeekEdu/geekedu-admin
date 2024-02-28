@@ -56,16 +56,16 @@ function PracticePage() {
     setLoading(true)
     practice
       .list({
-        page,
-        size,
+        pageNum: page,
+        pageSize: size,
         sort: 'id',
         order: 'desc',
-        key: keywords,
-        category_id,
+        keywords,
+        categoryId: category_id,
       })
       .then((res: any) => {
-        setList(res.data.data.data)
-        setTotal(res.data.data.total)
+        setList(res.data.data)
+        setTotal(res.data.total)
         setLoading(false)
       })
       .catch((e) => {
@@ -75,7 +75,7 @@ function PracticePage() {
 
   const getParams = () => {
     practice.create().then((res: any) => {
-      const categories = res.data.categories
+      const categories = res.data
       const box: any = []
       for (let i = 0; i < categories.length; i++) {
         box.push({
@@ -126,7 +126,7 @@ function PracticePage() {
       title: '题目数',
       render: (_, record: any) => (
         <div>
-          {record.question_count}
+          {record.questionCount}
           个
         </div>
       ),
@@ -134,8 +134,8 @@ function PracticePage() {
     {
       title: '时间',
       width: 200,
-      dataIndex: 'created_at',
-      render: (created_at: string) => <span>{dateFormat(created_at)}</span>,
+      dataIndex: 'createdTime',
+      render: (createdTime: string) => <span>{dateFormat(createdTime)}</span>,
     },
     {
       title: '操作',
