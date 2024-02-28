@@ -84,18 +84,18 @@ function MemberPage() {
         sort: 'id',
         order: 'desc',
         keywords,
-        role_id,
-        tag_id,
-        created_at,
+        vipId: role_id,
+        tagId: tag_id,
+        createdTime: created_at.join(','),
       })
       .then((res: any) => {
         setList(res.data.data.data)
         setTotal(res.data.data.total)
-        const userRemark = res.data.user_remarks
+        const userRemark = res.data.userRemarks
         if (userRemark.length !== 0)
           setUserRemark(userRemark)
 
-        const roles = res.data.roles
+        const roles = res.data.vip
         const arr: any = []
         roles.map((item: any) => {
           arr.push({
@@ -202,7 +202,7 @@ function MemberPage() {
             <div className="avatar">
               <img src={record.avatar} width="40" height="40" />
             </div>
-            <div className="ml-10">{record.nick_name}</div>
+            <div className="ml-10">{record.name}</div>
           </div>
         </>
       ),
@@ -212,8 +212,8 @@ function MemberPage() {
       width: '11%',
       render: (_, record: any) => (
         <>
-          {record.mobile && <span>{record.mobile}</span>}
-          {!record.mobile && <span>-</span>}
+          {record.phone && <span>{record.phone}</span>}
+          {!record.phone && <span>-</span>}
         </>
       ),
     },
@@ -222,26 +222,26 @@ function MemberPage() {
       width: '8%',
       render: (_, record: any) => (
         <>
-          {record.role && <span>{record.role.name}</span>}
-          {!record.role && <span>-</span>}
+          {record.vip && <span>{record.vip.name}</span>}
+          {!record.vip && <span>-</span>}
         </>
       ),
     },
     {
       title: '积分',
       width: '8%',
-      dataIndex: 'credit1',
-      render: (credit1: number) => <span>{credit1}</span>,
+      dataIndex: 'points',
+      render: (points: number) => <span>{points}</span>,
     },
     {
       title: '标签',
       width: '10%',
       render: (_, record: any) => (
         <>
-          {record.tags.length > 0 && (
-            <TagsTooltip tags={record.tags}></TagsTooltip>
+          {record?.tag.length > 0 && (
+            <TagsTooltip tags={record?.tag}></TagsTooltip>
           )}
-          {record.tags.length === 0 && <span>-</span>}
+          {record?.tag.length === 0 && <span>-</span>}
         </>
       ),
     },
@@ -268,8 +268,8 @@ function MemberPage() {
       width: '6%',
       render: (_, record: any) => (
         <>
-          {record.is_lock === 1 && <span className="c-red">·冻结</span>}
-          {record.is_lock !== 1 && <span className="c-green">·正常</span>}
+          {record?.isFrozen && <span className="c-red">·冻结</span>}
+          {!record?.isFrozen && <span className="c-green">·正常</span>}
         </>
       ),
     },
@@ -638,7 +638,7 @@ function MemberPage() {
                   setKeywords(e.target.value)
                 }}
                 allowClear
-                placeholder="昵称或手机号"
+                placeholder="昵称"
               />
               <Select
                 style={{ width: '100%', marginTop: 20 }}
@@ -662,11 +662,10 @@ function MemberPage() {
               />
               <RangePicker
                 disabledDate={disabledDate}
-                format="YYYY-MM-DD"
+                format="YYYY-MM-DD HH:mm:ss"
                 value={createdAts}
                 style={{ marginTop: 20 }}
                 onChange={(date, dateString) => {
-                  dateString[1] += ' 23:59:59'
                   setCreatedAt(dateString)
                   setCreatedAts(date)
                 }}

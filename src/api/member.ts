@@ -5,22 +5,27 @@ export function list(params: any) {
   return client.get('/user/api/member/list', params)
 }
 
+// vip列表
 export function create(params: any) {
   return client.get('/backend/api/v1/member/create', params)
 }
 
+// 新增学员
 export function store(params: any) {
   return client.post('/backend/api/v1/member', params)
 }
 
+// 根据id获取学员详情
 export function edit(id: number) {
-  return client.get(`/backend/api/v1/member/${id}`, {})
+  return client.get(`/user/api/member/detail/${id}`, {})
 }
 
+// 更新学员
 export function update(id: number, params: any) {
   return client.put(`/backend/api/v1/member/${id}`, params)
 }
 
+// 删除学员
 export function destroy(id: number) {
   return client.destroy(`/backend/api/v2/member/${id}`)
 }
@@ -41,6 +46,7 @@ export function userImport(params: any) {
   return client.post('/backend/api/v1/member/import', params)
 }
 
+// 学员详情
 export function detail(id: number) {
   return client.get(`/backend/api/v1/member/${id}/detail`, {})
 }
