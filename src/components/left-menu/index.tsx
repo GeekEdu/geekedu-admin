@@ -191,14 +191,14 @@ const items = [
     <i className="iconfont icon-icon-money-n" />,
     [
       getItem('全部订单', '/order/index', null, null, null, 'order'),
-      getItem(
-        'iOS充值',
-        '/order/recharge',
-        null,
-        null,
-        null,
-        'addons.TemplateOne.rechargeOrders.list',
-      ),
+      // getItem(
+      //   'iOS充值',
+      //   '/order/recharge',
+      //   null,
+      //   null,
+      //   null,
+      //   'addons.TemplateOne.rechargeOrders.list',
+      // ),
       getItem(
         '余额提现',
         '/withdrawOrders',

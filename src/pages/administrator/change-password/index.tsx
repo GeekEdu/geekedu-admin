@@ -1,42 +1,42 @@
-import { useState, useEffect } from "react";
-import styles from "./index.module.scss";
-import { message, Form, Input, Button } from "antd";
-import { useDispatch } from "react-redux";
-import { administrator } from "../../../api/index";
-import { titleAction } from "../../../store/user/loginUserSlice";
+import { useEffect, useState } from 'react'
+import { Button, Form, Input, message } from 'antd'
+import { useDispatch } from 'react-redux'
+import { administrator } from '../../../api/index'
+import { titleAction } from '../../../store/user/loginUserSlice'
+import styles from './index.module.scss'
 
-const ChangePasswordPage = () => {
-  const [form] = Form.useForm();
-  const dispatch = useDispatch();
-  const [loading, setLoading] = useState<boolean>(false);
+function ChangePasswordPage() {
+  const [form] = Form.useForm()
+  const dispatch = useDispatch()
+  const [loading, setLoading] = useState<boolean>(false)
 
   useEffect(() => {
-    document.title = "修改密码";
-    dispatch(titleAction("修改密码"));
-  }, []);
+    document.title = '修改密码'
+    dispatch(titleAction('修改密码'))
+  }, [])
 
   const onFinish = (values: any) => {
     if (values.new_password !== values.new_password_confirmation) {
-      message.error("两次输入新密码不一致");
-      return;
+      message.error('两次输入新密码不一致')
+      return
     }
     administrator
       .changePassword({
-        old_password: values.old_password,
-        new_password: values.new_password,
-        new_password_confirmation: values.new_password_confirmation,
+        oldPassword: values.old_password,
+        newPassword: values.new_password,
+        newPasswordConfirm: values.new_password_confirmation,
       })
       .then((res: any) => {
-        message.success("成功");
-      });
-  };
+        message.success('成功')
+      })
+  }
 
   const onFinishFailed = (errorInfo: any) => {
-    console.log("Failed:", errorInfo);
-  };
+    console.log('Failed:', errorInfo)
+  }
 
   return (
-    <div className={styles["change-password-box"]}>
+    <div className={styles['change-password-box']}>
       <Form
         form={form}
         name="change-password"
@@ -50,7 +50,7 @@ const ChangePasswordPage = () => {
         <Form.Item
           label="原密码"
           name="old_password"
-          rules={[{ required: true, message: "请输入原密码!" }]}
+          rules={[{ required: true, message: '请输入原密码!' }]}
         >
           <Input.Password
             allowClear
@@ -58,7 +58,7 @@ const ChangePasswordPage = () => {
               width: 400,
               height: 40,
               borderRadius: 4,
-              border: "1px solid #DCDFE6",
+              border: '1px solid #DCDFE6',
             }}
             placeholder="请输入原密码"
           />
@@ -66,7 +66,7 @@ const ChangePasswordPage = () => {
         <Form.Item
           label="新密码"
           name="new_password"
-          rules={[{ required: true, message: "请输入新密码!" }]}
+          rules={[{ required: true, message: '请输入新密码!' }]}
         >
           <Input.Password
             allowClear
@@ -74,7 +74,7 @@ const ChangePasswordPage = () => {
               width: 400,
               height: 40,
               borderRadius: 4,
-              border: "1px solid #DCDFE6",
+              border: '1px solid #DCDFE6',
             }}
             placeholder="请输入新密码"
           />
@@ -82,7 +82,7 @@ const ChangePasswordPage = () => {
         <Form.Item
           label="确认新密码"
           name="new_password_confirmation"
-          rules={[{ required: true, message: "请确认新密码!" }]}
+          rules={[{ required: true, message: '请确认新密码!' }]}
         >
           <Input.Password
             allowClear
@@ -90,7 +90,7 @@ const ChangePasswordPage = () => {
               width: 400,
               height: 40,
               borderRadius: 4,
-              border: "1px solid #DCDFE6",
+              border: '1px solid #DCDFE6',
             }}
             placeholder="请确认新密码"
           />
@@ -106,7 +106,7 @@ const ChangePasswordPage = () => {
         </Form.Item>
       </Form>
     </div>
-  );
-};
+  )
+}
 
-export default ChangePasswordPage;
+export default ChangePasswordPage
