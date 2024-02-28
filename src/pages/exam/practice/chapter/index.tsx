@@ -48,7 +48,7 @@ function PracticeChaptersPage() {
         pid: id,
       })
       .then((res: any) => {
-        setList(res.data.data)
+        setList(res.data)
         setLoading(false)
       })
       .catch((e) => {
@@ -77,7 +77,7 @@ function PracticeChaptersPage() {
       width: 120,
       render: (_, record: any) => (
         <span>
-          {record.question_count}
+          {record.questionCount}
           个
         </span>
       ),

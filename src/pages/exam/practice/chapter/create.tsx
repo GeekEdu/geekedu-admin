@@ -28,7 +28,7 @@ function PracticeChapterCreatePage() {
       return
 
     setLoading(true)
-    values.pid = id
+    values.practiceId = id
     practice
       .chaptersStore(values)
       .then((res: any) => {

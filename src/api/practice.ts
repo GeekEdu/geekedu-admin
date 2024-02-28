@@ -55,31 +55,36 @@ export function userProgress(id: number, ids: any) {
   )
 }
 
+// 章节列表
 export function chapterList(params: any) {
-  return client.get(`/backend/addons/Paper/practice_chapter/index`, params)
+  return client.get(`/exam/api/practice/chapter/list`, params)
 }
 
-export function chapterCreate() {
-  return client.get(`/backend/addons/Paper/practice_chapter/create`, {})
-}
+// export function chapterCreate() {
+//   return client.get(`/backend/addons/Paper/practice_chapter/create`, {})
+// }
 
+// 批量删除章节
 export function chaptersDestoryMulti(params: any) {
   return client.post(
-    `/backend/addons/Paper/practice_chapter/delete/multi`,
+    `/exam/api/practice/chapter/delete/batch`,
     params,
   )
 }
 
+// 新增章节
 export function chaptersStore(params: any) {
-  return client.post(`/backend/addons/Paper/practice_chapter/create`, params)
+  return client.post(`/exam/api/practice/chapter/add`, params)
 }
 
+// 根据id查找章节明细
 export function chaptersDetail(id: number) {
-  return client.get(`/backend/addons/Paper/practice_chapter/${id}`, {})
+  return client.get(`/exam/api/practice/chapter/getChapterById/${id}`, {})
 }
 
+// 更新章节
 export function chaptersUpdate(id: number, params: any) {
-  return client.put(`/backend/addons/Paper/practice_chapter/${id}`, params)
+  return client.post(`/exam/api/practice/chapter/update/${id}`, params)
 }
 
 export function questionList(id: number, params: any) {

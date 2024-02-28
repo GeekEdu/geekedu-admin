@@ -32,7 +32,7 @@ function PracticeChapterUpdatePage() {
       return
 
     practice.chaptersDetail(id).then((res: any) => {
-      const data = res.data.data
+      const data = res.data
       form.setFieldsValue({
         name: data.name,
         sort: data.sort,
@@ -45,7 +45,7 @@ function PracticeChapterUpdatePage() {
       return
 
     setLoading(true)
-    values.pid = pid
+    values.practiceId = pid
     practice
       .chaptersUpdate(id, values)
       .then((res: any) => {
