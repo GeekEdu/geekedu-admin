@@ -1,72 +1,72 @@
-import { useEffect, useState } from "react";
-import { Table } from "antd";
-import type { ColumnsType } from "antd/es/table";
-import { member } from "../../../api/index";
-import { dateFormat } from "../../../utils/index";
+import { useEffect, useState } from 'react'
+import { Table } from 'antd'
+import type { ColumnsType } from 'antd/es/table'
+import { member } from '../../../api/index'
+import { dateFormat } from '../../../utils/index'
 
 interface PropsInterface {
-  id: number;
+  id: string
 }
 
 interface DataType {
-  id: React.Key;
-  created_at: string;
+  id: React.Key
+  created_at: string
 }
 
-export const UserInviteComp = (props: PropsInterface) => {
-  const [loading, setLoading] = useState<boolean>(false);
-  const [list, setList] = useState<any>([]);
-  const [page, setPage] = useState(1);
-  const [size, setSize] = useState(10);
-  const [total, setTotal] = useState(0);
-  const [refresh, setRefresh] = useState(false);
+export function UserInviteComp(props: PropsInterface) {
+  const [loading, setLoading] = useState<boolean>(false)
+  const [list, setList] = useState<any>([])
+  const [page, setPage] = useState(1)
+  const [size, setSize] = useState(10)
+  const [total, setTotal] = useState(0)
+  const [refresh, setRefresh] = useState(false)
 
   useEffect(() => {
-    getData();
-  }, [props.id, page, size, refresh]);
+    getData()
+  }, [props.id, page, size, refresh])
 
   const getData = () => {
-    if (loading) {
-      return;
-    }
-    setLoading(true);
+    if (loading)
+      return
+
+    setLoading(true)
     member
       .userInviteRecords(props.id, {
-        page: page,
-        size: size,
+        page,
+        size,
       })
       .then((res: any) => {
-        setList(res.data.data.data);
-        setTotal(res.data.data.total);
-        setLoading(false);
+        setList(res.data.data.data)
+        setTotal(res.data.data.total)
+        setLoading(false)
       })
       .catch((e) => {
-        setLoading(false);
-      });
-  };
+        setLoading(false)
+      })
+  }
 
   const paginationProps = {
-    current: page, //当前页码
+    current: page, // 当前页码
     pageSize: size,
-    total: total, // 总条数
+    total, // 总条数
     onChange: (page: number, pageSize: number) =>
-      handlePageChange(page, pageSize), //改变页码的函数
+      handlePageChange(page, pageSize), // 改变页码的函数
     showSizeChanger: true,
-  };
+  }
 
   const handlePageChange = (page: number, pageSize: number) => {
-    setPage(page);
-    setSize(pageSize);
-  };
+    setPage(page)
+    setSize(pageSize)
+  }
 
   const columns: ColumnsType<DataType> = [
     {
-      title: "邀请学员ID",
+      title: '邀请学员ID',
       width: 200,
       render: (_, record: any) => <span>{record.id}</span>,
     },
     {
-      title: "邀请学员",
+      title: '邀请学员',
       render: (_, record: any) => (
         <>
           <div className="user-item d-flex">
@@ -79,23 +79,23 @@ export const UserInviteComp = (props: PropsInterface) => {
       ),
     },
     {
-      title: "手机号码",
+      title: '手机号码',
       width: 400,
       render: (_, record: any) => <span>{record.mobile}</span>,
     },
     {
-      title: "注册时间",
+      title: '注册时间',
       width: 215,
       render: (_, record: any) => <span>{dateFormat(record.created_at)}</span>,
     },
     {
-      title: "邀请关系有效期至",
+      title: '邀请关系有效期至',
       width: 215,
       render: (_, record: any) => (
         <span>{dateFormat(record.invite_user_expired_at)}</span>
       ),
     },
-  ];
+  ]
 
   return (
     <div className="float-left">
@@ -103,9 +103,9 @@ export const UserInviteComp = (props: PropsInterface) => {
         loading={loading}
         columns={columns}
         dataSource={list}
-        rowKey={(record) => record.id}
+        rowKey={record => record.id}
         pagination={paginationProps}
       />
     </div>
-  );
-};
+  )
+}

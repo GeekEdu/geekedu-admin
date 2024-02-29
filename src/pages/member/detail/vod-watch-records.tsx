@@ -1,73 +1,73 @@
-import { useEffect, useState } from "react";
-import { Table } from "antd";
-import type { ColumnsType } from "antd/es/table";
-import { member } from "../../../api/index";
-import { ThumbBar, PerButton } from "../../../components";
-import { dateFormat } from "../../../utils/index";
-import { VideoTableDialog } from "../components/video-table-dialog";
+import { useEffect, useState } from 'react'
+import { Table } from 'antd'
+import type { ColumnsType } from 'antd/es/table'
+import { member } from '../../../api/index'
+import { PerButton, ThumbBar } from '../../../components'
+import { dateFormat } from '../../../utils/index'
+import { VideoTableDialog } from '../components/video-table-dialog'
 
 interface PropsInterface {
-  id: number;
+  id: string
 }
 
 interface DataType {
-  id: React.Key;
-  created_at: string;
+  id: React.Key
+  created_at: string
 }
 
-export const UserVodWatchRecordsComp = (props: PropsInterface) => {
-  const [loading, setLoading] = useState<boolean>(false);
-  const [list, setList] = useState<any>([]);
-  const [page, setPage] = useState(1);
-  const [size, setSize] = useState(8);
-  const [total, setTotal] = useState(0);
-  const [refresh, setRefresh] = useState(false);
-  const [updateId, setUpdateId] = useState(0);
-  const [tit, setTit] = useState<string>("");
-  const [showAddWin, setShowAddWin] = useState<boolean>(false);
+export function UserVodWatchRecordsComp(props: PropsInterface) {
+  const [loading, setLoading] = useState<boolean>(false)
+  const [list, setList] = useState<any>([])
+  const [page, setPage] = useState(1)
+  const [size, setSize] = useState(8)
+  const [total, setTotal] = useState(0)
+  const [refresh, setRefresh] = useState(false)
+  const [updateId, setUpdateId] = useState(0)
+  const [tit, setTit] = useState<string>('')
+  const [showAddWin, setShowAddWin] = useState<boolean>(false)
 
   useEffect(() => {
-    getData();
-  }, [props.id, page, size, refresh]);
+    getData()
+  }, [props.id, page, size, refresh])
 
   const getData = () => {
-    if (loading) {
-      return;
-    }
-    setLoading(true);
+    if (loading)
+      return
+
+    setLoading(true)
     member
       .userVodWatchRecords({
-        page: page,
-        size: size,
+        page,
+        size,
         user_id: props.id,
       })
       .then((res: any) => {
-        setList(res.data.data);
-        setTotal(res.data.total);
-        setLoading(false);
+        setList(res.data.data)
+        setTotal(res.data.total)
+        setLoading(false)
       })
       .catch((e) => {
-        setLoading(false);
-      });
-  };
+        setLoading(false)
+      })
+  }
 
   const paginationProps = {
-    current: page, //当前页码
+    current: page, // 当前页码
     pageSize: size,
-    total: total, // 总条数
+    total, // 总条数
     onChange: (page: number, pageSize: number) =>
-      handlePageChange(page, pageSize), //改变页码的函数
+      handlePageChange(page, pageSize), // 改变页码的函数
     showSizeChanger: true,
-  };
+  }
 
   const handlePageChange = (page: number, pageSize: number) => {
-    setPage(page);
-    setSize(pageSize);
-  };
+    setPage(page)
+    setSize(pageSize)
+  }
 
   const columns: ColumnsType<DataType> = [
     {
-      title: "录播课程",
+      title: '录播课程',
       render: (_, record: any) => (
         <>
           {record.course.id && (
@@ -77,40 +77,48 @@ export const UserVodWatchRecordsComp = (props: PropsInterface) => {
               height={90}
               title={record.course.title}
               border={4}
-            ></ThumbBar>
+            >
+            </ThumbBar>
           )}
           {!record.course.id && <span className="c-red">课程不存在</span>}
         </>
       ),
     },
     {
-      title: "课程学习进度",
+      title: '课程学习进度',
       width: 200,
-      render: (_, record: any) => <span>{record.progress}%</span>,
+      render: (_, record: any) => (
+        <span>
+          {record.progress}
+          %
+        </span>
+      ),
     },
     {
-      title: "开始学习时间",
+      title: '开始学习时间',
       width: 200,
-      dataIndex: "created_at",
+      dataIndex: 'created_at',
       render: (created_at: string) => <span>{dateFormat(created_at)}</span>,
     },
     {
-      title: "最近一次学习",
+      title: '最近一次学习',
       width: 200,
       render: (_, record: any) => (
         <>
-          {record.last_view_video &&
-          record.last_view_video.length !== 0 &&
-          record.last_view_video.updated_at ? (
-            <span>{dateFormat(record.last_view_video.updated_at)}</span>
-          ) : (
-            <span>-</span>
-          )}
+          {record.last_view_video
+          && record.last_view_video.length !== 0
+          && record.last_view_video.updated_at
+            ? (
+              <span>{dateFormat(record.last_view_video.updated_at)}</span>
+              )
+            : (
+              <span>-</span>
+              )}
         </>
       ),
     },
     {
-      title: "课时学习进度",
+      title: '课时学习进度',
       width: 200,
       render: (_, record: any) => (
         <PerButton
@@ -120,19 +128,19 @@ export const UserVodWatchRecordsComp = (props: PropsInterface) => {
           icon={null}
           p="v2.member.course.progress"
           onClick={() => {
-            showVideoDialog(record);
+            showVideoDialog(record)
           }}
           disabled={null}
         />
       ),
     },
-  ];
+  ]
 
   const showVideoDialog = (item: any) => {
-    setTit(item.course.title);
-    setUpdateId(item.course_id);
-    setShowAddWin(true);
-  };
+    setTit(item.course.title)
+    setUpdateId(item.course_id)
+    setShowAddWin(true)
+  }
 
   return (
     <div className="float-left">
@@ -140,7 +148,7 @@ export const UserVodWatchRecordsComp = (props: PropsInterface) => {
         loading={loading}
         columns={columns}
         dataSource={list}
-        rowKey={(record) => record.id}
+        rowKey={record => record.id}
         pagination={paginationProps}
       />
       <VideoTableDialog
@@ -149,7 +157,8 @@ export const UserVodWatchRecordsComp = (props: PropsInterface) => {
         id={updateId}
         userId={props.id}
         onCancel={() => setShowAddWin(false)}
-      ></VideoTableDialog>
+      >
+      </VideoTableDialog>
     </div>
-  );
-};
+  )
+}

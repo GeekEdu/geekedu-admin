@@ -5,9 +5,9 @@ export function list(params: any) {
   return client.get('/user/api/member/list', params)
 }
 
-// vip列表
+// vip列表和用户标签
 export function create(params: any) {
-  return client.get('/backend/api/v1/member/create', params)
+  return client.get('/user/api/member/vipAndTag/list', params)
 }
 
 // 新增学员
@@ -16,7 +16,7 @@ export function store(params: any) {
 }
 
 // 根据id获取学员详情
-export function edit(id: number) {
+export function edit(id: string) {
   return client.get(`/user/api/member/detail/${id}`, {})
 }
 
@@ -47,12 +47,13 @@ export function userImport(params: any) {
 }
 
 // 学员详情
-export function detail(id: number) {
-  return client.get(`/backend/api/v1/member/${id}/detail`, {})
+export function detail(id: string) {
+  return client.get(`/user/api/member/detail/${id}`, {})
 }
 
+// 用户详情中订单数据
 export function userOrders(id: number, params: any) {
-  return client.get(`/backend/api/v1/member/${id}/detail/userOrders`, params)
+  return client.get(`/user/api/member/detail/${id}/order/list`, params)
 }
 
 export function userVodWatchRecords(params: any) {

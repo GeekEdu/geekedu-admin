@@ -93,15 +93,15 @@ function MemberDetailPage() {
         key: 'balanceRecords',
       })
     }
-    if (
-      enabledAddons.TemplateOne
-      && checkPermission('addons.TemplateOne.memberCredit2Records.list')
-    ) {
-      types.push({
-        name: 'iOS余额明细',
-        key: 'iOSRecords',
-      })
-    }
+    // if (
+    //   enabledAddons.TemplateOne
+    //   && checkPermission('addons.TemplateOne.memberCredit2Records.list')
+    // ) {
+    //   types.push({
+    //     name: 'iOS余额明细',
+    //     key: 'iOSRecords',
+    //   })
+    // }
     setCourseTypes(types)
   }, [enabledAddons, user])
 
@@ -115,9 +115,9 @@ function MemberDetailPage() {
 
     setLoading(true)
     member
-      .detail(Number(params.memberId))
+      .detail(params.memberId)
       .then((res: any) => {
-        setUserData(res.data.data)
+        setUserData(res.data)
         setLoading(false)
       })
       .catch((e) => {
@@ -127,7 +127,7 @@ function MemberDetailPage() {
 
   const getParams = () => {
     member.create({}).then((res: any) => {
-      const roles = res.data.roles
+      const roles = res.data.vip
       const arr: any = []
       roles.map((item: any) => {
         arr.push({
@@ -136,7 +136,7 @@ function MemberDetailPage() {
         })
       })
       setRoles(arr)
-      const tags = res.data.tags
+      const tags = res.data.tag
       const arr2: any = []
       tags.map((item: any) => {
         arr2.push({
@@ -165,7 +165,7 @@ function MemberDetailPage() {
       onOk() {
         member
           .editMulti({
-            user_ids: [Number(params.memberId)],
+            user_ids: [params.memberId],
             field: 'is_lock',
             value,
           })
@@ -199,7 +199,7 @@ function MemberDetailPage() {
   return (
     <div className={styles['user-main-body']}>
       <MemberUpdateDialog
-        id={Number(params.memberId)}
+        id={params.memberId}
         open={showUpdateWin}
         roles={roles}
         onCancel={() => setShowUpdateWin(false)}
@@ -210,7 +210,7 @@ function MemberDetailPage() {
       >
       </MemberUpdateDialog>
       <CreditDialog
-        id={Number(params.memberId)}
+        id={params.memberId}
         open={showCreditWin}
         onCancel={() => setShowCreditWin(false)}
         onSuccess={() => {
@@ -220,7 +220,7 @@ function MemberDetailPage() {
       >
       </CreditDialog>
       <IOSDialog
-        id={Number(params.memberId)}
+        id={params.memberId}
         open={showIOSWin}
         onCancel={() => setShowIOSWin(false)}
         onSuccess={() => {
@@ -231,7 +231,7 @@ function MemberDetailPage() {
       </IOSDialog>
       <TagsDialog
         tags={tags}
-        id={Number(params.memberId)}
+        id={params.memberId}
         open={showTagsWin}
         onCancel={() => setShowTagsWin(false)}
         onSuccess={() => {
@@ -241,7 +241,7 @@ function MemberDetailPage() {
       >
       </TagsDialog>
       <RemarkDialog
-        id={Number(params.memberId)}
+        id={params.memberId}
         open={showRemarkWin}
         onCancel={() => setShowRemarkWin(false)}
         onSuccess={() => {
@@ -320,7 +320,7 @@ function MemberDetailPage() {
                   }}
                   disabled={null}
                 />
-                {enabledAddons.TemplateOne && (
+                {/* {enabledAddons.TemplateOne && (
                   <PerButton
                     type="link"
                     text="变动iOS余额"
@@ -332,7 +332,7 @@ function MemberDetailPage() {
                     }}
                     disabled={null}
                   />
-                )}
+                )} */}
               </div>
             </div>
           </div>
@@ -343,37 +343,41 @@ function MemberDetailPage() {
             </div>
             <div className={styles['panel-info-item']}>
               手机号：
-              {userData.mobile}
+              {userData.phone}
             </div>
             <div className={styles['panel-info-item']}>
               VIP：
               {' '}
-              {userData.role ? userData.role.name : ''}
+              {userData.vip ? userData.vip.name : ''}
             </div>
-            <div className={styles['panel-info-item']}>
-              VIP到期：
-              {dateFormat(userData.role_expired_at)}
-            </div>
+            {
+              userData.vipId !== 3 && (
+                <div className={styles['panel-info-item']}>
+                  VIP到期：
+                  {dateFormat(userData.vipExpireTime)}
+                </div>
+              )
+            }
             <div className={styles['panel-info-item']}>
               账号状态：
-              {userData.is_lock === 1 && <span className="c-red">已冻结</span>}
-              {userData.is_lock !== 1 && <span className="c-green">正常</span>}
+              {userData.isFrozen && <span className="c-red">已冻结</span>}
+              {!userData.isFrozen && <span className="c-green">正常</span>}
             </div>
             <div className={styles['panel-info-item']}>
               注册区域：
-              {userData.register_area}
+              {userData?.address}
             </div>
             <div className={styles['panel-info-item']}>
               最近登录：
-              {dateFormat(userData.updated_at)}
+              {dateFormat(userData?.updatedTime)}
             </div>
             <div className={styles['panel-info-item']}>
               注册IP：
-              {userData.register_ip}
+              {userData?.ipAddress}
             </div>
             <div className={styles['panel-info-item']}>
               邀请人：
-              {userData.invitor ? userData.invitor.nick_name : ''}
+              {userData.invitor ? userData.invitor.name : ''}
               {userData.invito && (
                 <div className="item">
                   (截
@@ -388,17 +392,17 @@ function MemberDetailPage() {
             </div>
             <div className={styles['panel-info-item']}>
               积分：
-              <span>{userData.credit1}</span>
+              <span>{userData.points}</span>
             </div>
-            <div className={styles['panel-info-item']}>
+            {/* <div className={styles['panel-info-item']}>
               iOS余额：
               <span>{userData.credit2}</span>
-            </div>
+            </div> */}
             <div className={styles['panel-info-item']}>
               用户标签：
-              {userData.tags
-              && userData.tags.length > 0
-              && userData.tags.map((item: any) => (
+              {userData.tag
+              && userData.tag.length > 0
+              && userData.tag.map((item: any) => (
                 <Tag key={item.id} color="processing" className="ml-5 mb-5">
                   {item.name}
                 </Tag>
@@ -438,35 +442,35 @@ function MemberDetailPage() {
         </Radio.Group>
         <div className="float-left mt-30">
           {courseTabActive === 'order' && (
-            <UserOrdersComp id={Number(params.memberId)}></UserOrdersComp>
+            <UserOrdersComp id={params.memberId}></UserOrdersComp>
           )}
           {courseTabActive === 'vod-watch-records' && (
             <UserVodWatchRecordsComp
-              id={Number(params.memberId)}
+              id={params.memberId}
             >
             </UserVodWatchRecordsComp>
           )}
           {courseTabActive === 'video-watch-records' && (
             <UserVideoWatchRecordsComp
-              id={Number(params.memberId)}
+              id={params.memberId}
             >
             </UserVideoWatchRecordsComp>
           )}
           {courseTabActive === 'invite' && (
-            <UserInviteComp id={Number(params.memberId)}></UserInviteComp>
+            <UserInviteComp id={params.memberId}></UserInviteComp>
           )}
           {courseTabActive === 'credit1' && (
-            <UserCredit1Comp id={Number(params.memberId)}></UserCredit1Comp>
+            <UserCredit1Comp id={params.memberId}></UserCredit1Comp>
           )}
           {courseTabActive === 'balanceRecords' && (
             <UserBalanceRecordsComp
-              id={Number(params.memberId)}
+              id={params.memberId}
             >
             </UserBalanceRecordsComp>
           )}
           {courseTabActive === 'iOSRecords' && (
             <UserIOSRecordsComp
-              id={Number(params.memberId)}
+              id={params.memberId}
             >
             </UserIOSRecordsComp>
           )}
