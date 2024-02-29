@@ -1,76 +1,82 @@
-import { useState, useEffect } from "react";
-import { Table, Modal, message, Space } from "antd";
-import { useNavigate } from "react-router-dom";
-import type { ColumnsType } from "antd/es/table";
-import { useDispatch, useSelector } from "react-redux";
-import { role } from "../../api/index";
-import { titleAction } from "../../store/user/loginUserSlice";
-import { PerButton } from "../../components";
-import { ExclamationCircleFilled } from "@ant-design/icons";
-const { confirm } = Modal;
+import { useEffect, useState } from 'react'
+import { Modal, Space, Table, message } from 'antd'
+import { useNavigate } from 'react-router-dom'
+import type { ColumnsType } from 'antd/es/table'
+import { useDispatch, useSelector } from 'react-redux'
+import { ExclamationCircleFilled } from '@ant-design/icons'
+import { role } from '../../api/index'
+import { titleAction } from '../../store/user/loginUserSlice'
+import { PerButton } from '../../components'
+
+const { confirm } = Modal
 
 interface DataType {
-  id: React.Key;
-  name: string;
-  expire_days: number;
-  charge: number;
+  id: React.Key
+  name: string
+  expire_days: number
+  charge: number
 }
 
-const RolePage = () => {
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const [loading, setLoading] = useState<boolean>(false);
-  const [list, setList] = useState<any>([]);
-  const [refresh, setRefresh] = useState(false);
+function RolePage() {
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
+  const [loading, setLoading] = useState<boolean>(false)
+  const [list, setList] = useState<any>([])
+  const [refresh, setRefresh] = useState(false)
 
   useEffect(() => {
-    document.title = "VIP会员";
-    dispatch(titleAction("VIP会员"));
-  }, []);
+    document.title = 'VIP会员'
+    dispatch(titleAction('VIP会员'))
+  }, [])
 
   useEffect(() => {
-    getData();
-  }, [refresh]);
+    getData()
+  }, [refresh])
 
   const getData = () => {
-    if (loading) {
-      return;
-    }
-    setLoading(true);
+    if (loading)
+      return
+
+    setLoading(true)
     role
       .list()
       .then((res: any) => {
-        setList(res.data.data);
-        setLoading(false);
+        setList(res.data)
+        setLoading(false)
       })
       .catch((e) => {
-        setLoading(false);
-      });
-  };
+        setLoading(false)
+      })
+  }
 
   const columns: ColumnsType<DataType> = [
     {
-      title: "ID",
+      title: 'ID',
       width: 120,
       render: (_, record: any) => <span>{record.id}</span>,
     },
     {
-      title: "会员名称",
-      dataIndex: "name",
+      title: '会员名称',
+      dataIndex: 'name',
       render: (name: string) => <span>{name}</span>,
     },
     {
-      title: "天数",
-      dataIndex: "expire_days",
-      render: (expire_days: number) => <span>{expire_days}</span>,
+      title: '天数',
+      dataIndex: 'day',
+      render: (day: number) => <span>{day}</span>,
     },
     {
-      title: "价格",
-      dataIndex: "charge",
-      render: (charge: number) => <span>{charge}元</span>,
+      title: '价格',
+      dataIndex: 'price',
+      render: (price: number) => (
+        <span>
+          {price}
+          元
+        </span>
+      ),
     },
     {
-      title: "操作",
+      title: '操作',
       width: 130,
       render: (_, record: any) => (
         <Space>
@@ -81,7 +87,7 @@ const RolePage = () => {
             icon={null}
             p="role.update"
             onClick={() => {
-              navigate("/editrole?id=" + record.id);
+              navigate(`/editrole?id=${record.id}`)
             }}
             disabled={null}
           />
@@ -92,52 +98,52 @@ const RolePage = () => {
             icon={null}
             p="role.destroy"
             onClick={() => {
-              destory(record.id);
+              destory(record.id)
             }}
             disabled={null}
           />
         </Space>
       ),
     },
-  ];
+  ]
 
   const resetData = () => {
-    setList([]);
-    setRefresh(!refresh);
-  };
+    setList([])
+    setRefresh(!refresh)
+  }
 
   const destory = (id: number) => {
-    if (id === 0) {
-      return;
-    }
+    if (id === 0)
+      return
+
     confirm({
-      title: "操作确认",
+      title: '操作确认',
       icon: <ExclamationCircleFilled />,
-      content: "确认删除此VIP？",
+      content: '确认删除此VIP？',
       centered: true,
-      okText: "确认",
-      cancelText: "取消",
+      okText: '确认',
+      cancelText: '取消',
       onOk() {
-        if (loading) {
-          return;
-        }
-        setLoading(true);
+        if (loading)
+          return
+
+        setLoading(true)
         role
           .destroy(id)
           .then(() => {
-            setLoading(false);
-            message.success("删除成功");
-            resetData();
+            setLoading(false)
+            message.success('删除成功')
+            resetData()
           })
           .catch((e) => {
-            setLoading(false);
-          });
+            setLoading(false)
+          })
       },
       onCancel() {
-        console.log("Cancel");
+        console.log('Cancel')
       },
-    });
-  };
+    })
+  }
 
   return (
     <div className="geekedu-main-body">
@@ -148,7 +154,7 @@ const RolePage = () => {
           class=""
           icon={null}
           p="role.store"
-          onClick={() => navigate("/addrole")}
+          onClick={() => navigate('/addrole')}
           disabled={null}
         />
       </div>
@@ -157,12 +163,12 @@ const RolePage = () => {
           loading={loading}
           columns={columns}
           dataSource={list}
-          rowKey={(record) => record.id}
+          rowKey={record => record.id}
           pagination={false}
         />
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default RolePage;
+export default RolePage

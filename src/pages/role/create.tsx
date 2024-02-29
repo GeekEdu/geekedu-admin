@@ -1,51 +1,51 @@
-import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { Button, Input, message, Form, Space, Switch } from "antd";
-import { role } from "../../api/index";
-import { useDispatch } from "react-redux";
-import { titleAction } from "../../store/user/loginUserSlice";
-import { BackBartment, HelperText } from "../../components";
+import { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { Button, Form, Input, Space, Switch, message } from 'antd'
+import { useDispatch } from 'react-redux'
+import { role } from '../../api/index'
+import { titleAction } from '../../store/user/loginUserSlice'
+import { BackBartment, HelperText } from '../../components'
 
-const RoleCreatePage = () => {
-  const [form] = Form.useForm();
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const [loading, setLoading] = useState<boolean>(false);
+function RoleCreatePage() {
+  const [form] = Form.useForm()
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
+  const [loading, setLoading] = useState<boolean>(false)
 
   useEffect(() => {
-    document.title = "新建会员";
-    dispatch(titleAction("新建会员"));
-    form.setFieldsValue({ is_show: 1 });
-  }, []);
+    document.title = '新建会员'
+    dispatch(titleAction('新建会员'))
+    form.setFieldsValue({ is_show: 1 })
+  }, [])
 
   const onFinish = (values: any) => {
-    if (loading) {
-      return;
-    }
-    setLoading(true);
+    if (loading)
+      return
+
+    setLoading(true)
     role
       .store(values)
       .then((res: any) => {
-        setLoading(false);
-        message.success("保存成功！");
-        navigate(-1);
+        setLoading(false)
+        message.success('保存成功！')
+        navigate(-1)
       })
       .catch((e) => {
-        setLoading(false);
-      });
-  };
+        setLoading(false)
+      })
+  }
 
   const onFinishFailed = (errorInfo: any) => {
-    console.log("Failed:", errorInfo);
-  };
+    console.log('Failed:', errorInfo)
+  }
 
-  const onChange = (checked: boolean) => {
-    if (checked) {
-      form.setFieldsValue({ is_show: 1 });
-    } else {
-      form.setFieldsValue({ is_show: 0 });
-    }
-  };
+  // const onChange = (checked: boolean) => {
+  //   if (checked) {
+  //     form.setFieldsValue({ is_show: 1 });
+  //   } else {
+  //     form.setFieldsValue({ is_show: 0 });
+  //   }
+  // };
 
   return (
     <div className="geekedu-main-body">
@@ -64,7 +64,7 @@ const RoleCreatePage = () => {
           <Form.Item
             label="VIP名"
             name="name"
-            rules={[{ required: true, message: "请输入VIP名!" }]}
+            rules={[{ required: true, message: '请输入VIP名!' }]}
           >
             <Input
               style={{ width: 300 }}
@@ -74,13 +74,13 @@ const RoleCreatePage = () => {
           </Form.Item>
           <Form.Item
             label="天数"
-            name="expire_days"
-            rules={[{ required: true, message: "请输入天数!" }]}
+            name="day"
+            rules={[{ required: true, message: '请输入天数!' }]}
           >
             <Space align="baseline" style={{ height: 32 }}>
               <Form.Item
-                name="expire_days"
-                rules={[{ required: true, message: "请输入天数!" }]}
+                name="day"
+                rules={[{ required: true, message: '请输入天数!' }]}
               >
                 <Input
                   type="number"
@@ -96,13 +96,13 @@ const RoleCreatePage = () => {
           </Form.Item>
           <Form.Item
             label="价格"
-            name="charge"
-            rules={[{ required: true, message: "请输入价格!" }]}
+            name="price"
+            rules={[{ required: true, message: '请输入价格!' }]}
           >
             <Space align="baseline" style={{ height: 32 }}>
               <Form.Item
-                name="charge"
-                rules={[{ required: true, message: "请输入价格!" }]}
+                name="price"
+                rules={[{ required: true, message: '请输入价格!' }]}
               >
                 <Input
                   type="number"
@@ -116,7 +116,7 @@ const RoleCreatePage = () => {
               </div>
             </Space>
           </Form.Item>
-          <Form.Item label="显示">
+          {/* <Form.Item label="显示">
             <Space align="baseline" style={{ height: 32 }}>
               <Form.Item name="is_show" valuePropName="checked">
                 <Switch onChange={onChange} />
@@ -125,11 +125,11 @@ const RoleCreatePage = () => {
                 <HelperText text="控制用户是否能够看到并购买该VIP"></HelperText>
               </div>
             </Space>
-          </Form.Item>
+          </Form.Item> */}
           <Form.Item
             label="描述"
-            name="description"
-            rules={[{ required: true, message: "请输入描述!" }]}
+            name="intro"
+            rules={[{ required: true, message: '请输入描述!' }]}
           >
             <Input.TextArea
               style={{ width: 500, minHeight: 120 }}
@@ -159,7 +159,7 @@ const RoleCreatePage = () => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default RoleCreatePage;
+export default RoleCreatePage

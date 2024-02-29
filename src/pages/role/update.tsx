@@ -1,78 +1,78 @@
-import { useState, useEffect } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
-import { Button, Input, message, Form, Space, Switch, Spin } from "antd";
-import { role } from "../../api/index";
-import { useDispatch } from "react-redux";
-import { titleAction } from "../../store/user/loginUserSlice";
-import { BackBartment, HelperText } from "../../components";
+import { useEffect, useState } from 'react'
+import { useLocation, useNavigate } from 'react-router-dom'
+import { Button, Form, Input, Space, Spin, Switch, message } from 'antd'
+import { useDispatch } from 'react-redux'
+import { role } from '../../api/index'
+import { titleAction } from '../../store/user/loginUserSlice'
+import { BackBartment, HelperText } from '../../components'
 
-const RoleUpdatePage = () => {
-  const result = new URLSearchParams(useLocation().search);
-  const [form] = Form.useForm();
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const [init, setInit] = useState<boolean>(true);
-  const [loading, setLoading] = useState<boolean>(false);
-  const [id, setId] = useState(Number(result.get("id")));
-
-  useEffect(() => {
-    document.title = "编辑会员";
-    dispatch(titleAction("编辑会员"));
-    initData();
-  }, [id]);
+function RoleUpdatePage() {
+  const result = new URLSearchParams(useLocation().search)
+  const [form] = Form.useForm()
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
+  const [init, setInit] = useState<boolean>(true)
+  const [loading, setLoading] = useState<boolean>(false)
+  const [id, setId] = useState(Number(result.get('id')))
 
   useEffect(() => {
-    setId(Number(result.get("id")));
-  }, [result.get("id")]);
+    document.title = '编辑会员'
+    dispatch(titleAction('编辑会员'))
+    initData()
+  }, [id])
+
+  useEffect(() => {
+    setId(Number(result.get('id')))
+  }, [result.get('id')])
 
   const initData = async () => {
-    await getDetail();
-    setInit(false);
-  };
+    await getDetail()
+    setInit(false)
+  }
 
   const getDetail = async () => {
-    if (id === 0) {
-      return;
-    }
-    const res: any = await role.detail(id);
-    var data = res.data;
+    if (id === 0)
+      return
+
+    const res: any = await role.detail(id)
+    const data = res.data
     form.setFieldsValue({
-      description: data.description,
+      intro: data.intro,
       name: data.name,
-      is_show: data.is_show,
-      charge: data.charge,
-      expire_days: data.expire_days,
-    });
-  };
+      // is_show: data.is_show,
+      price: data.price,
+      day: data.day,
+    })
+  }
 
   const onFinish = (values: any) => {
-    if (loading) {
-      return;
-    }
-    setLoading(true);
+    if (loading)
+      return
+
+    setLoading(true)
     role
       .update(id, values)
       .then((res: any) => {
-        setLoading(false);
-        message.success("保存成功！");
-        navigate(-1);
+        setLoading(false)
+        message.success('保存成功！')
+        navigate(-1)
       })
       .catch((e) => {
-        setLoading(false);
-      });
-  };
+        setLoading(false)
+      })
+  }
 
   const onFinishFailed = (errorInfo: any) => {
-    console.log("Failed:", errorInfo);
-  };
+    console.log('Failed:', errorInfo)
+  }
 
-  const onChange = (checked: boolean) => {
-    if (checked) {
-      form.setFieldsValue({ is_show: 1 });
-    } else {
-      form.setFieldsValue({ is_show: 0 });
-    }
-  };
+  // const onChange = (checked: boolean) => {
+  //   if (checked) {
+  //     form.setFieldsValue({ is_show: 1 });
+  //   } else {
+  //     form.setFieldsValue({ is_show: 0 });
+  //   }
+  // };
 
   return (
     <div className="geekedu-main-body">
@@ -83,7 +83,7 @@ const RoleUpdatePage = () => {
         </div>
       )}
       <div
-        style={{ display: init ? "none" : "block" }}
+        style={{ display: init ? 'none' : 'block' }}
         className="float-left mt-30"
       >
         <Form
@@ -99,7 +99,7 @@ const RoleUpdatePage = () => {
           <Form.Item
             label="VIP名"
             name="name"
-            rules={[{ required: true, message: "请输入VIP名!" }]}
+            rules={[{ required: true, message: '请输入VIP名!' }]}
           >
             <Input
               style={{ width: 300 }}
@@ -109,13 +109,13 @@ const RoleUpdatePage = () => {
           </Form.Item>
           <Form.Item
             label="天数"
-            name="expire_days"
-            rules={[{ required: true, message: "请输入天数!" }]}
+            name="day"
+            rules={[{ required: true, message: '请输入天数!' }]}
           >
             <Space align="baseline" style={{ height: 32 }}>
               <Form.Item
-                name="expire_days"
-                rules={[{ required: true, message: "请输入天数!" }]}
+                name="day"
+                rules={[{ required: true, message: '请输入天数!' }]}
               >
                 <Input
                   type="number"
@@ -131,13 +131,13 @@ const RoleUpdatePage = () => {
           </Form.Item>
           <Form.Item
             label="价格"
-            name="charge"
-            rules={[{ required: true, message: "请输入价格!" }]}
+            name="price"
+            rules={[{ required: true, message: '请输入价格!' }]}
           >
             <Space align="baseline" style={{ height: 32 }}>
               <Form.Item
-                name="charge"
-                rules={[{ required: true, message: "请输入价格!" }]}
+                name="price"
+                rules={[{ required: true, message: '请输入价格!' }]}
               >
                 <Input
                   type="number"
@@ -151,7 +151,7 @@ const RoleUpdatePage = () => {
               </div>
             </Space>
           </Form.Item>
-          <Form.Item label="显示">
+          {/* <Form.Item label="显示">
             <Space align="baseline" style={{ height: 32 }}>
               <Form.Item name="is_show" valuePropName="checked">
                 <Switch onChange={onChange} />
@@ -160,11 +160,11 @@ const RoleUpdatePage = () => {
                 <HelperText text="控制用户是否能够看到并购买该VIP"></HelperText>
               </div>
             </Space>
-          </Form.Item>
+          </Form.Item> */}
           <Form.Item
             label="描述"
-            name="description"
-            rules={[{ required: true, message: "请输入描述!" }]}
+            name="intro"
+            rules={[{ required: true, message: '请输入描述!' }]}
           >
             <Input.TextArea
               style={{ width: 500, minHeight: 120 }}
@@ -194,7 +194,7 @@ const RoleUpdatePage = () => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default RoleUpdatePage;
+export default RoleUpdatePage
