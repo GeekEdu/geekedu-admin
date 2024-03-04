@@ -73,7 +73,7 @@ function TopicCreatePage() {
   }, [getEditorKey()])
 
   const getParams = () => {
-    topic.create({ type: 'IMAGE_TEXT' }).then((res: any) => {
+    topic.create().then((res: any) => {
       const categories = res.data
       const box: any = []
       for (let i = 0; i < categories.length; i++) {

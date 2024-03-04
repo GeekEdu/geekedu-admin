@@ -7,7 +7,7 @@ export function list(params: any) {
 
 // 返回图文分类列表
 export function create(params: any) {
-  return client.get(`/label/api/category/getCategoryList`, params)
+  return client.get(`/book/api/imageText/category/list`, params)
 }
 
 // 新增图文

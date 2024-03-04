@@ -46,7 +46,7 @@ function BookCreatePage() {
   }, [])
 
   const getParams = () => {
-    book.create({ type: 'E_BOOK' }).then((res: any) => {
+    book.create().then((res: any) => {
       const categories = res.data
       const box: any = []
       for (let i = 0; i < categories.length; i++) {

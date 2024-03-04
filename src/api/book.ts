@@ -7,7 +7,7 @@ export function list(params: any) {
 
 // 电子书分类
 export function create(params: any) {
-  return client.get(`/label/api/category/getCategoryList`, params)
+  return client.get(`/book/api/eBook/category/list`, params)
 }
 
 // 新建电子书
@@ -32,13 +32,13 @@ export function update(id: number, params: any) {
 
 // 返回电子书评论列表
 export function comments(params: any) {
-  return client.get(`/ask/api/comments/getCommentsPage`, params)
+  return client.get(`/book/api/eBook/comments`, params)
 }
 
 // 批量删除电子书评论
 export function commentDestoryMulti(params: any) {
   return client.post(
-    `/ask/api/comments/deleteBatch`,
+    `/book/api/eBook/comment/delete/batch`,
     params,
   )
 }
@@ -52,30 +52,30 @@ export function commentMulti(params: any) {
 
 // 返回电子书分类列表
 export function categoryList(params: any) {
-  return client.get(`/label/api/category/getCategoryList`, params)
+  return client.get(`/book/api/eBook/category/list`, params)
 }
 
-// 根据id删除指定电子书
+// 根据id删除指定分类
 export function categoryDestroy(id: number) {
-  return client.post(`/label/api/category/delete/${id}`, {})
+  return client.post(`/book/api/eBook/category/delete/${id}`, {})
 }
 
 // 新增分类
 export function categoryStore(params: any) {
   return client.post(
-    '/label/api/category/add',
+    '/book/api/eBook/category/add',
     params,
   )
 }
 
 // 根据id查看某一个分类
-export function categoryDetail(params: any) {
-  return client.get(`/label/api/category/getCategoryById`, params)
+export function categoryDetail(id: number) {
+  return client.get(`/book/api/eBook/category/${id}`, {})
 }
 
 // 根据id更新分类
 export function categoryUpdate(id: number, params: any) {
-  return client.post(`/label/api/category/update/${id}`, params)
+  return client.post(`/book/api/eBook/category/update/${id}`, params)
 }
 
 // 返回文章列表
@@ -111,7 +111,7 @@ export function articleUpdate(id: number, params: any) {
 // 返回文章评论列表
 export function articleComments(params: any) {
   return client.get(
-    `/ask/api/comments/getCommentsPage`,
+    `/book/api/eBook/article/comments`,
     params,
   )
 }
@@ -119,7 +119,7 @@ export function articleComments(params: any) {
 // 批量删除文章评论
 export function articleCommentDestoryMulti(params: any) {
   return client.post(
-    `/ask/api/comments/delete/batch`,
+    `/book/api/eBook/article/comment/delete/batch`,
     params,
   )
 }

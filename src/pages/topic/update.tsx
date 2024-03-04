@@ -102,7 +102,7 @@ function TopicUpdatePage() {
 
   // 获取所有图文分类数据
   const getParams = async () => {
-    const res: any = await topic.create({ type: 'IMAGE_TEXT' })
+    const res: any = await topic.create()
     const categories = res.data
     const box: any = []
     for (let i = 0; i < categories.length; i++) {

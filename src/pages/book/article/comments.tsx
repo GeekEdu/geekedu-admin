@@ -50,14 +50,14 @@ function BookArticleCommentsPage() {
       .articleComments({
         pageNum: page,
         pageSize: size,
-        user_id: null,
-        article_id: null,
+        // user_id: null,
+        // article_id: null,
         cType: 'E_BOOK_ARTICLE',
         createdTime: created_at.join(','),
       })
       .then((res: any) => {
-        setList(res.data.data.data)
-        setTotal(res.data.data.total)
+        setList(res.data.data)
+        setTotal(res.data.total)
         setLoading(false)
       })
       .catch((e) => {
@@ -86,7 +86,6 @@ function BookArticleCommentsPage() {
         book
           .articleCommentDestoryMulti({
             ids: selectedRowKeys,
-            cType: 'E_BOOK_ARTICLE',
           })
           .then(() => {
             setLoading(false)
@@ -146,7 +145,7 @@ function BookArticleCommentsPage() {
               <div className="avatar">
                 <img src={record.user.avatar} width="40" height="40" />
               </div>
-              <div className="ml-10">{record.user.nick_name}</div>
+              <div className="ml-10">{record.user.name}</div>
             </div>
           )}
           {!record.user && <span className="c-red">学员不存在</span>}
@@ -155,21 +154,47 @@ function BookArticleCommentsPage() {
     },
     {
       title: '文章',
+      width: 400,
       render: (_, record: any) => (
         <>{record.article && <span>{record.article.title}</span>}</>
       ),
     },
     {
       title: '评论内容',
+      width: 800,
       render: (_, record: any) => (
         <div dangerouslySetInnerHTML={{ __html: record.content }}></div>
       ),
     },
     {
+      title: '地区',
+      width: 100,
+      render: (_, record: any) => (
+        <>
+          {record.user && (
+            <span>{record?.user.province.split('|')[0]}</span>
+          )}
+          {!record.user && <span className="c-red">地区不存在</span>}
+        </>
+      ),
+    },
+    {
+      title: '浏览器',
+      width: 100,
+      render: (_, record: any) => (
+        <>
+          {record.user && (
+            <span>{record?.user.browser}</span>
+          )}
+          {!record.user && <span className="c-red">未知浏览器</span>}
+        </>
+      ),
+    },
+    {
       title: '时间',
       width: 200,
-      dataIndex: 'updated_at',
-      render: (updated_at: string) => <span>{dateFormat(updated_at)}</span>,
+      dataIndex: 'createdTime',
+      render: (createdTime: string) => <span>{dateFormat(createdTime)}</span>,
     },
   ]
 

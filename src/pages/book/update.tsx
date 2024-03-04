@@ -86,7 +86,7 @@ function BookUpdatePage() {
   }
 
   const getParams = async () => {
-    const res: any = await book.create({ type: 'E_BOOK' })
+    const res: any = await book.create()
     const categories = res.data
     const box: any = []
     for (let i = 0; i < categories.length; i++) {
