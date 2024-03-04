@@ -149,13 +149,38 @@ function TopicCommentsPage() {
       title: '图文',
       width: 400,
       render: (_, record: any) => (
-        <>{record.topic && <span>{record.topic.title}</span>}</>
+        <>{record.imageText && <span>{record.imageText.title}</span>}</>
       ),
     },
     {
       title: '评论内容',
+      width: 800,
       render: (_, record: any) => (
         <div dangerouslySetInnerHTML={{ __html: record.content }}></div>
+      ),
+    },
+    {
+      title: '地区',
+      width: 100,
+      render: (_, record: any) => (
+        <>
+          {record.user && (
+            <span>{record?.user.province.split('|')[0]}</span>
+          )}
+          {!record.user && <span className="c-red">地区不存在</span>}
+        </>
+      ),
+    },
+    {
+      title: '浏览器',
+      width: 100,
+      render: (_, record: any) => (
+        <>
+          {record.user && (
+            <span>{record?.user.browser}</span>
+          )}
+          {!record.user && <span className="c-red">未知浏览器</span>}
+        </>
       ),
     },
     {

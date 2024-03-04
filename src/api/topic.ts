@@ -32,12 +32,12 @@ export function update(id: number, params: any) {
 
 // 返回图文评论列表
 export function comments(params: any) {
-  return client.get(`/ask/api/comments/getCommentsPage`, params)
+  return client.get(`/book/api/imageText/comments`, params)
 }
 
 // 根据id删除图文评论
 export function commentDestory(id: number) {
-  return client.post(`/ask/api/comments/delete/${id}?cType=IMAGE_TEXT`, {})
+  return client.post(`/book/api/imageText/comment/delete/${id}?cType=IMAGE_TEXT`, {})
 }
 
 export function commentMulti(params: any) {
@@ -61,26 +61,26 @@ export function userAdd(params: any) {
 }
 
 // 返回分类列表
-export function categoryList(params: any) {
-  return client.get(`/label/api/category/getCategoryList`, params)
+export function categoryList() {
+  return client.get(`/book/api/imageText/category/list`, {})
 }
 
 // 根据id删除分类
 export function categoryDestroy(id: number) {
-  return client.post(`/label/api/category/delete/${id}`, {})
+  return client.post(`/book/api/imageText/category/delete/${id}`, {})
 }
 
 // 新增分类
 export function categoryStore(params: any) {
-  return client.post('/label/api/category/add', params)
+  return client.post('/book/api/imageText/category/add', params)
 }
 
 // 根据id查看某一个分类
-export function categoryDetail(params: any) {
-  return client.get(`/label/api/category/getCategoryById`, params)
+export function categoryDetail(id: number) {
+  return client.get(`/book/api/imageText/category/${id}`, {})
 }
 
 // 根据id更新分类
 export function categoryUpdate(id: number, params: any) {
-  return client.post(`/label/api/category/update/${id}`, params)
+  return client.post(`/book/api/imageText/category/update/${id}`, params)
 }
