@@ -50,6 +50,8 @@ export const UploadVideoItem: React.FC<PropInterface> = ({
     up: null,
     // 腾讯云
     ten: null,
+    // 多吉云
+    doge: null,
     // 是否上传中
     loading: false,
   })
@@ -90,7 +92,7 @@ export const UploadVideoItem: React.FC<PropInterface> = ({
 
   const pluploadInit = () => {
     const url = checkUrl(config.url)
-    var uploader = new plupload.Uploader({
+    const uploader = new plupload.Uploader({
       runtimes: 'html5',
       browse_button: 'selectfiles',
       chunk_size: '2MB',

@@ -22,7 +22,7 @@ function MemberTagsCreatePage() {
       return
 
     setLoading(true)
-    const insertValue; any = {
+    const insertValue: any = {
       ...values,
       type: 'MEMBERS',
     }
