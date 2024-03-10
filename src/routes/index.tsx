@@ -8,6 +8,7 @@ import { getToken } from '../utils'
 import LoginPage from '../pages/login'
 import WithHeaderWithoutFooter from '../pages/layouts/with-header-without-footer'
 import WithoutHeaderWithoutFooter from '../pages/layouts/without-header-without-footer'
+import LiveZhibo from '../pages/live-zhibo '
 
 // 主页
 const DashboardPage = lazy(() => import('../pages/dashboard'))

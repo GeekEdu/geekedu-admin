@@ -86,7 +86,7 @@ export function Header() {
                 onClick={() => {
                   window.open(
                     `${checkUrl(AppConfig.url)
-                      }addons/Zhibo/teacher/dist/#/dashboard/index`,
+                      }course/api/live/index`,
                   )
                 }}
               >
