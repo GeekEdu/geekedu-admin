@@ -1,125 +1,126 @@
-import { useState, useEffect } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useEffect, useState } from 'react'
+import { useLocation, useNavigate } from 'react-router-dom'
 import {
   Button,
-  Input,
-  message,
-  Form,
-  Tabs,
-  Switch,
-  Space,
-  Select,
-  Row,
   Col,
-} from "antd";
-import { useDispatch, useSelector } from "react-redux";
-import { creditMall } from "../../api/index";
-import { titleAction } from "../../store/user/loginUserSlice";
+  Form,
+  Input,
+  Row,
+  Select,
+  Space,
+  Switch,
+  Tabs,
+  message,
+} from 'antd'
+import { useDispatch, useSelector } from 'react-redux'
+import { creditMall } from '../../api/index'
+import { titleAction } from '../../store/user/loginUserSlice'
 import {
   BackBartment,
-  SelectResources,
-  UploadImageButton,
   HelperText,
   QuillEditor,
-} from "../../components";
+  SelectResources,
+  UploadImageButton,
+} from '../../components'
 
-const CreditMallCreatePage = () => {
-  const [form] = Form.useForm();
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const [loading, setLoading] = useState<boolean>(false);
-  const [is_v, setIsV] = useState(0);
-  const [resourceActive, setResourceActive] = useState<string>("base");
-  const [goodsTypes, setGoodsTypes] = useState<any>([]);
-  const [showSelectResWin, setShowSelectResWin] = useState<boolean>(false);
-  const [title, setTitle] = useState<string>("");
-  const [thumb, setThumb] = useState<string>("");
-  const [type, setType] = useState("");
+function CreditMallCreatePage() {
+  const [form] = Form.useForm()
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
+  const [loading, setLoading] = useState<boolean>(false)
+  const [is_v, setIsV] = useState(false)
+  const [resourceActive, setResourceActive] = useState<string>('base')
+  const [goodsTypes, setGoodsTypes] = useState<any>([])
+  const [showSelectResWin, setShowSelectResWin] = useState<boolean>(false)
+  const [title, setTitle] = useState<string>('')
+  const [thumb, setThumb] = useState<string>('')
+  const [type, setType] = useState('')
   const types = [
     {
-      key: "base",
-      label: "基础信息",
+      key: 'base',
+      label: '基础信息',
     },
     {
-      key: "dev",
-      label: "可选信息",
+      key: 'dev',
+      label: '可选信息',
     },
-  ];
+  ]
 
   useEffect(() => {
-    document.title = "新建积分商品";
-    dispatch(titleAction("新建积分商品"));
-    form.setFieldsValue({ is_show: 1, is_v: 0 });
-    getParams();
-  }, []);
+    document.title = '新建积分商品'
+    dispatch(titleAction('新建积分商品'))
+    form.setFieldsValue({ isShow: true, isVirtual: false })
+    getParams()
+  }, [])
 
   const getParams = () => {
     creditMall.create().then((res: any) => {
-      let goodsTypes = res.data.types;
-      const arr = [];
+      const goodsTypes = res.data
+      const arr = []
       for (let i = 0; i < goodsTypes.length; i++) {
         arr.push({
           label: goodsTypes[i].name,
-          value: goodsTypes[i].value,
-        });
+          value: goodsTypes[i].sign,
+        })
       }
-      setGoodsTypes(arr);
-    });
-  };
+      setGoodsTypes(arr)
+    })
+  }
 
   const onChange = (key: string) => {
-    setResourceActive(key);
-  };
+    setResourceActive(key)
+  }
 
   const onFinish = (values: any) => {
-    if (loading) {
-      return;
+    if (loading)
+      return
+
+    if (!values.isVirtual)
+      form.setFieldsValue({ goodsType: null, vId: null })
+
+    if (values.isVirtual && !values.goodsType) {
+      message.error('请选择虚拟商品类型')
+      return
     }
-    if (values.is_v === 0) {
-      form.setFieldsValue({ v_type: null, v_id: null });
+    if (values.isVirtual && values.goodsType && !values.vId) {
+      console.log(values.isVirtual, values.goodsType, values.vId)
+      message.error('请选择虚拟商品')
+      return
     }
-    if (values.is_v === 1 && !values.v_type) {
-      message.error("请选择虚拟商品类型");
-      return;
-    }
-    if (values.is_v === 1 && values.v_type && !values.v_id) {
-      message.error("请选择虚拟商品");
-      return;
-    }
-    setLoading(true);
+    setLoading(true)
     creditMall
       .store(values)
       .then((res: any) => {
-        setLoading(false);
-        message.success("保存成功！");
-        navigate(-1);
+        setLoading(false)
+        message.success('保存成功！')
+        navigate(-1)
       })
       .catch((e) => {
-        setLoading(false);
-      });
-  };
+        setLoading(false)
+      })
+  }
 
   const onFinishFailed = (errorInfo: any) => {
-    console.log("Failed:", errorInfo);
-  };
+    console.log('Failed:', errorInfo)
+  }
 
   const onSwitch = (checked: boolean) => {
-    if (checked) {
-      form.setFieldsValue({ is_show: 1 });
-    } else {
-      form.setFieldsValue({ is_show: 0 });
-    }
-  };
+    if (checked)
+      form.setFieldsValue({ isShow: true })
+    else
+      form.setFieldsValue({ isShow: false })
+  }
 
   const isVChange = (checked: boolean) => {
     if (checked) {
-      form.setFieldsValue({ is_v: 1 });
-      setIsV(1);
-    } else {
-      form.setFieldsValue({ is_v: 0 });
-      setIsV(0);
+      form.setFieldsValue({ isVirtual: true })
+      setIsV(true)
     }
-  };
+    else {
+      form.setFieldsValue({ isVirtual: false })
+      setIsV(false)
+    }
+  }
 
   return (
     <div className="geekedu-main-body">
@@ -130,15 +131,16 @@ const CreditMallCreatePage = () => {
         onCancel={() => setShowSelectResWin(false)}
         onSelected={(result: any) => {
           form.setFieldsValue({
-            v_id: result.id,
+            vId: result.id,
             title: result.title,
-            thumb: result.thumb,
-          });
-          setTitle(result.title);
-          setThumb(result.thumb);
-          setShowSelectResWin(false);
+            cover: result.thumb,
+          })
+          setTitle(result.title)
+          setThumb(result.thumb)
+          setShowSelectResWin(false)
         }}
-      ></SelectResources>
+      >
+      </SelectResources>
       <div className="center-tabs mb-30">
         <Tabs
           defaultActiveKey={resourceActive}
@@ -158,40 +160,53 @@ const CreditMallCreatePage = () => {
           autoComplete="off"
         >
           <div
-            style={{ display: resourceActive === "base" ? "block" : "none" }}
+            style={{ display: resourceActive === 'base' ? 'block' : 'none' }}
           >
-            <Form.Item label="是否虚拟商品" name="is_v" valuePropName="checked">
+            <Form.Item label="是否虚拟商品" name="isVirtual" valuePropName="checked">
               <Switch onChange={isVChange} />
             </Form.Item>
-            {is_v === 1 && (
-              <Form.Item name="v_type" label="虚拟商品类型">
+            {is_v && (
+              <Form.Item name="goodsType" label="虚拟商品类型">
                 <Select
                   style={{ width: 300 }}
                   allowClear
                   placeholder="请选择虚拟商品类型"
                   options={goodsTypes}
                   onChange={(e) => {
-                    setType(e);
+                    setType(e)
                   }}
                 />
               </Form.Item>
             )}
-            {is_v === 1 && type && (
-              <Form.Item label="虚拟商品" name="v_id">
+            {is_v && type && (
+              <Form.Item label="虚拟商品" name="isVirtual">
                 <Button
                   loading={loading}
                   type="primary"
                   onClick={() => setShowSelectResWin(true)}
                 >
-                  {title && <span>已选择「{title}」</span>}
+                  {title && (
+                    <span>
+                      已选择「
+                      {title}
+                      」
+                    </span>
+                  )}
                   {!title && <span>选择商品</span>}
                 </Button>
+              </Form.Item>
+            )}
+            {is_v && (
+              <Form.Item label="商品id" name="vId">
+                <Input
+                  style={{ width: 200 }}
+                />
               </Form.Item>
             )}
             <Form.Item
               label="商品名"
               name="title"
-              rules={[{ required: true, message: "请输入商品名!" }]}
+              rules={[{ required: true, message: '请输入商品名!' }]}
             >
               <Input
                 style={{ width: 300 }}
@@ -201,16 +216,17 @@ const CreditMallCreatePage = () => {
             </Form.Item>
             <Form.Item
               label="商品封面"
-              name="thumb"
-              rules={[{ required: true, message: "请上传商品封面!" }]}
+              name="cover"
+              rules={[{ required: true, message: '请上传商品封面!' }]}
             >
               <UploadImageButton
                 text="上传封面"
                 onSelected={(url) => {
-                  form.setFieldsValue({ thumb: url });
-                  setThumb(url);
+                  form.setFieldsValue({ cover: url })
+                  setThumb(url)
                 }}
-              ></UploadImageButton>
+              >
+              </UploadImageButton>
             </Form.Item>
             {thumb && (
               <Row style={{ marginBottom: 22 }}>
@@ -222,21 +238,22 @@ const CreditMallCreatePage = () => {
                       backgroundImage: `url(${thumb})`,
                       width: 400,
                       height: 400,
-                      backgroundColor: "#f4fafe",
+                      backgroundColor: '#f4fafe',
                     }}
-                  ></div>
+                  >
+                  </div>
                 </Col>
               </Row>
             )}
             <Form.Item
               label="价格"
-              name="charge"
-              rules={[{ required: true, message: "请输入价格!" }]}
+              name="price"
+              rules={[{ required: true, message: '请输入价格!' }]}
             >
               <Space align="baseline" style={{ height: 32 }}>
                 <Form.Item
-                  name="charge"
-                  rules={[{ required: true, message: "请输入价格!" }]}
+                  name="price"
+                  rules={[{ required: true, message: '请输入价格!' }]}
                 >
                   <Input
                     style={{ width: 300 }}
@@ -252,24 +269,25 @@ const CreditMallCreatePage = () => {
             </Form.Item>
             <Form.Item
               label="介绍"
-              name="desc"
-              rules={[{ required: true, message: "请输入介绍!" }]}
+              name="intro"
+              rules={[{ required: true, message: '请输入介绍!' }]}
               style={{ height: 440 }}
             >
               <QuillEditor
                 mode=""
                 height={400}
-                defautValue=""
+                defaultValue=""
                 isFormula={false}
                 setContent={(value: string) => {
-                  form.setFieldsValue({ desc: value });
+                  form.setFieldsValue({ intro: value })
                 }}
-              ></QuillEditor>
+              >
+              </QuillEditor>
             </Form.Item>
             <Form.Item
               label="库存"
-              name="stock_count"
-              rules={[{ required: true, message: "请输入库存!" }]}
+              name="stockCount"
+              rules={[{ required: true, message: '请输入库存!' }]}
             >
               <Input
                 type="number"
@@ -279,10 +297,10 @@ const CreditMallCreatePage = () => {
               />
             </Form.Item>
           </div>
-          <div style={{ display: resourceActive === "dev" ? "block" : "none" }}>
-            <Form.Item label="显示" name="is_show">
+          <div style={{ display: resourceActive === 'dev' ? 'block' : 'none' }}>
+            <Form.Item label="显示" name="isShow">
               <Space align="baseline" style={{ height: 32 }}>
-                <Form.Item name="is_show" valuePropName="checked">
+                <Form.Item name="isShow" valuePropName="checked">
                   <Switch onChange={onSwitch} />
                 </Form.Item>
                 <div className="ml-10">
@@ -312,7 +330,7 @@ const CreditMallCreatePage = () => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default CreditMallCreatePage;
+export default CreditMallCreatePage

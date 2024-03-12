@@ -1,126 +1,125 @@
-import { useState, useEffect } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useEffect, useState } from 'react'
+import { useLocation, useNavigate } from 'react-router-dom'
 import {
   Button,
-  Input,
-  message,
-  Form,
-  Tabs,
-  Switch,
-  Space,
-  Row,
   Col,
+  Form,
+  Input,
+  Row,
+  Space,
   Spin,
-} from "antd";
-import { useDispatch } from "react-redux";
-import { creditMall } from "../../api/index";
-import { titleAction } from "../../store/user/loginUserSlice";
+  Switch,
+  Tabs,
+  message,
+} from 'antd'
+import { useDispatch } from 'react-redux'
+import { creditMall } from '../../api/index'
+import { titleAction } from '../../store/user/loginUserSlice'
 import {
   BackBartment,
-  UploadImageButton,
   HelperText,
   QuillEditor,
-} from "../../components";
+  UploadImageButton,
+} from '../../components'
 
-const CreditMallUpdatePage = () => {
-  const result = new URLSearchParams(useLocation().search);
-  const [form] = Form.useForm();
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const [init, setInit] = useState<boolean>(true);
-  const [loading, setLoading] = useState<boolean>(false);
-  const [resourceActive, setResourceActive] = useState<string>("base");
-  const [defautValue, setDefautValue] = useState("");
-  const [title, setTitle] = useState<string>("");
-  const [thumb, setThumb] = useState<string>("");
-  const [is_v, setIsV] = useState(0);
-  const [v_id, setVId] = useState(0);
-  const [type, setType] = useState("");
-  const [id, setId] = useState(Number(result.get("id")));
+function CreditMallUpdatePage() {
+  const result = new URLSearchParams(useLocation().search)
+  const [form] = Form.useForm()
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
+  const [init, setInit] = useState<boolean>(true)
+  const [loading, setLoading] = useState<boolean>(false)
+  const [resourceActive, setResourceActive] = useState<string>('base')
+  const [defautValue, setDefautValue] = useState('')
+  const [title, setTitle] = useState<string>('')
+  const [thumb, setThumb] = useState<string>('')
+  const [is_v, setIsV] = useState(0)
+  const [v_id, setVId] = useState(0)
+  const [type, setType] = useState('')
+  const [id, setId] = useState(Number(result.get('id')))
   const types = [
     {
-      key: "base",
-      label: "基础信息",
+      key: 'base',
+      label: '基础信息',
     },
     {
-      key: "dev",
-      label: "可选信息",
+      key: 'dev',
+      label: '可选信息',
     },
-  ];
+  ]
 
   useEffect(() => {
-    document.title = "编辑积分商品";
-    dispatch(titleAction("编辑积分商品"));
-    initData();
-  }, [id]);
+    document.title = '编辑积分商品'
+    dispatch(titleAction('编辑积分商品'))
+    initData()
+  }, [id])
 
   useEffect(() => {
-    setId(Number(result.get("id")));
-  }, [result.get("id")]);
+    setId(Number(result.get('id')))
+  }, [result.get('id')])
 
   const initData = async () => {
-    await getDetail();
-    setInit(false);
-  };
+    await getDetail()
+    setInit(false)
+  }
 
   const getDetail = async () => {
-    if (id === 0) {
-      return;
-    }
-    const res: any = await creditMall.detail(id);
-    var data = res.data;
+    if (id === 0)
+      return
+
+    const res: any = await creditMall.detail(id)
+    const data = res.data
     form.setFieldsValue({
-      v_id: data.v_id,
+      vId: data.vId,
       title: data.title,
-      thumb: data.thumb,
-      is_show: data.is_show,
-      desc: data.desc,
-      stock_count: data.stock_count,
-      charge: data.charge,
-    });
-    setThumb(data.thumb);
-    setTitle(data.title);
-    setIsV(data.is_v);
-    setVId(data.v_id);
-    setType(data.v_type);
-    setDefautValue(data.desc);
-  };
+      cover: data.cover,
+      isShow: data.isShow,
+      intro: data.intro,
+      stockCount: data.stockCount,
+      price: data.price,
+    })
+    setThumb(data.cover)
+    setTitle(data.title)
+    setIsV(data.isVirtual)
+    setVId(data.vId)
+    setType(data.goodsType)
+    setDefautValue(data.intro)
+  }
 
   const onChange = (key: string) => {
-    setResourceActive(key);
-  };
+    setResourceActive(key)
+  }
 
   const onFinish = (values: any) => {
-    if (loading) {
-      return;
-    }
-    values.is_v = is_v;
-    values.v_id = v_id;
-    values.v_type = type;
-    setLoading(true);
+    if (loading)
+      return
+
+    values.isVirtual = is_v
+    values.vId = v_id
+    values.goodsType = type
+    setLoading(true)
     creditMall
       .update(id, values)
       .then((res: any) => {
-        setLoading(false);
-        message.success("保存成功！");
-        navigate(-1);
+        setLoading(false)
+        message.success('保存成功！')
+        navigate(-1)
       })
       .catch((e) => {
-        setLoading(false);
-      });
-  };
+        setLoading(false)
+      })
+  }
 
   const onFinishFailed = (errorInfo: any) => {
-    console.log("Failed:", errorInfo);
-  };
+    console.log('Failed:', errorInfo)
+  }
 
   const onSwitch = (checked: boolean) => {
-    if (checked) {
-      form.setFieldsValue({ is_show: 1 });
-    } else {
-      form.setFieldsValue({ is_show: 0 });
-    }
-  };
+    if (checked)
+      form.setFieldsValue({ isShow: true })
+    else
+      form.setFieldsValue({ isShow: false })
+  }
 
   return (
     <div className="geekedu-main-body">
@@ -137,7 +136,7 @@ const CreditMallUpdatePage = () => {
           <Spin></Spin>
         </div>
       )}
-      <div style={{ display: init ? "none" : "block" }} className="float-left">
+      <div style={{ display: init ? 'none' : 'block' }} className="float-left">
         <Form
           form={form}
           name="creditMall-update"
@@ -149,12 +148,12 @@ const CreditMallUpdatePage = () => {
           autoComplete="off"
         >
           <div
-            style={{ display: resourceActive === "base" ? "block" : "none" }}
+            style={{ display: resourceActive === 'base' ? 'block' : 'none' }}
           >
             <Form.Item
               label="商品名"
               name="title"
-              rules={[{ required: true, message: "请输入商品名!" }]}
+              rules={[{ required: true, message: '请输入商品名!' }]}
             >
               <Input
                 style={{ width: 300 }}
@@ -164,16 +163,17 @@ const CreditMallUpdatePage = () => {
             </Form.Item>
             <Form.Item
               label="商品封面"
-              name="thumb"
-              rules={[{ required: true, message: "请上传商品封面!" }]}
+              name="cover"
+              rules={[{ required: true, message: '请上传商品封面!' }]}
             >
               <UploadImageButton
                 text="上传封面"
                 onSelected={(url) => {
-                  form.setFieldsValue({ thumb: url });
-                  setThumb(url);
+                  form.setFieldsValue({ cover: url })
+                  setThumb(url)
                 }}
-              ></UploadImageButton>
+              >
+              </UploadImageButton>
             </Form.Item>
             {thumb && (
               <Row style={{ marginBottom: 22 }}>
@@ -185,21 +185,22 @@ const CreditMallUpdatePage = () => {
                       backgroundImage: `url(${thumb})`,
                       width: 400,
                       height: 400,
-                      backgroundColor: "#f4fafe",
+                      backgroundColor: '#f4fafe',
                     }}
-                  ></div>
+                  >
+                  </div>
                 </Col>
               </Row>
             )}
             <Form.Item
               label="价格"
-              name="charge"
-              rules={[{ required: true, message: "请输入价格!" }]}
+              name="price"
+              rules={[{ required: true, message: '请输入价格!' }]}
             >
               <Space align="baseline" style={{ height: 32 }}>
                 <Form.Item
-                  name="charge"
-                  rules={[{ required: true, message: "请输入价格!" }]}
+                  name="price"
+                  rules={[{ required: true, message: '请输入价格!' }]}
                 >
                   <Input
                     style={{ width: 300 }}
@@ -215,24 +216,25 @@ const CreditMallUpdatePage = () => {
             </Form.Item>
             <Form.Item
               label="介绍"
-              name="desc"
-              rules={[{ required: true, message: "请输入介绍!" }]}
+              name="intro"
+              rules={[{ required: true, message: '请输入介绍!' }]}
               style={{ height: 440 }}
             >
               <QuillEditor
                 mode=""
                 height={400}
-                defautValue={defautValue}
+                defaultValue={defautValue}
                 isFormula={false}
                 setContent={(value: string) => {
-                  form.setFieldsValue({ desc: value });
+                  form.setFieldsValue({ intro: value })
                 }}
-              ></QuillEditor>
+              >
+              </QuillEditor>
             </Form.Item>
             <Form.Item
               label="库存"
-              name="stock_count"
-              rules={[{ required: true, message: "请输入库存!" }]}
+              name="stockCount"
+              rules={[{ required: true, message: '请输入库存!' }]}
             >
               <Input
                 type="number"
@@ -242,10 +244,10 @@ const CreditMallUpdatePage = () => {
               />
             </Form.Item>
           </div>
-          <div style={{ display: resourceActive === "dev" ? "block" : "none" }}>
-            <Form.Item label="显示" name="is_show">
+          <div style={{ display: resourceActive === 'dev' ? 'block' : 'none' }}>
+            <Form.Item label="显示" name="isShow">
               <Space align="baseline" style={{ height: 32 }}>
-                <Form.Item name="is_show" valuePropName="checked">
+                <Form.Item name="isShow" valuePropName="checked">
                   <Switch onChange={onSwitch} />
                 </Form.Item>
                 <div className="ml-10">
@@ -275,7 +277,7 @@ const CreditMallUpdatePage = () => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default CreditMallUpdatePage;
+export default CreditMallUpdatePage
