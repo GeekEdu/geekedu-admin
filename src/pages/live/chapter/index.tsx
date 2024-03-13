@@ -47,9 +47,7 @@ function LiveChapterPage() {
 
     setLoading(true)
     live
-      .chaptersList({
-        id: cid,
-      })
+      .chaptersList(cid)
       .then((res: any) => {
         setList(res.data)
         setLoading(false)

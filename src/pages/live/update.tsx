@@ -37,7 +37,6 @@ function LiveUpdatePage() {
   const [resourceActive, setResourceActive] = useState<string>('base')
   const [categories, setCategories] = useState<any>([])
   const [teachers, setTeachers] = useState<any>([])
-  const [assistants, setAssistants] = useState<any>([])
   const [isFree, setIsFree] = useState(0)
   const [thumb, setThumb] = useState<string>('')
   const [poster, setPoster] = useState<string>('')
@@ -79,28 +78,28 @@ function LiveUpdatePage() {
     const res: any = await live.detail(id)
     const data = res.data
     form.setFieldsValue({
-      category_id: data.category_id,
+      categoryId: data.categoryId,
       title: data.title,
-      thumb: data.thumb,
-      is_show: data.is_show,
-      assistant_id: data.assistant_id === 0 ? [] : data.assistant_id,
-      teacher_id: data.teacher_id,
-      vip_can_view: data.vip_can_view,
-      short_description: data.short_description,
-      original_desc: data.original_desc,
-      charge: data.charge,
+      cover: data.cover,
+      isShow: data.isShow,
+      // assistant_id: data.assistant_id === 0 ? [] : data.assistant_id,
+      teacherId: data.teacherId,
+      vipCanView: data.vipCanView,
+      intro: data.intro,
+      renderDesc: data.renderDesc,
+      price: data.price,
       poster: data.poster,
-      published_at: dayjs(data.published_at, 'YYYY-MM-DD HH:mm'),
+      groundingTime: dayjs(data.groundingTime, 'YYYY-MM-DD HH:mm:ss'),
     })
-    if (data.charge > 0)
+    if (data.price > 0)
       setIsFree(0)
     else
       setIsFree(1)
 
-    setOriginalCharge(data.charge)
-    setOriginalVipCanView(data.vip_can_view)
-    setDefautValue(data.original_desc)
-    setThumb(data.thumb)
+    setOriginalCharge(data.price)
+    setOriginalVipCanView(data.vipCanView)
+    setDefautValue(data.renderDesc)
+    setThumb(data.cover)
     setPoster(data.poster)
   }
 
@@ -131,16 +130,16 @@ function LiveUpdatePage() {
       }
     }
     setCategories(box)
-    const assistants = res.data.teachers.assistant
-    const box2: any = []
-    for (let i = 0; i < assistants.length; i++) {
-      box2.push({
-        label: assistants[i].name,
-        value: assistants[i].id,
-      })
-    }
-    setAssistants(box2)
-    const teachers = res.data.teachers.teacher
+    // const assistants = res.data.teachers.assistant
+    // const box2: any = []
+    // for (let i = 0; i < assistants.length; i++) {
+    //   box2.push({
+    //     label: assistants[i].name,
+    //     value: assistants[i].id,
+    //   })
+    // }
+    // setAssistants(box2)
+    const teachers = res.data.teachers
     const box3: any = []
     for (let i = 0; i < teachers.length; i++) {
       box3.push({
@@ -159,12 +158,12 @@ function LiveUpdatePage() {
     if (loading)
       return
 
-    if (values.charge == 0)
-      values.vip_can_view = 0
+    if (values.price == 0)
+      values.vipCanView = false
 
-    values.render_desc = values.original_desc
-    values.published_at = moment(new Date(values.published_at)).format(
-      'YYYY-MM-DD HH:mm',
+    // values.render_desc = values.original_desc
+    values.groundingTime = moment(new Date(values.groundingTime)).format(
+      'YYYY-MM-DD HH:mm:ss',
     )
     setLoading(true)
     live
@@ -185,13 +184,13 @@ function LiveUpdatePage() {
 
   const isFreeChange = (checked: boolean) => {
     if (checked) {
-      form.setFieldsValue({ charge: 0, vip_can_view: 0 })
+      form.setFieldsValue({ price: 0, vipCanView: false })
       setIsFree(1)
     }
     else {
       form.setFieldsValue({
-        charge: original_charge,
-        vip_can_view: original_vip_can_view,
+        price: original_charge,
+        vipCanView: original_vip_can_view,
       })
       setIsFree(0)
     }
@@ -199,16 +198,16 @@ function LiveUpdatePage() {
 
   const onSwitch = (checked: boolean) => {
     if (checked)
-      form.setFieldsValue({ is_show: 1 })
+      form.setFieldsValue({ isShow: true })
     else
-      form.setFieldsValue({ is_show: 0 })
+      form.setFieldsValue({ isShow: false })
   }
 
   const onVipChange = (checked: boolean) => {
     if (checked)
-      form.setFieldsValue({ vip_can_view: 1 })
+      form.setFieldsValue({ vipCanView: true })
     else
-      form.setFieldsValue({ vip_can_view: 0 })
+      form.setFieldsValue({ vipCanView: false })
   }
 
   return (
@@ -242,12 +241,12 @@ function LiveUpdatePage() {
           >
             <Form.Item
               label="所属分类"
-              name="category_id"
+              name="categoryId"
               rules={[{ required: true, message: '请选择所属分类!' }]}
             >
               <Space align="baseline" style={{ height: 32 }}>
                 <Form.Item
-                  name="category_id"
+                  name="categoryId"
                   rules={[{ required: true, message: '请选择所属分类!' }]}
                 >
                   <Select
@@ -274,12 +273,12 @@ function LiveUpdatePage() {
             </Form.Item>
             <Form.Item
               label="讲师"
-              name="teacher_id"
+              name="teacherId"
               rules={[{ required: true, message: '请选择讲师!' }]}
             >
               <Space align="baseline" style={{ height: 32 }}>
                 <Form.Item
-                  name="teacher_id"
+                  name="teacherId"
                   rules={[{ required: true, message: '请选择讲师!' }]}
                 >
                   <Select
@@ -304,7 +303,7 @@ function LiveUpdatePage() {
                 </div>
               </Space>
             </Form.Item>
-            <Form.Item label="助教" name="assistant_id">
+            {/* <Form.Item label="助教" name="assistant_id">
               <Space align="baseline" style={{ height: 32 }}>
                 <Form.Item name="assistant_id">
                   <Select
@@ -318,7 +317,7 @@ function LiveUpdatePage() {
                   <HelperText text="可选择助教辅助讲师直播"></HelperText>
                 </div>
               </Space>
-            </Form.Item>
+            </Form.Item> */}
             <Form.Item
               label="课程名"
               name="title"
@@ -332,18 +331,18 @@ function LiveUpdatePage() {
             </Form.Item>
             <Form.Item
               label="课程封面"
-              name="thumb"
+              name="cover"
               rules={[{ required: true, message: '请上传课程封面!' }]}
             >
               <Space align="baseline" style={{ height: 32 }}>
                 <Form.Item
-                  name="thumb"
+                  name="cover"
                   rules={[{ required: true, message: '请上传课程封面!' }]}
                 >
                   <UploadImageButton
                     text="选择图片"
                     onSelected={(url) => {
-                      form.setFieldsValue({ thumb: url })
+                      form.setFieldsValue({ cover: url })
                       setThumb(url)
                     }}
                   >
@@ -376,12 +375,12 @@ function LiveUpdatePage() {
             <div style={{ display: isFree === 0 ? 'block' : 'none' }}>
               <Form.Item
                 label="价格"
-                name="charge"
+                name="price"
                 rules={[{ required: true, message: '请输入价格!' }]}
               >
                 <Space align="baseline" style={{ height: 32 }}>
                   <Form.Item
-                    name="charge"
+                    name="price"
                     rules={[{ required: true, message: '请输入价格!' }]}
                   >
                     <Input
@@ -399,19 +398,19 @@ function LiveUpdatePage() {
             </div>
             <Form.Item
               label="上架时间"
-              name="published_at"
+              name="groundingTime"
               rules={[{ required: true, message: '请选择上架时间!' }]}
             >
               <DatePicker
-                format="YYYY-MM-DD HH:mm"
+                format="YYYY-MM-DD HH:mm:ss"
                 style={{ width: 300 }}
                 showTime
                 placeholder="请选择上架时间"
               />
             </Form.Item>
-            <Form.Item label="显示" name="is_show">
+            <Form.Item label="显示" name="isShow">
               <Space align="baseline" style={{ height: 32 }}>
-                <Form.Item name="is_show" valuePropName="checked">
+                <Form.Item name="isShow" valuePropName="checked">
                   <Switch onChange={onSwitch} />
                 </Form.Item>
                 <div className="ml-10">
@@ -420,9 +419,9 @@ function LiveUpdatePage() {
               </Space>
             </Form.Item>
             <div style={{ display: isFree === 0 ? 'block' : 'none' }}>
-              <Form.Item label="会员免费" name="vip_can_view">
+              <Form.Item label="会员免费" name="vipCanView">
                 <Space align="baseline" style={{ height: 32 }}>
-                  <Form.Item name="vip_can_view" valuePropName="checked">
+                  <Form.Item name="vipCanView" valuePropName="checked">
                     <Switch onChange={onVipChange} />
                   </Form.Item>
                   <div className="ml-10">
@@ -433,7 +432,7 @@ function LiveUpdatePage() {
             </div>
             <Form.Item
               label="简短介绍"
-              name="short_description"
+              name="intro"
               rules={[{ required: true, message: '请输入简短介绍!' }]}
             >
               <Input.TextArea
@@ -447,7 +446,7 @@ function LiveUpdatePage() {
             </Form.Item>
             <Form.Item
               label="详细介绍"
-              name="original_desc"
+              name="renderDesc"
               rules={[{ required: true, message: '请输入详细介绍!' }]}
               style={{ height: 440 }}
             >
@@ -455,10 +454,10 @@ function LiveUpdatePage() {
                 <QuillEditor
                   mode=""
                   height={400}
-                  defautValue={defautValue}
+                  defaultValue={defautValue}
                   isFormula={false}
                   setContent={(value: string) => {
-                    form.setFieldsValue({ original_desc: value })
+                    form.setFieldsValue({ renderDesc: value })
                   }}
                 >
                 </QuillEditor>

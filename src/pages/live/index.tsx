@@ -41,7 +41,7 @@ function LivePage() {
   const [keywords, setKeywords] = useState<string>('')
   const [category_id, setCategoryId] = useState([])
   const [teacher_id, setTeacherId] = useState([])
-  const [status, setStatus] = useState(-1)
+  const [status, setStatus] = useState(0)
   const [teachers, setTeachers] = useState<any>([])
   const [categories, setCategories] = useState<any>([])
   const [statusList, setStatusList] = useState<any>([])
@@ -61,7 +61,7 @@ function LivePage() {
     if (
       (category_id && category_id.length !== 0)
       || (teacher_id && teacher_id.length !== 0)
-      || status !== -1
+      || status !== 0
       || keywords
     )
       setShowStatus(true)
@@ -76,18 +76,18 @@ function LivePage() {
     setLoading(true)
     live
       .list({
-        page,
-        size,
+        pageNum: page,
+        pageSize: size,
         sort: 'id',
         order: 'desc',
         keywords,
-        category_id,
-        teacher_id,
+        categoryId: category_id,
+        teacherId: teacher_id,
         status,
       })
       .then((res: any) => {
-        setList(res.data.data.data)
-        setTotal(res.data.data.total)
+        setList(res.data.courses.data)
+        setTotal(res.data.courses.total)
         const categories = res.data.categories
         const box: any = []
         for (let i = 0; i < categories.length; i++) {
@@ -143,7 +143,7 @@ function LivePage() {
     setSize(10)
     setList([])
     setKeywords('')
-    setStatus(-1)
+    setStatus(0)
     setCategoryId([])
     setTeacherId([])
     setRefresh(!refresh)
@@ -175,7 +175,7 @@ function LivePage() {
       render: (_, record: any) => (
         <ThumbBar
           width={120}
-          value={record.thumb}
+          value={record.cover}
           height={90}
           title={record.title}
           border={4}
@@ -194,17 +194,11 @@ function LivePage() {
       ),
     },
     {
-      title: '讲师/助教',
+      title: '讲师',
       width: '10%',
       render: (_, record: any) => (
         <>
-          <span>{record.teacher.name}</span>
-          {record.assistant && (
-            <span>
-              /
-              {record.assistant.name}
-            </span>
-          )}
+          <span>{record?.teacher?.name}</span>
         </>
       ),
     },
@@ -213,7 +207,7 @@ function LivePage() {
       width: '8%',
       render: (_, record: any) => (
         <span>
-          {record.charge}
+          {record.price}
           元
         </span>
       ),
@@ -221,27 +215,29 @@ function LivePage() {
     {
       title: '销量',
       width: '8%',
-      render: (_, record: any) => <span>{record.join_user_times}</span>,
+      render: (_, record: any) => <span>{record.userCount}</span>,
     },
     {
       title: '下一场直播时间',
       width: '16%',
       render: (_, record: any) => (
         <>
-          {record.status === 2 && (
+          {/* 未开课和已完结都显示状态文本 */}
+          {record.status !== 2 && (
             <span className="c-gray">
               ·
-              {record.status_text}
+              {record?.statusText}
             </span>
           )}
-          {record.status !== 2 && (
+          {/* 已开课时显示下一场时间 */}
+          {record.status === 2 && (
             <>
-              {record.next_video.length === 0
+              {record?.next_video?.length === 0
                 ? (
                   <span>-</span>
                   )
                 : (
-                  <span>{dateFormat(record.published_at)}</span>
+                  <span>{dateFormat(record.groundingTime)}</span>
                   )}
             </>
           )}
@@ -253,8 +249,8 @@ function LivePage() {
       width: '8%',
       render: (_, record: any) => (
         <>
-          {record.is_show === 1 && <span className="c-green">· 显示</span>}
-          {record.is_show !== 1 && <span className="c-red">· 隐藏</span>}
+          {record.isShow && <span className="c-green">· 显示</span>}
+          {!record.isShow && <span className="c-red">· 隐藏</span>}
         </>
       ),
     },
