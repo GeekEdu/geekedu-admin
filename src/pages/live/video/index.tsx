@@ -1,97 +1,97 @@
-import { useState, useEffect } from "react";
-import type { MenuProps } from "antd";
-import { Table, Modal, message, Space, Dropdown, Button } from "antd";
-import type { ColumnsType } from "antd/es/table";
-import { useNavigate, useLocation } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import { live } from "../../../api/index";
-import { DownOutlined } from "@ant-design/icons";
-import { titleAction } from "../../../store/user/loginUserSlice";
-import { PerButton, BackBartment } from "../../../components";
-import { dateFormat } from "../../../utils/index";
-import { ExclamationCircleFilled } from "@ant-design/icons";
-import { LiveVideoStatsDialog } from "../components/stats-dialog";
-const { confirm } = Modal;
+import { useEffect, useState } from 'react'
+import type { MenuProps } from 'antd'
+import { Button, Dropdown, Modal, Space, Table, message } from 'antd'
+import type { ColumnsType } from 'antd/es/table'
+import { useLocation, useNavigate } from 'react-router-dom'
+import { useDispatch, useSelector } from 'react-redux'
+import { DownOutlined, ExclamationCircleFilled } from '@ant-design/icons'
+import { live } from '../../../api/index'
+import { titleAction } from '../../../store/user/loginUserSlice'
+import { BackBartment, PerButton } from '../../../components'
+import { dateFormat } from '../../../utils/index'
+import { LiveVideoStatsDialog } from '../components/stats-dialog'
+
+const { confirm } = Modal
 
 interface DataType {
-  id: React.Key;
-  published_at: string;
+  id: React.Key
+  liveTime: string
 }
 
-const LiveVideoPage = () => {
-  const result = new URLSearchParams(useLocation().search);
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const [loading, setLoading] = useState<boolean>(false);
-  const [list, setList] = useState<any>([]);
-  const [page, setPage] = useState(1);
-  const [size, setSize] = useState(1000);
-  const [total, setTotal] = useState(0);
-  const [refresh, setRefresh] = useState(false);
-  const [id, setId] = useState(Number(result.get("id")));
-  const [title, setTitle] = useState(String(result.get("title")));
-  const [currentId, setCurrentId] = useState(0);
-  const [visiable, setVisiable] = useState<boolean>(false);
+function LiveVideoPage() {
+  const result = new URLSearchParams(useLocation().search)
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
+  const [loading, setLoading] = useState<boolean>(false)
+  const [list, setList] = useState<any>([])
+  const [page, setPage] = useState(1)
+  const [size, setSize] = useState(1000)
+  const [total, setTotal] = useState(0)
+  const [refresh, setRefresh] = useState(false)
+  const [id, setId] = useState(Number(result.get('id')))
+  const [title, setTitle] = useState(String(result.get('title')))
+  const [currentId, setCurrentId] = useState(0)
+  const [visiable, setVisiable] = useState<boolean>(false)
 
   useEffect(() => {
-    document.title = title;
-    dispatch(titleAction("直播排课"));
-  }, [title]);
+    document.title = title
+    dispatch(titleAction('直播排课'))
+  }, [title])
 
   useEffect(() => {
-    setId(Number(result.get("id")));
-    setTitle(String(result.get("title")));
-  }, [result.get("id"), result.get("title")]);
+    setId(Number(result.get('id')))
+    setTitle(String(result.get('title')))
+  }, [result.get('id'), result.get('title')])
 
   useEffect(() => {
-    getData();
-  }, [id, page, size, refresh]);
+    getData()
+  }, [id, page, size, refresh])
 
   const getData = () => {
-    if (loading) {
-      return;
-    }
-    setLoading(true);
+    if (loading)
+      return
+
+    setLoading(true)
     live
       .videoList({
-        page: page,
-        size: size,
-        course_id: id,
+        pageNum: page,
+        pageSize: size,
+        courseId: id,
       })
       .then((res: any) => {
-        setList(res.data.data);
-        setTotal(res.data.total);
-        setLoading(false);
+        setList(res.data.data)
+        setTotal(res.data.total)
+        setLoading(false)
       })
       .catch((e) => {
-        setLoading(false);
-      });
-  };
+        setLoading(false)
+      })
+  }
 
   const resetData = () => {
-    setPage(1);
-    setList([]);
-    setRefresh(!refresh);
-  };
+    setPage(1)
+    setList([])
+    setRefresh(!refresh)
+  }
 
   const paginationProps = {
-    current: page, //当前页码
+    current: page, // 当前页码
     pageSize: size,
-    total: total, // 总条数
+    total, // 总条数
     onChange: (page: number, pageSize: number) =>
-      handlePageChange(page, pageSize), //改变页码的函数
+      handlePageChange(page, pageSize), // 改变页码的函数
     showSizeChanger: true,
-  };
+  }
 
   const handlePageChange = (page: number, pageSize: number) => {
-    setPage(page);
-    setSize(pageSize);
-  };
+    setPage(page)
+    setSize(pageSize)
+  }
 
   const columns: ColumnsType<DataType> = [
     {
-      title: "标题",
-      width: "42%",
+      title: '标题',
+      width: '42%',
       render: (_, record: any) => (
         <>
           {record.chapter && (
@@ -105,37 +105,46 @@ const LiveVideoPage = () => {
       ),
     },
     {
-      title: "直播时间",
-      width: "18%",
-      dataIndex: "published_at",
-      render: (published_at: string) => <span>{dateFormat(published_at)}</span>,
+      title: '直播时间',
+      width: '18%',
+      dataIndex: 'liveTime',
+      render: (liveTime: string) => <span>{dateFormat(liveTime)}</span>,
     },
     {
-      title: "状态",
-      width: "18%",
+      title: '状态',
+      width: '18%',
       render: (_, record: any) => (
         <>
           {record.status === 1 && (
-            <span className="c-green">· {record.status_text}</span>
+            <span className="c-green">
+              ·
+              {record.statusText}
+            </span>
           )}
           {record.status === 2 && (
-            <span className="c-gray">· {record.status_text}</span>
+            <span className="c-gray">
+              ·
+              {record.statusText}
+            </span>
           )}
           {record.status === 0 && (
-            <span className="c-yellow">· {record.status_text}</span>
+            <span className="c-yellow">
+              ·
+              {record.statusText}
+            </span>
           )}
         </>
       ),
     },
     {
-      title: "操作",
-      width: "12%",
-      fixed: "right",
-      align: "right",
+      title: '操作',
+      width: '12%',
+      fixed: 'right',
+      align: 'right',
       render: (_, record: any) => {
-        const items: MenuProps["items"] = [
+        const items: MenuProps['items'] = [
           {
-            key: "1",
+            key: '1',
             label: (
               <PerButton
                 type="link"
@@ -145,18 +154,18 @@ const LiveVideoPage = () => {
                 p="addons.Zhibo.course_video.update"
                 onClick={() => {
                   navigate(
-                    "/live/course/video/update?id=" +
-                      record.id +
-                      "&course_id=" +
-                      id
-                  );
+                    `/live/course/video/update?id=${
+                    record.id
+                       }&course_id=${
+                       id}`,
+                  )
                 }}
                 disabled={null}
               />
             ),
           },
           {
-            key: "2",
+            key: '2',
             label: (
               <PerButton
                 type="link"
@@ -166,18 +175,18 @@ const LiveVideoPage = () => {
                 p="addons.Zhibo.chat.list"
                 onClick={() => {
                   navigate(
-                    "/live/course/video/chats?id=" +
-                      record.id +
-                      "&course_id=" +
-                      id
-                  );
+                    `/live/course/video/chats?id=${
+                    record.id
+                       }&course_id=${
+                       id}`,
+                  )
                 }}
                 disabled={null}
               />
             ),
           },
           {
-            key: "3",
+            key: '3',
             label: (
               <PerButton
                 type="link"
@@ -186,13 +195,13 @@ const LiveVideoPage = () => {
                 icon={null}
                 p="addons.Zhibo.course_video.delete"
                 onClick={() => {
-                  destory(record.id);
+                  destory(record.id)
                 }}
                 disabled={null}
               />
             ),
           },
-        ];
+        ]
         return (
           <Space>
             <PerButton
@@ -203,11 +212,11 @@ const LiveVideoPage = () => {
               p="addons.Zhibo.course_video.stats"
               onClick={() => {
                 navigate(
-                  "/live/course/video/users?id=" +
-                    record.id +
-                    "&course_id=" +
-                    id
-                );
+                  `/live/course/video/users?id=${
+                  record.id
+                     }&course_id=${
+                     id}`,
+                )
               }}
               disabled={null}
             />
@@ -219,7 +228,7 @@ const LiveVideoPage = () => {
                 icon={null}
                 p="addons.Zhibo.course_video.stats"
                 onClick={() => {
-                  showStatsDialog(record.id);
+                  showStatsDialog(record.id)
                 }}
                 disabled={null}
               />
@@ -228,7 +237,7 @@ const LiveVideoPage = () => {
               <Button
                 type="link"
                 className="c-primary"
-                onClick={(e) => e.preventDefault()}
+                onClick={e => e.preventDefault()}
               >
                 <Space size="small" align="center">
                   更多
@@ -237,48 +246,48 @@ const LiveVideoPage = () => {
               </Button>
             </Dropdown>
           </Space>
-        );
+        )
       },
     },
-  ];
+  ]
 
   const destory = (id: number) => {
-    if (id === 0) {
-      return;
-    }
+    if (id === 0)
+      return
+
     confirm({
-      title: "警告",
+      title: '警告',
       icon: <ExclamationCircleFilled />,
-      content: "确认操作？",
+      content: '确认操作？',
       centered: true,
-      okText: "确认",
-      cancelText: "取消",
+      okText: '确认',
+      cancelText: '取消',
       onOk() {
-        if (loading) {
-          return;
-        }
-        setLoading(true);
+        if (loading)
+          return
+
+        setLoading(true)
         live
           .videoDestory(id)
           .then(() => {
-            setLoading(false);
-            message.success("删除成功");
-            resetData();
+            setLoading(false)
+            message.success('删除成功')
+            resetData()
           })
           .catch((e) => {
-            setLoading(false);
-          });
+            setLoading(false)
+          })
       },
       onCancel() {
-        console.log("Cancel");
+        console.log('Cancel')
       },
-    });
-  };
+    })
+  }
 
   const showStatsDialog = (id: number) => {
-    setCurrentId(id);
-    setVisiable(true);
-  };
+    setCurrentId(id)
+    setVisiable(true)
+  }
 
   return (
     <div className="geekedu-main-body">
@@ -290,7 +299,7 @@ const LiveVideoPage = () => {
           class=""
           icon={null}
           p="addons.Zhibo.course_video.store"
-          onClick={() => navigate("/live/course/video/create?course_id=" + id)}
+          onClick={() => navigate(`/live/course/video/create?course_id=${id}`)}
           disabled={null}
         />
         <PerButton
@@ -299,7 +308,7 @@ const LiveVideoPage = () => {
           class="ml-10"
           icon={null}
           p="addons.Zhibo.course_chapter.list"
-          onClick={() => navigate("/live/course/chapter/index?id=" + id)}
+          onClick={() => navigate(`/live/course/chapter/index?id=${id}`)}
           disabled={null}
         />
       </div>
@@ -308,7 +317,7 @@ const LiveVideoPage = () => {
           loading={loading}
           columns={columns}
           dataSource={list}
-          rowKey={(record) => record.id}
+          rowKey={record => record.id}
           pagination={paginationProps}
         />
       </div>
@@ -316,12 +325,13 @@ const LiveVideoPage = () => {
         id={currentId}
         open={visiable}
         onCancel={() => {
-          setCurrentId(0);
-          setVisiable(false);
+          setCurrentId(0)
+          setVisiable(false)
         }}
-      ></LiveVideoStatsDialog>
+      >
+      </LiveVideoStatsDialog>
     </div>
-  );
-};
+  )
+}
 
-export default LiveVideoPage;
+export default LiveVideoPage

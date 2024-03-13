@@ -1,113 +1,116 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from 'react'
 import {
-  message,
+  Button,
   DatePicker,
   Form,
-  Button,
   Input,
-  Space,
   Select,
+  Space,
   Spin,
-} from "antd";
-import { useNavigate, useLocation } from "react-router-dom";
-import { useDispatch } from "react-redux";
-import { live } from "../../../api/index";
-import { titleAction } from "../../../store/user/loginUserSlice";
-import { BackBartment, HelperText, PerButton } from "../../../components";
-import moment from "moment";
-import dayjs from "dayjs";
+  message,
+} from 'antd'
+import { useLocation, useNavigate } from 'react-router-dom'
+import { useDispatch } from 'react-redux'
+import moment from 'moment'
+import dayjs from 'dayjs'
+import { live } from '../../../api/index'
+import { titleAction } from '../../../store/user/loginUserSlice'
+import { BackBartment, HelperText, PerButton } from '../../../components'
 
-const LiveVideoUpdatePage = () => {
-  const result = new URLSearchParams(useLocation().search);
-  const [form] = Form.useForm();
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const [chapters, setChapters] = useState<any>([]);
-  const [init, setInit] = useState<boolean>(true);
-  const [loading, setLoading] = useState<boolean>(false);
-  const [id, setId] = useState(Number(result.get("id")));
-  const [course_id, setCourseId] = useState(Number(result.get("course_id")));
-
-  useEffect(() => {
-    document.title = "编辑直播排课";
-    dispatch(titleAction("编辑直播排课"));
-    initData();
-  }, [id, course_id]);
+function LiveVideoUpdatePage() {
+  const result = new URLSearchParams(useLocation().search)
+  const [form] = Form.useForm()
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
+  const [chapters, setChapters] = useState<any>([])
+  const [init, setInit] = useState<boolean>(true)
+  const [loading, setLoading] = useState<boolean>(false)
+  const [id, setId] = useState(Number(result.get('id')))
+  const [course_id, setCourseId] = useState(Number(result.get('course_id')))
 
   useEffect(() => {
-    setId(Number(result.get("id")));
-    setCourseId(Number(result.get("course_id")));
-  }, [result.get("id"), result.get("course_id")]);
+    document.title = '编辑直播排课'
+    dispatch(titleAction('编辑直播排课'))
+    initData()
+  }, [id, course_id])
+
+  useEffect(() => {
+    setId(Number(result.get('id')))
+    setCourseId(Number(result.get('course_id')))
+  }, [result.get('id'), result.get('course_id')])
 
   const initData = async () => {
-    await getParams();
-    await getDetail();
-    setInit(false);
-  };
+    await getParams()
+    await getDetail()
+    setInit(false)
+  }
 
   const getDetail = async () => {
-    if (id === 0) {
-      return;
+    if (id === 0)
+      return
+
+    const res: any = await live.videoDetail(id)
+    if (res.data.chapterId === 0) {
+      form.setFieldsValue({
+        chapterId: [],
+      })
     }
-    const res: any = await live.videoDetail(id);
-    if (res.data.chapter_id === 0) {
+    else {
       form.setFieldsValue({
-        chapter_id: [],
-      });
-    } else {
-      form.setFieldsValue({
-        chapter_id: res.data.chapter_id,
-      });
+        chapterId: res.data.chapterId,
+      })
     }
 
     form.setFieldsValue({
       title: res.data.title,
-      published_at: dayjs(res.data.published_at, "YYYY-MM-DD HH:mm"),
-      estimate_duration: res.data.estimate_duration / 60,
-    });
-  };
+      liveTime: dayjs(res.data.liveTime, 'YYYY-MM-DD HH:mm:ss'),
+      estimateDuration: res.data.estimateDuration / 60,
+    })
+  }
 
   const getParams = async () => {
-    const res: any = await live.videoCreate();
-    var data = res.data.chapters[course_id];
+    // const res: any = await live.videoCreate()
+    const res: any = await live.chaptersList(course_id)
+    // const data = res.data.chapters[course_id]
+    const data = res.data
     if (data && data.length > 0) {
-      let arr: any = [];
-      for (var i = 0; i < data.length; i++) {
+      const arr: any = []
+      for (let i = 0; i < data.length; i++) {
         arr.push({
           label: data[i].name,
           value: data[i].id,
-        });
+        })
       }
-      setChapters(arr);
+      setChapters(arr)
     }
-  };
+  }
 
   const onFinish = (values: any) => {
-    if (loading) {
-      return;
-    }
-    setLoading(true);
-    values.published_at = moment(new Date(values.published_at)).format(
-      "YYYY-MM-DD HH:mm"
-    );
-    values.course_id = course_id;
-    values.estimate_duration = values.estimate_duration * 60;
-    values.is_show = 1;
+    if (loading)
+      return
+
+    setLoading(true)
+    values.liveTime = moment(new Date(values.liveTime)).format(
+      'YYYY-MM-DD HH:mm:ss',
+    )
+    values.courseId = course_id
+    values.estimateDuration = values.estimateDuration * 60
+    values.isShow = true
     live
       .videoUpdate(id, values)
       .then((res: any) => {
-        setLoading(false);
-        message.success("保存成功！");
-        navigate(-1);
+        setLoading(false)
+        message.success('保存成功！')
+        navigate(-1)
       })
       .catch((e) => {
-        setLoading(false);
-      });
-  };
+        setLoading(false)
+      })
+  }
 
   const onFinishFailed = (errorInfo: any) => {
-    console.log("Failed:", errorInfo);
-  };
+    console.log('Failed:', errorInfo)
+  }
 
   return (
     <div className="geekedu-main-body">
@@ -118,7 +121,7 @@ const LiveVideoUpdatePage = () => {
         </div>
       )}
       <div
-        style={{ display: init ? "none" : "block" }}
+        style={{ display: init ? 'none' : 'block' }}
         className="float-left mt-30"
       >
         <Form
@@ -131,9 +134,9 @@ const LiveVideoUpdatePage = () => {
           onFinishFailed={onFinishFailed}
           autoComplete="off"
         >
-          <Form.Item label="章节" name="chapter_id">
+          <Form.Item label="章节" name="chapterId">
             <Space align="baseline" style={{ height: 32 }}>
-              <Form.Item name="chapter_id">
+              <Form.Item name="chapterId">
                 <Select
                   style={{ width: 300 }}
                   allowClear
@@ -149,7 +152,7 @@ const LiveVideoUpdatePage = () => {
                   icon={null}
                   p="addons.Zhibo.course_chapter.list"
                   onClick={() => {
-                    navigate("/live/course/chapter/index?id=" + id);
+                    navigate(`/live/course/chapter/index?id=${id}`)
                   }}
                   disabled={null}
                 />
@@ -159,7 +162,7 @@ const LiveVideoUpdatePage = () => {
           <Form.Item
             label="直播标题"
             name="title"
-            rules={[{ required: true, message: "请输入直播标题!" }]}
+            rules={[{ required: true, message: '请输入直播标题!' }]}
           >
             <Input
               style={{ width: 300 }}
@@ -169,11 +172,11 @@ const LiveVideoUpdatePage = () => {
           </Form.Item>
           <Form.Item
             label="直播时间"
-            name="published_at"
-            rules={[{ required: true, message: "请选择直播时间!" }]}
+            name="liveTime"
+            rules={[{ required: true, message: '请选择直播时间!' }]}
           >
             <DatePicker
-              format="YYYY-MM-DD HH:mm"
+              format="YYYY-MM-DD HH:mm:ss"
               style={{ width: 300 }}
               showTime
               placeholder="请选择到期时间"
@@ -182,14 +185,14 @@ const LiveVideoUpdatePage = () => {
 
           <Form.Item
             label="预估直播时长"
-            name="estimate_duration"
-            rules={[{ required: true, message: "请输入预估直播时长!" }]}
+            name="estimateDuration"
+            rules={[{ required: true, message: '请输入预估直播时长!' }]}
           >
             <Space align="center">
               <Form.Item
                 style={{ marginBottom: 0 }}
-                name="estimate_duration"
-                rules={[{ required: true, message: "请输入预估直播时长!" }]}
+                name="estimateDuration"
+                rules={[{ required: true, message: '请输入预估直播时长!' }]}
               >
                 <Input
                   type="number"
@@ -225,6 +228,6 @@ const LiveVideoUpdatePage = () => {
         </div>
       </div>
     </div>
-  );
-};
-export default LiveVideoUpdatePage;
+  )
+}
+export default LiveVideoUpdatePage

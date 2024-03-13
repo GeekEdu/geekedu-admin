@@ -27,8 +27,8 @@ function LiveVideoCreatePage() {
   }, [result.get('course_id')])
 
   const getParams = () => {
-    live.videoCreate().then((res: any) => {
-      const data = res.data.chapters[id]
+    live.chaptersList(id).then((res: any) => {
+      const data = res.data
       if (data && data.length > 0) {
         const arr: any = []
         for (let i = 0; i < data.length; i++) {
@@ -47,12 +47,12 @@ function LiveVideoCreatePage() {
       return
 
     setLoading(true)
-    values.published_at = moment(new Date(values.published_at)).format(
-      'YYYY-MM-DD HH:mm',
+    values.liveTime = moment(new Date(values.liveTime)).format(
+      'YYYY-MM-DD HH:mm:ss',
     )
-    values.course_id = id
-    values.estimate_duration = values.estimate_duration * 60
-    values.is_show = 1
+    values.courseId = id
+    values.estimateDuration = values.estimateDuration * 60
+    values.isShow = true
     live
       .videoStore(values)
       .then((res: any) => {
@@ -83,9 +83,9 @@ function LiveVideoCreatePage() {
           onFinishFailed={onFinishFailed}
           autoComplete="off"
         >
-          <Form.Item label="章节" name="chapter_id">
+          <Form.Item label="章节" name="chapterId">
             <Space align="baseline" style={{ height: 32 }}>
-              <Form.Item name="chapter_id">
+              <Form.Item name="chapterId">
                 <Select
                   style={{ width: 300 }}
                   allowClear
@@ -121,11 +121,11 @@ function LiveVideoCreatePage() {
           </Form.Item>
           <Form.Item
             label="直播时间"
-            name="published_at"
+            name="liveTime"
             rules={[{ required: true, message: '请选择直播时间!' }]}
           >
             <DatePicker
-              format="YYYY-MM-DD HH:mm"
+              format="YYYY-MM-DD HH:mm:ss"
               style={{ width: 300 }}
               showTime
               placeholder="请选择到期时间"
@@ -134,13 +134,13 @@ function LiveVideoCreatePage() {
 
           <Form.Item
             label="预估直播时长"
-            name="estimate_duration"
+            name="estimateDuration"
             rules={[{ required: true, message: '请输入预估直播时长!' }]}
           >
             <Space align="center">
               <Form.Item
                 style={{ marginBottom: 0 }}
-                name="estimate_duration"
+                name="estimateDuration"
                 rules={[{ required: true, message: '请输入预估直播时长!' }]}
               >
                 <Input

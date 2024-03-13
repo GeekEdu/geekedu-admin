@@ -120,28 +120,34 @@ export function teacherUpdate(id: number, params: any) {
   return client.put(`/backend/addons/zhibo/teacher/${id}`, params)
 }
 
+// 课程视频列表
 export function videoList(params: any) {
-  return client.get(`/backend/addons/zhibo/course_video/index`, params)
+  return client.get(`/course/api/live/course/video/list`, params)
 }
 
+// 视频删除
 export function videoDestory(id: number) {
-  return client.destroy(`/backend/addons/zhibo/course_video/${id}`)
+  return client.post(`/course/api/live/course/video/${id}/delete`, {})
 }
 
+// 视频章节
 export function videoCreate() {
   return client.get(`/backend/addons/zhibo/course_video/create`, {})
 }
 
+// 视频新建
 export function videoStore(params: any) {
-  return client.post('/backend/addons/zhibo/course_video/create', params)
+  return client.post('/course/api/live/course/video/add', params)
 }
 
+// 视频详情
 export function videoDetail(id: number) {
-  return client.get(`/backend/addons/zhibo/course_video/${id}`, {})
+  return client.get(`/course/api/live/course/video/${id}/detail`, {})
 }
 
+// 视频更新
 export function videoUpdate(id: number, params: any) {
-  return client.put(`/backend/addons/zhibo/course_video/${id}`, params)
+  return client.post(`/course/api/live/course/video/${id}/update`, params)
 }
 
 export function videoStats(id: number) {
