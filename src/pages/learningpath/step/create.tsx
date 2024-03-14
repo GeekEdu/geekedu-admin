@@ -1,178 +1,192 @@
-import { useEffect, useState } from "react";
-import { Form, Input, message, Button, Table, Space } from "antd";
-import type { ColumnsType } from "antd/es/table";
-import { useNavigate, useLocation } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import { path } from "../../../api/index";
-import { titleAction } from "../../../store/user/loginUserSlice";
+import { useEffect, useState } from 'react'
+import { Button, Form, Input, Space, Table, message } from 'antd'
+import type { ColumnsType } from 'antd/es/table'
+import { useLocation, useNavigate } from 'react-router-dom'
+import { useDispatch, useSelector } from 'react-redux'
+import { path } from '../../../api/index'
+import { titleAction } from '../../../store/user/loginUserSlice'
 import {
-  HelperText,
-  SelectResourcesMulti,
-  PerButton,
   BackBartment,
+  HelperText,
+  PerButton,
+  SelectResourcesMulti,
   ThumbBar,
-} from "../../../components";
-import paperIcon from "../../../assets/img/default-paper.png";
+} from '../../../components'
+import paperIcon from '../../../assets/img/default-paper.png'
 
 interface DataType {
-  id: React.Key;
+  id: React.Key
 }
 
-const LearnPathStepCreatePage = () => {
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const [form] = Form.useForm();
-  const result = new URLSearchParams(useLocation().search);
-  const [loading, setLoading] = useState<boolean>(false);
-  const [coursesData, setCoursesData] = useState<any>([]);
-  const [showSelectResourceCoursesWin, setShowSelectResourceCoursesWin] =
-    useState<boolean>(false);
-  const [coursesVodId, setCoursesVodId] = useState<any>([]);
-  const [coursesLiveId, setCoursesLiveId] = useState<any>([]);
-  const [bookId, setBookId] = useState<any>([]);
-  const [paperId, setPaperId] = useState<any>([]);
-  const [practiceId, setPracticeId] = useState<any>([]);
-  const [path_id, setPathId] = useState(Number(result.get("path_id")));
+function LearnPathStepCreatePage() {
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
+  const [form] = Form.useForm()
+  const result = new URLSearchParams(useLocation().search)
+  const [loading, setLoading] = useState<boolean>(false)
+  const [coursesData, setCoursesData] = useState<any>([])
+  const [showSelectResourceCoursesWin, setShowSelectResourceCoursesWin]
+    = useState<boolean>(false)
+  const [coursesVodId, setCoursesVodId] = useState<any>([])
+  const [coursesLiveId, setCoursesLiveId] = useState<any>([])
+  const [bookId, setBookId] = useState<any>([])
+  const [paperId, setPaperId] = useState<any>([])
+  const [practiceId, setPracticeId] = useState<any>([])
+  const [path_id, setPathId] = useState(Number(result.get('path_id')))
 
   useEffect(() => {
-    document.title = "添加学习步骤";
-    dispatch(titleAction("添加学习步骤"));
-  }, []);
+    document.title = '添加学习步骤'
+    dispatch(titleAction('添加学习步骤'))
+  }, [])
 
   useEffect(() => {
-    let params: any = [];
-    let liveParams: any = [];
-    let paperParams: any = [];
-    let bookParams: any = [];
-    let practiceParams: any = [];
+    const params: any = []
+    const liveParams: any = []
+    const paperParams: any = []
+    const bookParams: any = []
+    const practiceParams: any = []
     if (coursesData.length > 0) {
       for (let i = 0; i < coursesData.length; i++) {
-        if (coursesData[i].type === "vod") {
-          params.push(coursesData[i].id);
-        } else if (coursesData[i].type === "live") {
-          liveParams.push(coursesData[i].id);
-        } else if (coursesData[i].type === "paper") {
-          paperParams.push(coursesData[i].id);
-        } else if (coursesData[i].type === "book") {
-          bookParams.push(coursesData[i].id);
-        } else if (coursesData[i].type === "practice") {
-          practiceParams.push(coursesData[i].id);
-        }
+        if (coursesData[i].type === 'vod')
+          params.push(coursesData[i].id)
+        else if (coursesData[i].type === 'live')
+          liveParams.push(coursesData[i].id)
+        else if (coursesData[i].type === 'paper')
+          paperParams.push(coursesData[i].id)
+        else if (coursesData[i].type === 'book')
+          bookParams.push(coursesData[i].id)
+        else if (coursesData[i].type === 'practice')
+          practiceParams.push(coursesData[i].id)
       }
     }
-    setCoursesVodId(params);
-    setCoursesLiveId(liveParams);
-    setPaperId(paperParams);
-    setBookId(bookParams);
-    setPracticeId(practiceParams);
-  }, [coursesData]);
+    setCoursesVodId(params)
+    setCoursesLiveId(liveParams)
+    setPaperId(paperParams)
+    setBookId(bookParams)
+    setPracticeId(practiceParams)
+  }, [coursesData])
 
   const onFinish = (values: any) => {
-    if (loading) {
-      return;
-    }
-    let params = [];
+    if (loading)
+      return
+
+    const params = []
     if (coursesData.length > 0) {
       for (let i = 0; i < coursesData.length; i++) {
-        let type = coursesData[i].type;
-        if (type === "vod") {
-          type = "course";
-        }
-        if (type === "practice") {
-          type = "paper_practice";
-        }
-        if (type === "paper") {
-          type = "paper_paper";
-        }
-        let item = {
-          type: type,
-          other_id: coursesData[i].id,
+        let type = coursesData[i].type
+        if (type === 'vod')
+          type = 'REPLAY_COURSE'
+        if (type === 'live')
+          type = 'LIVE_COURSE'
+        if (type === 'book')
+          type = 'E_BOOK'
+        if (type === 'practice')
+          type = 'paper_practice'
+
+        if (type === 'paper')
+          type = 'paper_paper'
+
+        const item = {
+          type,
+          relationId: coursesData[i].id,
           name: coursesData[i].title,
-          thumb: coursesData[i].thumb,
-          charge: coursesData[i].charge,
-        };
-        params.push(item);
+          cover: coursesData[i].thumb,
+          price: coursesData[i].charge,
+        }
+        params.push(item)
       }
     }
-    setLoading(true);
-    values.path_id = path_id;
-    values.courses = params;
+    setLoading(true)
+    values.pathId = path_id
+    values.courses = params
     path
       .stepStore(values)
       .then((res: any) => {
-        setLoading(false);
-        message.success("成功！");
-        navigate(-1);
+        setLoading(false)
+        message.success('成功！')
+        navigate(-1)
       })
       .catch((e) => {
-        setLoading(false);
-      });
-  };
+        setLoading(false)
+      })
+  }
 
   const onFinishFailed = (errorInfo: any) => {
-    console.log("Failed:", errorInfo);
-  };
+    console.log('Failed:', errorInfo)
+  }
 
   const columns: ColumnsType<DataType> = [
     {
-      title: "关联课程",
-      width: "53%",
+      title: '关联课程',
+      width: '53%',
       render: (_, record: any) => (
         <>
-          {record.type === "book" ? (
-            <ThumbBar
-              value={record.thumb}
-              width={90}
-              height={120}
-              title={record.title}
-              border={4}
-            ></ThumbBar>
-          ) : record.type === "paper" || record.type === "practice" ? (
-            <ThumbBar
-              value={paperIcon}
-              width={120}
-              height={90}
-              title={record.title}
-              border={4}
-            ></ThumbBar>
-          ) : (
-            <ThumbBar
-              value={record.thumb}
-              width={120}
-              height={90}
-              title={record.title}
-              border={4}
-            ></ThumbBar>
+          {record.type === 'E_BOOK'
+            ? (
+              <ThumbBar
+                value={record.thumb}
+                width={90}
+                height={120}
+                title={record.title}
+                border={4}
+              >
+              </ThumbBar>
+              )
+            : record.type === 'paper' || record.type === 'practice'
+              ? (
+                <ThumbBar
+                  value={paperIcon}
+                  width={120}
+                  height={90}
+                  title={record.title}
+                  border={4}
+                >
+                </ThumbBar>
+                )
+              : (
+                <ThumbBar
+                  value={record.thumb}
+                  width={120}
+                  height={90}
+                  title={record.title}
+                  border={4}
+                >
+                </ThumbBar>
+                )}
+        </>
+      ),
+    },
+    {
+      title: '课程类型',
+      width: '20%',
+      render: (_, record: any) => (
+        <>
+          {record.type === 'vod' && <span>录播课程</span>}
+          {record.type === 'live' && <span>直播课程</span>}
+          {record.type === 'book' && <span>电子书</span>}
+          {record.type === 'paper' && <span>考试</span>}
+          {record.type === 'practice' && <span>练习</span>}
+        </>
+      ),
+    },
+    {
+      title: '单品价格',
+      width: '21%',
+      render: (_, record: any) => (
+        <>
+          {record.charge === 0 && <span>免费</span>}
+          {record.charge !== 0 && (
+            <span>
+              ￥
+              {record.charge}
+            </span>
           )}
         </>
       ),
     },
     {
-      title: "课程类型",
-      width: "20%",
-      render: (_, record: any) => (
-        <>
-          {record.type === "vod" && <span>录播课程</span>}
-          {record.type === "live" && <span>直播课程</span>}
-          {record.type === "book" && <span>电子书</span>}
-          {record.type === "paper" && <span>考试</span>}
-          {record.type === "practice" && <span>练习</span>}
-        </>
-      ),
-    },
-    {
-      title: "单品价格",
-      width: "21%",
-      render: (_, record: any) => (
-        <>
-          {record.charge === 0 && <span>免费</span>}
-          {record.charge !== 0 && <span>￥{record.charge}</span>}
-        </>
-      ),
-    },
-    {
-      title: "操作",
-      width: "6%",
+      title: '操作',
+      width: '6%',
       render: (_, record: any) => (
         <PerButton
           type="link"
@@ -181,34 +195,33 @@ const LearnPathStepCreatePage = () => {
           icon={null}
           p="addons.learnPaths.relation.update"
           onClick={() => {
-            delCourses(record.id);
+            delCourses(record.id)
           }}
           disabled={null}
         />
       ),
     },
-  ];
+  ]
 
   const delCourses = (id: number) => {
-    const data = [...coursesData];
-    const index = data.findIndex((i: any) => i.id === id);
-    if (index >= 0) {
-      data.splice(index, 1);
-    }
-    if (data.length > 0) {
-      setCoursesData(data);
-    } else {
-      setCoursesData([]);
-    }
-  };
+    const data = [...coursesData]
+    const index = data.findIndex((i: any) => i.id === id)
+    if (index >= 0)
+      data.splice(index, 1)
+
+    if (data.length > 0)
+      setCoursesData(data)
+    else
+      setCoursesData([])
+  }
 
   const changeCourses = (data: any) => {
-    let box = [...coursesData];
-    box = box.concat(data);
-    setCoursesData(box);
+    let box = [...coursesData]
+    box = box.concat(data)
+    setCoursesData(box)
 
-    setShowSelectResourceCoursesWin(false);
-  };
+    setShowSelectResourceCoursesWin(false)
+  }
 
   return (
     <div className="geekedu-main-body">
@@ -223,12 +236,13 @@ const LearnPathStepCreatePage = () => {
         selectedPractice={practiceId}
         selectedVip={[]}
         open={showSelectResourceCoursesWin}
-        enabledResource={"vod,live,book,paper,practice"}
+        enabledResource="vod,live,book,paper,practice"
         onCancel={() => setShowSelectResourceCoursesWin(false)}
         onSelected={(result: any) => {
-          changeCourses(result);
+          changeCourses(result)
         }}
-      ></SelectResourcesMulti>
+      >
+      </SelectResourcesMulti>
       <div className="float-left">
         <div className="from-title mt-30">学习步骤基本信息</div>
         <Form
@@ -244,12 +258,12 @@ const LearnPathStepCreatePage = () => {
           <Form.Item
             label="排序"
             name="sort"
-            rules={[{ required: true, message: "填输入排序!" }]}
+            rules={[{ required: true, message: '填输入排序!' }]}
           >
             <Space align="baseline" style={{ height: 32 }}>
               <Form.Item
                 name="sort"
-                rules={[{ required: true, message: "填输入排序!" }]}
+                rules={[{ required: true, message: '填输入排序!' }]}
               >
                 <Input
                   type="number"
@@ -266,7 +280,7 @@ const LearnPathStepCreatePage = () => {
           <Form.Item
             label="步骤名称"
             name="name"
-            rules={[{ required: true, message: "请输入步骤名称!" }]}
+            rules={[{ required: true, message: '请输入步骤名称!' }]}
           >
             <Input
               style={{ width: 300 }}
@@ -276,13 +290,13 @@ const LearnPathStepCreatePage = () => {
           </Form.Item>
           <Form.Item
             label="步骤简介"
-            name="desc"
-            rules={[{ required: true, message: "请输入步骤简介!" }]}
+            name="intro"
+            rules={[{ required: true, message: '请输入步骤简介!' }]}
           >
             <Space align="baseline">
               <Form.Item
-                name="desc"
-                rules={[{ required: true, message: "填输入步骤简介!" }]}
+                name="intro"
+                rules={[{ required: true, message: '填输入步骤简介!' }]}
               >
                 <Input.TextArea
                   style={{ width: 800 }}
@@ -315,7 +329,7 @@ const LearnPathStepCreatePage = () => {
             loading={loading}
             columns={columns}
             dataSource={coursesData}
-            rowKey={(record) => record.id}
+            rowKey={record => record.id}
             pagination={false}
           />
         </div>
@@ -339,7 +353,7 @@ const LearnPathStepCreatePage = () => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default LearnPathStepCreatePage;
+export default LearnPathStepCreatePage

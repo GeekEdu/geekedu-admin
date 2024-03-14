@@ -1,105 +1,105 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState } from 'react'
 import {
+  Button,
+  Col,
+  DatePicker,
   Form,
   Input,
-  message,
-  Button,
+  Row,
   Select,
   Space,
   Switch,
-  DatePicker,
-  Row,
-  Col,
-} from "antd";
-import { useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import { path } from "../../api/index";
-import { titleAction } from "../../store/user/loginUserSlice";
+  message,
+} from 'antd'
+import { useNavigate } from 'react-router-dom'
+import { useDispatch, useSelector } from 'react-redux'
+import moment from 'moment'
+import { path } from '../../api/index'
+import { titleAction } from '../../store/user/loginUserSlice'
 import {
-  HelperText,
   BackBartment,
-  UploadImageButton,
+  HelperText,
   PerButton,
-} from "../../components";
-import moment from "moment";
+  UploadImageButton,
+} from '../../components'
 
-const LearnPathCreatePage = () => {
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const [form] = Form.useForm();
-  const [loading, setLoading] = useState<boolean>(false);
-  const [categories, setCategories] = useState<any>([]);
-  const [thumb, setThumb] = useState<string>("");
+function LearnPathCreatePage() {
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
+  const [form] = Form.useForm()
+  const [loading, setLoading] = useState<boolean>(false)
+  const [categories, setCategories] = useState<any>([])
+  const [thumb, setThumb] = useState<string>('')
 
   useEffect(() => {
-    document.title = "新建学习路径";
-    dispatch(titleAction("新建学习路径"));
-    form.setFieldsValue({ is_show: 1 });
-    getParams();
-  }, []);
+    document.title = '新建学习路径'
+    dispatch(titleAction('新建学习路径'))
+    form.setFieldsValue({ isShow: true })
+    getParams()
+  }, [])
 
   const getParams = () => {
     path.create({
-      type: 'LEARN_PATH'
+      type: 'LEARN_PATH',
     }).then((res: any) => {
-      let categories = res.data.categories;
-      const box: any = [];
+      const categories = res.data
+      const box: any = []
       for (let i = 0; i < categories.length; i++) {
         if (categories[i].children.length > 0) {
           box.push({
             label: categories[i].name,
             value: categories[i].id,
-          });
-          let children = categories[i].children;
+          })
+          const children = categories[i].children
           for (let j = 0; j < children.length; j++) {
-            children[j].name = "|----" + children[j].name;
+            children[j].name = `|----${children[j].name}`
             box.push({
               label: children[j].name,
               value: children[j].id,
-            });
+            })
           }
-        } else {
+        }
+        else {
           box.push({
             label: categories[i].name,
             value: categories[i].id,
-          });
+          })
         }
       }
-      setCategories(box);
-    });
-  };
+      setCategories(box)
+    })
+  }
 
   const onFinish = (values: any) => {
-    if (loading) {
-      return;
-    }
-    setLoading(true);
-    values.published_at = moment(new Date(values.published_at)).format(
-      "YYYY-MM-DD HH:mm"
-    );
+    if (loading)
+      return
+
+    setLoading(true)
+    values.groundingTime = moment(new Date(values.groundingTime)).format(
+      'YYYY-MM-DD HH:mm:ss',
+    )
     path
       .store(values)
       .then((res: any) => {
-        setLoading(false);
-        message.success("成功！");
-        navigate(-1);
+        setLoading(false)
+        message.success('成功！')
+        navigate(-1)
       })
       .catch((e) => {
-        setLoading(false);
-      });
-  };
+        setLoading(false)
+      })
+  }
 
   const onFinishFailed = (errorInfo: any) => {
-    console.log("Failed:", errorInfo);
-  };
+    console.log('Failed:', errorInfo)
+  }
 
   const onSwitch = (checked: boolean) => {
-    if (checked) {
-      form.setFieldsValue({ is_show: 1 });
-    } else {
-      form.setFieldsValue({ is_show: 0 });
-    }
-  };
+    if (checked)
+      form.setFieldsValue({ isShow: true })
+    else
+      form.setFieldsValue({ isShow: false })
+  }
 
   return (
     <div className="geekedu-main-body">
@@ -117,13 +117,13 @@ const LearnPathCreatePage = () => {
         >
           <Form.Item
             label="所属分类"
-            name="category_id"
-            rules={[{ required: true, message: "请选择所属分类!" }]}
+            name="categoryId"
+            rules={[{ required: true, message: '请选择所属分类!' }]}
           >
             <Space align="baseline" style={{ height: 32 }}>
               <Form.Item
-                name="category_id"
-                rules={[{ required: true, message: "请选择所属分类!" }]}
+                name="categoryId"
+                rules={[{ required: true, message: '请选择所属分类!' }]}
               >
                 <Select
                   style={{ width: 300 }}
@@ -139,7 +139,7 @@ const LearnPathCreatePage = () => {
                 icon={null}
                 p="addons.learnPaths.category.list"
                 onClick={() => {
-                  navigate("/learningpath/path/category/index");
+                  navigate('/learningpath/path/category/index')
                 }}
                 disabled={null}
               />
@@ -148,7 +148,7 @@ const LearnPathCreatePage = () => {
           <Form.Item
             label="路径名称"
             name="name"
-            rules={[{ required: true, message: "请输入路径名称!" }]}
+            rules={[{ required: true, message: '请输入路径名称!' }]}
           >
             <Input
               style={{ width: 300 }}
@@ -158,21 +158,22 @@ const LearnPathCreatePage = () => {
           </Form.Item>
           <Form.Item
             label="路径封面"
-            name="thumb"
-            rules={[{ required: true, message: "请上传路径封面!" }]}
+            name="cover"
+            rules={[{ required: true, message: '请上传路径封面!' }]}
           >
             <Space align="baseline" style={{ height: 32 }}>
               <Form.Item
-                name="thumb"
-                rules={[{ required: true, message: "请上传路径封面!" }]}
+                name="cover"
+                rules={[{ required: true, message: '请上传路径封面!' }]}
               >
                 <UploadImageButton
                   text="选择图片"
                   onSelected={(url) => {
-                    form.setFieldsValue({ thumb: url });
-                    setThumb(url);
+                    form.setFieldsValue({ cover: url })
+                    setThumb(url)
                   }}
-                ></UploadImageButton>
+                >
+                </UploadImageButton>
               </Form.Item>
               <div className="ml-10">
                 <HelperText text="长宽比4:3，建议尺寸：400x300像素"></HelperText>
@@ -190,14 +191,15 @@ const LearnPathCreatePage = () => {
                     width: 200,
                     height: 150,
                   }}
-                ></div>
+                >
+                </div>
               </Col>
             </Row>
           )}
           <Form.Item
             label="原价"
-            name="original_charge"
-            rules={[{ required: true, message: "请输入原价!" }]}
+            name="originPrice"
+            rules={[{ required: true, message: '请输入原价!' }]}
           >
             <Input
               type="number"
@@ -208,8 +210,8 @@ const LearnPathCreatePage = () => {
           </Form.Item>
           <Form.Item
             label="现价"
-            name="charge"
-            rules={[{ required: true, message: "请输入现价!" }]}
+            name="price"
+            rules={[{ required: true, message: '请输入现价!' }]}
           >
             <Input
               type="number"
@@ -221,11 +223,11 @@ const LearnPathCreatePage = () => {
           <Form.Item label="上架时间" required={true}>
             <Space align="baseline" style={{ height: 32 }}>
               <Form.Item
-                name="published_at"
-                rules={[{ required: true, message: "请选择上架时间!" }]}
+                name="groundingTime"
+                rules={[{ required: true, message: '请选择上架时间!' }]}
               >
                 <DatePicker
-                  format="YYYY-MM-DD HH:mm"
+                  format="YYYY-MM-DD HH:mm:ss"
                   style={{ width: 300 }}
                   showTime
                   placeholder="请选择上架时间"
@@ -236,9 +238,9 @@ const LearnPathCreatePage = () => {
               </div>
             </Space>
           </Form.Item>
-          <Form.Item label="显示" name="is_show">
+          <Form.Item label="显示" name="isShow">
             <Space align="baseline" style={{ height: 32 }}>
-              <Form.Item name="is_show" valuePropName="checked">
+              <Form.Item name="isShow" valuePropName="checked">
                 <Switch onChange={onSwitch} />
               </Form.Item>
               <div className="ml-10">
@@ -248,8 +250,8 @@ const LearnPathCreatePage = () => {
           </Form.Item>
           <Form.Item
             label="简短介绍"
-            name="desc"
-            rules={[{ required: true, message: "请输入简短介绍!" }]}
+            name="intro"
+            rules={[{ required: true, message: '请输入简短介绍!' }]}
           >
             <Input.TextArea
               style={{ width: 800 }}
@@ -281,7 +283,7 @@ const LearnPathCreatePage = () => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default LearnPathCreatePage;
+export default LearnPathCreatePage

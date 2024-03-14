@@ -1,123 +1,128 @@
-import { useEffect, useState } from "react";
-import { Modal, message, Table, Input, Button } from "antd";
-import type { ColumnsType } from "antd/es/table";
-import { course } from "../../../api/index";
+import { useEffect, useState } from 'react'
+import { Button, Input, Modal, Table, message } from 'antd'
+import type { ColumnsType } from 'antd/es/table'
+import { course } from '../../../api/index'
 
 interface DataType {
-  id: React.Key;
-  charge: number;
+  id: React.Key
+  charge: number
 }
 
 interface PropsInterface {
-  selected: any;
-  onChange: (result: any) => void;
+  selected: any
+  onChange: (result: any) => void
 }
 
-export const VodComp = (props: PropsInterface) => {
-  const [loading, setLoading] = useState<boolean>(false);
-  const [list, setList] = useState<any>([]);
-  const [page, setPage] = useState(1);
-  const [size, setSize] = useState(10);
-  const [total, setTotal] = useState(0);
-  const [refresh, setRefresh] = useState(false);
-  const [keywords, setKeywords] = useState<string>("");
+export function VodComp(props: PropsInterface) {
+  const [loading, setLoading] = useState<boolean>(false)
+  const [list, setList] = useState<any>([])
+  const [page, setPage] = useState(1)
+  const [size, setSize] = useState(10)
+  const [total, setTotal] = useState(0)
+  const [refresh, setRefresh] = useState(false)
+  const [keywords, setKeywords] = useState<string>('')
 
   useEffect(() => {
-    getData();
-  }, [page, size, refresh]);
+    getData()
+  }, [page, size, refresh])
 
   const getData = () => {
-    if (loading) {
-      return;
-    }
-    setLoading(true);
+    if (loading)
+      return
+
+    setLoading(true)
     course
       .list({
-        page: page,
-        size: size,
-        sort: "created_at",
-        order: "desc",
-        keywords: keywords,
+        pageNum: page,
+        pageSize: size,
+        sort: 'createdTime',
+        order: 'desc',
+        keywords,
       })
       .then((res: any) => {
-        setList(res.data.courses.data);
-        setTotal(res.data.courses.total);
-        setLoading(false);
+        setList(res.data.courses.data)
+        setTotal(res.data.courses.total)
+        setLoading(false)
       })
       .catch((e) => {
-        setLoading(false);
-      });
-  };
+        setLoading(false)
+      })
+  }
 
   const resetList = () => {
-    setPage(1);
-    setSize(10);
-    setList([]);
-    setKeywords("");
-    setRefresh(!refresh);
-  };
+    setPage(1)
+    setSize(10)
+    setList([])
+    setKeywords('')
+    setRefresh(!refresh)
+  }
 
   const paginationProps = {
-    current: page, //当前页码
+    current: page, // 当前页码
     pageSize: size,
-    total: total, // 总条数
+    total, // 总条数
     onChange: (page: number, pageSize: number) =>
-      handlePageChange(page, pageSize), //改变页码的函数
+      handlePageChange(page, pageSize), // 改变页码的函数
     showSizeChanger: true,
-  };
+  }
 
   const handlePageChange = (page: number, pageSize: number) => {
-    setPage(page);
-    setSize(pageSize);
-  };
+    setPage(page)
+    setSize(pageSize)
+  }
 
   const columns: ColumnsType<DataType> = [
     {
-      title: "课程ID",
+      title: '课程ID',
       width: 120,
       render: (_, record: any) => <span>{record.id}</span>,
     },
     {
-      title: "课程",
+      title: '课程',
       render: (_, record: any) => (
         <div className="d-flex">
           <div>
-            <img src={record.thumb} width="80" height="60" />
+            <img src={record.coverLink} width="80" height="60" />
           </div>
           <div className="ml-15">{record.title}</div>
         </div>
       ),
     },
     {
-      title: "价格",
+      title: '价格',
       width: 120,
-      dataIndex: "charge",
-      render: (charge: number) => <span>￥{charge}</span>,
+      dataIndex: 'price',
+      render: (price: number) => (
+        <span>
+          ￥
+          {price}
+        </span>
+      ),
     },
-  ];
+  ]
 
   const rowSelection = {
     onChange: (selectedRowKeys: React.Key[], selectedRows: DataType[]) => {
-      let row: any = selectedRows;
-      let newbox: any = [];
+      const row: any = selectedRows
+      const newbox: any = []
       if (row) {
-        for (var i = 0; i < row.length; i++) {
-          let item = {
-            type: "vod",
+        for (let i = 0; i < row.length; i++) {
+          const item = {
+            type: 'vod',
             id: row[i].id,
             title: row[i].title,
-            thumb: row[i].thumb,
-            charge: row[i].charge,
-          };
-          newbox.push(item);
+            thumb: row[i].coverLink,
+            charge: row[i].price,
+          }
+          newbox.push(item)
         }
-        props.onChange(newbox);
+        props.onChange(newbox)
       }
     },
     getCheckboxProps: (record: any) => ({
-      disabled: props.selected.indexOf(record.id) !== -1, //禁用的条件
+      disabled: props.selected.includes(record.id), // 禁用的条件
     }),
-  };
+  }
 
   return (
     <div className="float-left">
@@ -125,7 +130,7 @@ export const VodComp = (props: PropsInterface) => {
         <Input
           value={keywords}
           onChange={(e) => {
-            setKeywords(e.target.value);
+            setKeywords(e.target.value)
           }}
           allowClear
           style={{ width: 150 }}
@@ -138,8 +143,8 @@ export const VodComp = (props: PropsInterface) => {
           className="ml-10"
           type="primary"
           onClick={() => {
-            setPage(1);
-            setRefresh(!refresh);
+            setPage(1)
+            setRefresh(!refresh)
           }}
         >
           筛选
@@ -148,16 +153,16 @@ export const VodComp = (props: PropsInterface) => {
       <div className="float-left mb-15">
         <Table
           rowSelection={{
-            type: "checkbox",
+            type: 'checkbox',
             ...rowSelection,
           }}
           loading={loading}
           columns={columns}
           dataSource={list}
-          rowKey={(record) => record.id}
+          rowKey={record => record.id}
           pagination={paginationProps}
         />
       </div>
     </div>
-  );
-};
+  )
+}

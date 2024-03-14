@@ -1,138 +1,138 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState } from 'react'
 import {
+  Button,
+  Col,
+  DatePicker,
   Form,
   Input,
-  message,
-  Button,
+  Row,
   Select,
   Space,
-  Switch,
-  DatePicker,
-  Row,
-  Col,
   Spin,
-} from "antd";
-import { useNavigate, useLocation } from "react-router-dom";
-import { useDispatch } from "react-redux";
-import { path } from "../../api/index";
-import { titleAction } from "../../store/user/loginUserSlice";
+  Switch,
+  message,
+} from 'antd'
+import { useLocation, useNavigate } from 'react-router-dom'
+import { useDispatch } from 'react-redux'
+import dayjs from 'dayjs'
+import moment from 'moment'
+import { path } from '../../api/index'
+import { titleAction } from '../../store/user/loginUserSlice'
 import {
-  HelperText,
   BackBartment,
-  UploadImageButton,
+  HelperText,
   PerButton,
-} from "../../components";
-import dayjs from "dayjs";
-import moment from "moment";
+  UploadImageButton,
+} from '../../components'
 
-const LearnPathUpdatePage = () => {
-  const result = new URLSearchParams(useLocation().search);
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const [form] = Form.useForm();
-  const [init, setInit] = useState<boolean>(true);
-  const [loading, setLoading] = useState<boolean>(false);
-  const [categories, setCategories] = useState<any>([]);
-  const [thumb, setThumb] = useState<string>("");
-  const [id, setId] = useState(Number(result.get("id")));
-
-  useEffect(() => {
-    document.title = "编辑学习路径";
-    dispatch(titleAction("编辑学习路径"));
-    initData();
-  }, [id]);
+function LearnPathUpdatePage() {
+  const result = new URLSearchParams(useLocation().search)
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
+  const [form] = Form.useForm()
+  const [init, setInit] = useState<boolean>(true)
+  const [loading, setLoading] = useState<boolean>(false)
+  const [categories, setCategories] = useState<any>([])
+  const [thumb, setThumb] = useState<string>('')
+  const [id, setId] = useState(Number(result.get('id')))
 
   useEffect(() => {
-    setId(Number(result.get("id")));
-    getDetail();
-  }, [result.get("id")]);
+    document.title = '编辑学习路径'
+    dispatch(titleAction('编辑学习路径'))
+    initData()
+  }, [id])
+
+  useEffect(() => {
+    setId(Number(result.get('id')))
+    getDetail()
+  }, [result.get('id')])
 
   const initData = async () => {
-    await getParams();
-    await getDetail();
-    setInit(false);
-  };
+    await getParams()
+    await getDetail()
+    setInit(false)
+  }
 
   const getParams = async () => {
     const res: any = await path.create({
-      type: 'LEARN_PATH'
-    });
-    let categories = res.data.categories;
-    const box: any = [];
+      type: 'LEARN_PATH',
+    })
+    const categories = res.data
+    const box: any = []
     for (let i = 0; i < categories.length; i++) {
       if (categories[i].children.length > 0) {
         box.push({
           label: categories[i].name,
           value: categories[i].id,
-        });
-        let children = categories[i].children;
+        })
+        const children = categories[i].children
         for (let j = 0; j < children.length; j++) {
-          children[j].name = "|----" + children[j].name;
+          children[j].name = `|----${children[j].name}`
           box.push({
             label: children[j].name,
             value: children[j].id,
-          });
+          })
         }
-      } else {
+      }
+      else {
         box.push({
           label: categories[i].name,
           value: categories[i].id,
-        });
+        })
       }
     }
-    setCategories(box);
-  };
+    setCategories(box)
+  }
 
   const getDetail = async () => {
-    if (id === 0) {
-      return;
-    }
-    const res: any = await path.detail(id);
-    var data = res.data;
+    if (id === 0)
+      return
+
+    const res: any = await path.detail(id)
+    const data = res.data
     form.setFieldsValue({
-      category_id: data.category_id,
+      categoryId: data.categoryId,
       name: data.name,
-      thumb: data.thumb,
-      is_show: data.is_show,
-      desc: data.desc,
-      original_charge: data.original_charge,
-      charge: data.charge,
-      published_at: dayjs(data.published_at, "YYYY-MM-DD HH:mm"),
-    });
-    setThumb(data.thumb);
-  };
+      cover: data.cover,
+      isShow: data.isShow,
+      intro: data.intro,
+      originPrice: data.originPrice,
+      price: data.price,
+      groundingTime: dayjs(data.groundingTime, 'YYYY-MM-DD HH:mm:ss'),
+    })
+    setThumb(data.cover)
+  }
 
   const onFinish = (values: any) => {
-    if (loading) {
-      return;
-    }
-    setLoading(true);
-    values.published_at = moment(new Date(values.published_at)).format(
-      "YYYY-MM-DD HH:mm"
-    );
+    if (loading)
+      return
+
+    setLoading(true)
+    values.groundingTime = moment(new Date(values.groundingTime)).format(
+      'YYYY-MM-DD HH:mm:ss',
+    )
     path
       .update(id, values)
       .then((res: any) => {
-        setLoading(false);
-        message.success("成功！");
-        navigate(-1);
+        setLoading(false)
+        message.success('成功！')
+        navigate(-1)
       })
       .catch((e) => {
-        setLoading(false);
-      });
-  };
+        setLoading(false)
+      })
+  }
 
   const onFinishFailed = (errorInfo: any) => {
-    console.log("Failed:", errorInfo);
-  };
+    console.log('Failed:', errorInfo)
+  }
 
   const onSwitch = (checked: boolean) => {
-    if (checked) {
-      form.setFieldsValue({ is_show: 1 });
-    } else {
-      form.setFieldsValue({ is_show: 0 });
-    }
-  };
+    if (checked)
+      form.setFieldsValue({ isShow: true })
+    else
+      form.setFieldsValue({ isShow: false })
+  }
 
   return (
     <div className="geekedu-main-body">
@@ -143,7 +143,7 @@ const LearnPathUpdatePage = () => {
         </div>
       )}
       <div
-        style={{ display: init ? "none" : "block" }}
+        style={{ display: init ? 'none' : 'block' }}
         className="float-left mt-30"
       >
         <Form
@@ -158,13 +158,13 @@ const LearnPathUpdatePage = () => {
         >
           <Form.Item
             label="所属分类"
-            name="category_id"
-            rules={[{ required: true, message: "请选择所属分类!" }]}
+            name="categoryId"
+            rules={[{ required: true, message: '请选择所属分类!' }]}
           >
             <Space align="baseline" style={{ height: 32 }}>
               <Form.Item
-                name="category_id"
-                rules={[{ required: true, message: "请选择所属分类!" }]}
+                name="categoryId"
+                rules={[{ required: true, message: '请选择所属分类!' }]}
               >
                 <Select
                   style={{ width: 300 }}
@@ -180,7 +180,7 @@ const LearnPathUpdatePage = () => {
                 icon={null}
                 p="addons.learnPaths.category.list"
                 onClick={() => {
-                  navigate("/learningpath/path/category/index");
+                  navigate('/learningpath/path/category/index')
                 }}
                 disabled={null}
               />
@@ -189,7 +189,7 @@ const LearnPathUpdatePage = () => {
           <Form.Item
             label="路径名称"
             name="name"
-            rules={[{ required: true, message: "请输入路径名称!" }]}
+            rules={[{ required: true, message: '请输入路径名称!' }]}
           >
             <Input
               style={{ width: 300 }}
@@ -199,21 +199,22 @@ const LearnPathUpdatePage = () => {
           </Form.Item>
           <Form.Item
             label="路径封面"
-            name="thumb"
-            rules={[{ required: true, message: "请上传路径封面!" }]}
+            name="cover"
+            rules={[{ required: true, message: '请上传路径封面!' }]}
           >
             <Space align="baseline" style={{ height: 32 }}>
               <Form.Item
-                name="thumb"
-                rules={[{ required: true, message: "请上传路径封面!" }]}
+                name="cover"
+                rules={[{ required: true, message: '请上传路径封面!' }]}
               >
                 <UploadImageButton
                   text="选择图片"
                   onSelected={(url) => {
-                    form.setFieldsValue({ thumb: url });
-                    setThumb(url);
+                    form.setFieldsValue({ thumb: url })
+                    setThumb(url)
                   }}
-                ></UploadImageButton>
+                >
+                </UploadImageButton>
               </Form.Item>
               <div className="ml-10">
                 <HelperText text="长宽比4:3，建议尺寸：400x300像素"></HelperText>
@@ -231,14 +232,15 @@ const LearnPathUpdatePage = () => {
                     width: 200,
                     height: 150,
                   }}
-                ></div>
+                >
+                </div>
               </Col>
             </Row>
           )}
           <Form.Item
             label="原价"
-            name="original_charge"
-            rules={[{ required: true, message: "请输入原价!" }]}
+            name="originPrice"
+            rules={[{ required: true, message: '请输入原价!' }]}
           >
             <Input
               type="number"
@@ -249,8 +251,8 @@ const LearnPathUpdatePage = () => {
           </Form.Item>
           <Form.Item
             label="现价"
-            name="charge"
-            rules={[{ required: true, message: "请输入现价!" }]}
+            name="price"
+            rules={[{ required: true, message: '请输入现价!' }]}
           >
             <Input
               type="number"
@@ -262,11 +264,11 @@ const LearnPathUpdatePage = () => {
           <Form.Item label="上架时间" required={true}>
             <Space align="baseline" style={{ height: 32 }}>
               <Form.Item
-                name="published_at"
-                rules={[{ required: true, message: "请选择上架时间!" }]}
+                name="groundingTime"
+                rules={[{ required: true, message: '请选择上架时间!' }]}
               >
                 <DatePicker
-                  format="YYYY-MM-DD HH:mm"
+                  format="YYYY-MM-DD HH:mm:ss"
                   style={{ width: 300 }}
                   showTime
                   placeholder="请选择上架时间"
@@ -277,9 +279,9 @@ const LearnPathUpdatePage = () => {
               </div>
             </Space>
           </Form.Item>
-          <Form.Item label="显示" name="is_show">
+          <Form.Item label="显示" name="isShow">
             <Space align="baseline" style={{ height: 32 }}>
-              <Form.Item name="is_show" valuePropName="checked">
+              <Form.Item name="isShow" valuePropName="checked">
                 <Switch onChange={onSwitch} />
               </Form.Item>
               <div className="ml-10">
@@ -289,8 +291,8 @@ const LearnPathUpdatePage = () => {
           </Form.Item>
           <Form.Item
             label="简短介绍"
-            name="desc"
-            rules={[{ required: true, message: "请输入简短介绍!" }]}
+            name="intro"
+            rules={[{ required: true, message: '请输入简短介绍!' }]}
           >
             <Input.TextArea
               style={{ width: 800 }}
@@ -322,7 +324,7 @@ const LearnPathUpdatePage = () => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default LearnPathUpdatePage;
+export default LearnPathUpdatePage
