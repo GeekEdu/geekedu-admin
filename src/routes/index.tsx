@@ -339,9 +339,6 @@ const CertificatePage = lazy(() => import('../pages/certificate/index'))
 const CertificateUsersPage = lazy(() => import('../pages/certificate/users'))
 const CertificateCreatePage = lazy(() => import('../pages/certificate/create'))
 const CertificateUpdatePage = lazy(() => import('../pages/certificate/update'))
-// 装修
-const DecorationPCPage = lazy(() => import('../pages/decoration/pc'))
-const DecorationH5Page = lazy(() => import('../pages/decoration/h5'))
 
 let RootPage: any = null
 // 通过找到 token 判断是否登录
@@ -793,8 +790,6 @@ const routes: RouteObject[] = [
           },
           { path: '/certificate/create', element: <CertificateCreatePage /> },
           { path: '/certificate/update', element: <CertificateUpdatePage /> },
-          { path: '/decoration/pc', element: <DecorationPCPage /> },
-          { path: '/decoration/h5', element: <DecorationH5Page /> },
           {
             path: '*',
             element: <ErrorPage />,
