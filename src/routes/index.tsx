@@ -275,61 +275,61 @@ const SystemBookConfigPage = lazy(
   () => import('../pages/system/config/bookConfig'),
 )
 const ErrorPage = lazy(() => import('../pages/error'))
-// 考试练习相关
-const PaperCategoryPage = lazy(() => import('../pages/exam/category/index'))
-const PracticePage = lazy(() => import('../pages/exam/practice/index'))
-const PracticeCreatePage = lazy(() => import('../pages/exam/practice/create'))
-const PracticeUpdatePage = lazy(() => import('../pages/exam/practice/update'))
-const PracticeUsersPage = lazy(() => import('../pages/exam/practice/user'))
-const PracticeUsersProgressPage = lazy(
-  () => import('../pages/exam/practice/progress'),
-)
-const PracticeChaptersPage = lazy(
-  () => import('../pages/exam/practice/chapter/index'),
-)
-const PracticeChapterCreatePage = lazy(
-  () => import('../pages/exam/practice/chapter/create'),
-)
-const PracticeChapterUpdatePage = lazy(
-  () => import('../pages/exam/practice/chapter/update'),
-)
-const PracticeQuestionPage = lazy(
-  () => import('../pages/exam/practice/chapter/question'),
-)
-const PracticeQuestionCreatePage = lazy(
-  () => import('../pages/exam/practice/chapter/questionCreate'),
-)
-// 考试模拟相关
-const MockPaperPage = lazy(() => import('../pages/exam/mockpaper/index'))
-const MockPaperUsersPage = lazy(() => import('../pages/exam/mockpaper/users'))
-const MockPaperCreatePage = lazy(
-  () => import('../pages/exam/mockpaper/create'),
-)
-const MockPaperUpdatePage = lazy(
-  () => import('../pages/exam/mockpaper/update'),
-)
-const MockPaperReadPage = lazy(
-  () => import('../pages/exam/mockpaper/paperShow'),
-)
-// 考试试卷相关
-const PaperPage = lazy(() => import('../pages/exam/paper/index'))
-const PaperCreatePage = lazy(() => import('../pages/exam/paper/create'))
-const PaperUpdatePage = lazy(() => import('../pages/exam/paper/update'))
-const PaperUsersPage = lazy(() => import('../pages/exam/paper/users'))
-const PaperQuestionPage = lazy(() => import('../pages/exam/paper/question'))
-const PaperQuestionCreatePage = lazy(
-  () => import('../pages/exam/paper/questionadd'),
-)
-const PaperReadPage = lazy(() => import('../pages/exam/paper/paperShow'))
-const PaperMarkingPage = lazy(() => import('../pages/exam/paper/marking'))
-// 考试题库相关
-const QuestionPage = lazy(() => import('../pages/exam/question/index'))
-const QuestionCategoryPage = lazy(
-  () => import('../pages/exam/question/category/index'),
-)
-const QuestionImportPage = lazy(() => import('../pages/exam/question/import'))
-const QuestionCreatePage = lazy(() => import('../pages/exam/question/create'))
-const QuestionUpdatePage = lazy(() => import('../pages/exam/question/update'))
+// // 考试练习相关
+// const PaperCategoryPage = lazy(() => import('../pages/exam/category/index'))
+// const PracticePage = lazy(() => import('../pages/exam/practice/index'))
+// const PracticeCreatePage = lazy(() => import('../pages/exam/practice/create'))
+// const PracticeUpdatePage = lazy(() => import('../pages/exam/practice/update'))
+// const PracticeUsersPage = lazy(() => import('../pages/exam/practice/user'))
+// const PracticeUsersProgressPage = lazy(
+//   () => import('../pages/exam/practice/progress'),
+// )
+// const PracticeChaptersPage = lazy(
+//   () => import('../pages/exam/practice/chapter/index'),
+// )
+// const PracticeChapterCreatePage = lazy(
+//   () => import('../pages/exam/practice/chapter/create'),
+// )
+// const PracticeChapterUpdatePage = lazy(
+//   () => import('../pages/exam/practice/chapter/update'),
+// )
+// const PracticeQuestionPage = lazy(
+//   () => import('../pages/exam/practice/chapter/question'),
+// )
+// const PracticeQuestionCreatePage = lazy(
+//   () => import('../pages/exam/practice/chapter/questionCreate'),
+// )
+// // 考试模拟相关
+// const MockPaperPage = lazy(() => import('../pages/exam/mockpaper/index'))
+// const MockPaperUsersPage = lazy(() => import('../pages/exam/mockpaper/users'))
+// const MockPaperCreatePage = lazy(
+//   () => import('../pages/exam/mockpaper/create'),
+// )
+// const MockPaperUpdatePage = lazy(
+//   () => import('../pages/exam/mockpaper/update'),
+// )
+// const MockPaperReadPage = lazy(
+//   () => import('../pages/exam/mockpaper/paperShow'),
+// )
+// // 考试试卷相关
+// const PaperPage = lazy(() => import('../pages/exam/paper/index'))
+// const PaperCreatePage = lazy(() => import('../pages/exam/paper/create'))
+// const PaperUpdatePage = lazy(() => import('../pages/exam/paper/update'))
+// const PaperUsersPage = lazy(() => import('../pages/exam/paper/users'))
+// const PaperQuestionPage = lazy(() => import('../pages/exam/paper/question'))
+// const PaperQuestionCreatePage = lazy(
+//   () => import('../pages/exam/paper/questionadd'),
+// )
+// const PaperReadPage = lazy(() => import('../pages/exam/paper/paperShow'))
+// const PaperMarkingPage = lazy(() => import('../pages/exam/paper/marking'))
+// // 考试题库相关
+// const QuestionPage = lazy(() => import('../pages/exam/question/index'))
+// const QuestionCategoryPage = lazy(
+//   () => import('../pages/exam/question/category/index'),
+// )
+// const QuestionImportPage = lazy(() => import('../pages/exam/question/import'))
+// const QuestionCreatePage = lazy(() => import('../pages/exam/question/create'))
+// const QuestionUpdatePage = lazy(() => import('../pages/exam/question/update'))
 // 单页面
 const SinglePage = lazy(() => import('../pages/singlepage/index'))
 const SingleCreatePage = lazy(() => import('../pages/singlepage/create'))
@@ -719,62 +719,62 @@ const routes: RouteObject[] = [
           { path: '/system/config', element: <SystemNormalConfigPage /> },
           { path: '/system/topicConfig', element: <SystemTopicConfigPage /> },
           { path: '/system/bookConfig', element: <SystemBookConfigPage /> },
-          {
-            path: '/exam/paper/category/index',
-            element: <PaperCategoryPage />,
-          },
-          { path: '/exam/practice/index', element: <PracticePage /> },
-          { path: '/exam/practice/create', element: <PracticeCreatePage /> },
-          { path: '/exam/practice/update', element: <PracticeUpdatePage /> },
-          { path: '/exam/practice/user', element: <PracticeUsersPage /> },
-          {
-            path: '/exam/practice/progress',
-            element: <PracticeUsersProgressPage />,
-          },
-          {
-            path: '/exam/practice/chapter/index',
-            element: <PracticeChaptersPage />,
-          },
-          {
-            path: '/exam/practice/chapter/create',
-            element: <PracticeChapterCreatePage />,
-          },
-          {
-            path: '/exam/practice/chapter/update',
-            element: <PracticeChapterUpdatePage />,
-          },
-          {
-            path: '/exam/practice/chapter/question/index',
-            element: <PracticeQuestionPage />,
-          },
-          {
-            path: '/exam/practice/chapter/question/create',
-            element: <PracticeQuestionCreatePage />,
-          },
-          { path: '/exam/mockpaper/index', element: <MockPaperPage /> },
-          { path: '/exam/mockpaper/user', element: <MockPaperUsersPage /> },
-          { path: '/exam/mockpaper/create', element: <MockPaperCreatePage /> },
-          { path: '/exam/mockpaper/update', element: <MockPaperUpdatePage /> },
-          { path: '/exam/mockpaper/paperShow', element: <MockPaperReadPage /> },
-          { path: '/exam/paper/index', element: <PaperPage /> },
-          { path: '/exam/paper/create', element: <PaperCreatePage /> },
-          { path: '/exam/paper/update', element: <PaperUpdatePage /> },
-          { path: '/exam/paper/user', element: <PaperUsersPage /> },
-          { path: '/exam/paper/question', element: <PaperQuestionPage /> },
-          {
-            path: '/exam/paper/questionadd',
-            element: <PaperQuestionCreatePage />,
-          },
-          { path: '/exam/paper/paperShow', element: <PaperReadPage /> },
-          { path: '/exam/paper/marking', element: <PaperMarkingPage /> },
-          { path: '/exam/question/index', element: <QuestionPage /> },
-          {
-            path: '/exam/question/category/index',
-            element: <QuestionCategoryPage />,
-          },
-          { path: '/exam/question/import', element: <QuestionImportPage /> },
-          { path: '/exam/question/create', element: <QuestionCreatePage /> },
-          { path: '/exam/question/update', element: <QuestionUpdatePage /> },
+          // {
+          //   path: '/exam/paper/category/index',
+          //   element: <PaperCategoryPage />,
+          // },
+          // { path: '/exam/practice/index', element: <PracticePage /> },
+          // { path: '/exam/practice/create', element: <PracticeCreatePage /> },
+          // { path: '/exam/practice/update', element: <PracticeUpdatePage /> },
+          // { path: '/exam/practice/user', element: <PracticeUsersPage /> },
+          // {
+          //   path: '/exam/practice/progress',
+          //   element: <PracticeUsersProgressPage />,
+          // },
+          // {
+          //   path: '/exam/practice/chapter/index',
+          //   element: <PracticeChaptersPage />,
+          // },
+          // {
+          //   path: '/exam/practice/chapter/create',
+          //   element: <PracticeChapterCreatePage />,
+          // },
+          // {
+          //   path: '/exam/practice/chapter/update',
+          //   element: <PracticeChapterUpdatePage />,
+          // },
+          // {
+          //   path: '/exam/practice/chapter/question/index',
+          //   element: <PracticeQuestionPage />,
+          // },
+          // {
+          //   path: '/exam/practice/chapter/question/create',
+          //   element: <PracticeQuestionCreatePage />,
+          // },
+          // { path: '/exam/mockpaper/index', element: <MockPaperPage /> },
+          // { path: '/exam/mockpaper/user', element: <MockPaperUsersPage /> },
+          // { path: '/exam/mockpaper/create', element: <MockPaperCreatePage /> },
+          // { path: '/exam/mockpaper/update', element: <MockPaperUpdatePage /> },
+          // { path: '/exam/mockpaper/paperShow', element: <MockPaperReadPage /> },
+          // { path: '/exam/paper/index', element: <PaperPage /> },
+          // { path: '/exam/paper/create', element: <PaperCreatePage /> },
+          // { path: '/exam/paper/update', element: <PaperUpdatePage /> },
+          // { path: '/exam/paper/user', element: <PaperUsersPage /> },
+          // { path: '/exam/paper/question', element: <PaperQuestionPage /> },
+          // {
+          //   path: '/exam/paper/questionadd',
+          //   element: <PaperQuestionCreatePage />,
+          // },
+          // { path: '/exam/paper/paperShow', element: <PaperReadPage /> },
+          // { path: '/exam/paper/marking', element: <PaperMarkingPage /> },
+          // { path: '/exam/question/index', element: <QuestionPage /> },
+          // {
+          //   path: '/exam/question/category/index',
+          //   element: <QuestionCategoryPage />,
+          // },
+          // { path: '/exam/question/import', element: <QuestionImportPage /> },
+          // { path: '/exam/question/create', element: <QuestionCreatePage /> },
+          // { path: '/exam/question/update', element: <QuestionUpdatePage /> },
           { path: '/singlepage/index', element: <SinglePage /> },
           { path: '/singlepage/create', element: <SingleCreatePage /> },
           { path: '/singlepage/update', element: <SingleUpdatePage /> },

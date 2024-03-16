@@ -45,13 +45,7 @@ function DashboardPage() {
   const [systemInfo, setSystemInfo] = useState<any>({})
   // 过去一周的时间
   const [start_at, setStartAt] = useState(funDate(-7))
-  const [end_at, setEndAt] = useState(
-    `${new Date().getFullYear()
-      }-${
-      new Date().getMonth() + 1
-      }-${
-      new Date().getDate()}`,
-  )
+  const [end_at, setEndAt] = useState(funDate(0))
   const [flagE, setFlagE] = useState(1)
   const [userCountIncRate, setUserCountIncRate] = useState(0)
   const [thisMonthPaidRate, setThisMonthPaidRate] = useState(0)
@@ -194,8 +188,6 @@ function DashboardPage() {
   }
 
   const onChange = (date: any, dateString: any) => {
-    dateString[0] += ' 00:00:00'
-    dateString[1] += ' 23:59:59'
     setStartAt(dateString[0])
     setEndAt(dateString[1])
   }
@@ -408,13 +400,13 @@ function DashboardPage() {
               <span>学习路径</span>
             </Link>
           )}
-          {enabledAddons.Paper
+          {/* {enabledAddons.Paper
           && checkPermission('addons.Paper.paper.list') && (
             <Link to="/exam/paper/index" className={styles.el_row2_item}>
               <img src={paperIcon} />
               <span>试卷</span>
             </Link>
-          )}
+          )} */}
         </div>
         <div className={styles.el_top_row3}>
           <div className={styles.tit}>统计分析</div>
