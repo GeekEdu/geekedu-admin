@@ -1,355 +1,374 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from 'react'
 import {
-  Table,
-  Select,
-  message,
-  Drawer,
-  Input,
   Button,
   DatePicker,
-  Space,
-  Tabs,
+  Drawer,
   Dropdown,
-} from "antd";
-import { useNavigate } from "react-router-dom";
-import type { ColumnsType } from "antd/es/table";
-import type { MenuProps } from "antd";
-import { useDispatch, useSelector } from "react-redux";
-import { order } from "../../api/index";
-import { titleAction } from "../../store/user/loginUserSlice";
-import { PerButton } from "../../components";
-import { dateFormat } from "../../utils/index";
-import { DownOutlined } from "@ant-design/icons";
-import filterIcon from "../../assets/img/icon-filter.png";
-import filterHIcon from "../../assets/img/icon-filter-h.png";
-import aliIcon from "../../assets/img/ali-pay.png";
-import wepayIcon from "../../assets/img/wepay.png";
-import cardIcon from "../../assets/img/card.png";
-import { RefundDialog } from "./components/refund-dailog";
-import moment from "moment";
-import * as XLSX from "xlsx";
+  Input,
+  Select,
+  Space,
+  Table,
+  Tabs,
+  message,
+} from 'antd'
+import { useNavigate } from 'react-router-dom'
+import type { ColumnsType } from 'antd/es/table'
+import type { MenuProps } from 'antd'
+import { useDispatch, useSelector } from 'react-redux'
+import { DownOutlined } from '@ant-design/icons'
+import moment from 'moment'
+import * as XLSX from 'xlsx'
+import { order } from '../../api/index'
+import { titleAction } from '../../store/user/loginUserSlice'
+import { PerButton } from '../../components'
+import { dateFormat } from '../../utils/index'
+import filterIcon from '../../assets/img/icon-filter.png'
+import filterHIcon from '../../assets/img/icon-filter-h.png'
+import aliIcon from '../../assets/img/ali-pay.png'
+import wepayIcon from '../../assets/img/wepay.png'
+import cardIcon from '../../assets/img/card.png'
+import { RefundDialog } from './components/refund-dailog'
 
-const { RangePicker } = DatePicker;
+const { RangePicker } = DatePicker
 
 interface DataType {
-  id: React.Key;
-  charge: number;
-  updated_at: string;
+  id: React.Key
+  charge: number
+  updated_at: string
 }
 
-const OrderPage = () => {
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const [loading, setLoading] = useState<boolean>(false);
-  const [list, setList] = useState<any>([]);
-  const [page, setPage] = useState(1);
-  const [size, setSize] = useState(10);
-  const [total, setTotal] = useState(0);
-  const [refresh, setRefresh] = useState(false);
-  const [goods_name, setGoodsName] = useState<string>("");
-  const [order_id, setOrderId] = useState("");
-  const [is_refund, setIsRefund] = useState(-1);
-  const [status, setStatus] = useState("");
-  const [payment, setPayment] = useState([]);
-  const [created_at, setCreatedAt] = useState<any>([]);
-  const [createdAts, setCreatedAts] = useState<any>([]);
-  const [drawer, setDrawer] = useState(false);
-  const [showStatus, setShowStatus] = useState(false);
-  const [countMap, setCountMap] = useState<any>({ 1: 0, 5: 0, 7: 0, 9: 0 });
-  const [users, setUsers] = useState<any>({});
-  const [orderTotal, setOrderTotal] = useState(0);
-  const [visiable, setVisiable] = useState<boolean>(false);
-  const [oid, setOid] = useState(0);
+function OrderPage() {
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
+  const [loading, setLoading] = useState<boolean>(false)
+  const [list, setList] = useState<any>([])
+  const [page, setPage] = useState(1)
+  const [size, setSize] = useState(10)
+  const [total, setTotal] = useState(0)
+  const [refresh, setRefresh] = useState(false)
+  const [goods_name, setGoodsName] = useState<string>('')
+  const [order_id, setOrderId] = useState('')
+  const [is_refund, setIsRefund] = useState(-1)
+  const [status, setStatus] = useState('')
+  const [payment, setPayment] = useState([])
+  const [created_at, setCreatedAt] = useState<any>([])
+  const [createdAts, setCreatedAts] = useState<any>([])
+  const [drawer, setDrawer] = useState(false)
+  const [showStatus, setShowStatus] = useState(false)
+  const [countMap, setCountMap] = useState<any>({ 3: 0, 4: 0, 1: 0, 2: 0 })
+  const [users, setUsers] = useState<any>({})
+  const [orderTotal, setOrderTotal] = useState(0)
+  const [visiable, setVisiable] = useState<boolean>(false)
+  const [oid, setOid] = useState(0)
   const [types, setTypes] = useState<any>([
     {
-      label: "全部",
-      key: "",
+      label: '全部',
+      key: '',
     },
     {
-      label: "已支付",
-      key: "9",
+      label: '已支付',
+      key: '3',
     },
     {
-      label: "支付中",
-      key: "5",
+      label: '已退款',
+      key: '4',
     },
     {
-      label: "未支付",
-      key: "1",
+      label: '未支付',
+      key: '1',
     },
     {
-      label: "已取消",
-      key: "7",
+      label: '已取消',
+      key: '2',
     },
-  ]);
+  ])
   const payments = [
     {
-      value: "alipay",
-      label: "支付宝支付",
+      value: 'ALIPAY',
+      label: '支付宝支付',
     },
     {
-      value: "wechat",
-      label: "微信支付",
+      value: 'WX_PAY',
+      label: '微信支付',
     },
 
     {
-      value: "handPay",
-      label: "线下打款",
+      value: 'OTHER',
+      label: '线下打款',
     },
-  ];
+  ]
   const refunds = [
     {
-      label: "是否有退款",
+      label: '是否有退款',
       value: -1,
     },
     {
-      label: "有退款",
+      label: '有退款',
       value: 1,
     },
     {
-      label: "无退款",
+      label: '无退款',
       value: 0,
     },
-  ];
+  ]
 
   useEffect(() => {
-    document.title = "全部订单";
-    dispatch(titleAction("全部订单"));
-  }, []);
+    document.title = '全部订单'
+    dispatch(titleAction('全部订单'))
+  }, [])
 
   useEffect(() => {
     if (countMap === null) {
-      setOrderTotal(0);
-    } else {
-      let total = 0;
-      for (let i = 1; i < types.length; i++) {
-        total += countMap[types[i].key];
-      }
-      setOrderTotal(total);
+      setOrderTotal(0)
     }
-  }, [countMap, types]);
+    else {
+      let total = 0
+      for (let i = 1; i < types.length; i++)
+        total += Number(countMap[types[i].key])
+
+      setOrderTotal(total)
+    }
+  }, [countMap, types])
 
   useEffect(() => {
-    let statusRows = [
+    const statusRows = [
       {
-        label: "全部(" + orderTotal + ")",
-        key: "",
+        label: `全部(${orderTotal})`,
+        key: '',
       },
       {
-        label: "已支付(" + countMap[9] + ")",
-        key: "9",
+        label: `已支付(${Number(countMap[3])})`,
+        key: '3',
       },
       {
-        label: "支付中(" + countMap[5] + ")",
-        key: "5",
+        label: `已退款(${Number(countMap[4])})`,
+        key: '4',
       },
       {
-        label: "未支付(" + countMap[1] + ")",
-        key: "1",
+        label: `未支付(${Number(countMap[1])})`,
+        key: '1',
       },
       {
-        label: "已取消(" + countMap[7] + ")",
-        key: "7",
+        label: `已取消(${Number(countMap[2])})`,
+        key: '2',
       },
-    ];
-    setTypes(statusRows);
-  }, [orderTotal, countMap]);
+    ]
+    setTypes(statusRows)
+  }, [orderTotal, countMap])
 
   useEffect(() => {
-    getData();
-  }, [page, size, refresh]);
+    getData()
+  }, [page, size, refresh])
 
   const getData = () => {
-    if (loading) {
-      return;
-    }
-    setLoading(true);
+    if (loading)
+      return
+
+    setLoading(true)
     order
       .list({
-        page: page,
-        size: size,
-        sort: "id",
-        order: "desc",
-        order_id: order_id,
-        goods_name: goods_name,
-        is_refund: is_refund,
-        status: status,
-        created_at: created_at,
-        payment: payment,
+        pageNum: page,
+        pageSize: size,
+        sort: 'id',
+        order: 'desc',
+        orderId: order_id,
+        goodsName: goods_name,
+        isRefund: is_refund,
+        status,
+        createdTime: created_at.join(','),
+        payment,
       })
       .then((res: any) => {
-        setList(res.data.orders.data);
-        setTotal(res.data.orders.total);
-        setCountMap(res.data.countMap);
-        setUsers(res.data.users);
-        setLoading(false);
+        setList(res.data.data.data)
+        setTotal(res.data.data.total)
+        setCountMap(res.data.countMap)
+        setUsers(res.data.users)
+        setLoading(false)
       })
       .catch((e) => {
-        setLoading(false);
-      });
-  };
+        setLoading(false)
+      })
+  }
 
   useEffect(() => {
     if (
-      (created_at && created_at.length > 0) ||
-      is_refund !== -1 ||
-      status ||
-      order_id ||
-      (payment && payment.length > 0) ||
-      goods_name
-    ) {
-      setShowStatus(true);
-    } else {
-      setShowStatus(false);
-    }
-  }, [created_at, is_refund, order_id, goods_name, status, payment]);
+      (created_at && created_at.length > 0)
+      || is_refund !== -1
+      || status
+      || order_id
+      || (payment && payment.length > 0)
+      || goods_name
+    )
+      setShowStatus(true)
+    else
+      setShowStatus(false)
+  }, [created_at, is_refund, order_id, goods_name, status, payment])
 
   const resetList = () => {
-    setPage(1);
-    setSize(10);
-    setList([]);
-    setGoodsName("");
-    setOrderId("");
-    setIsRefund(-1);
-    setCreatedAts([]);
-    setStatus("");
-    setPayment([]);
-    setCreatedAt([]);
-    setRefresh(!refresh);
-  };
+    setPage(1)
+    setSize(10)
+    setList([])
+    setGoodsName('')
+    setOrderId('')
+    setIsRefund(-1)
+    setCreatedAts([])
+    setStatus('')
+    setPayment([])
+    setCreatedAt([])
+    setRefresh(!refresh)
+  }
 
   const paginationProps = {
-    current: page, //当前页码
+    current: page, // 当前页码
     pageSize: size,
-    total: total, // 总条数
+    total, // 总条数
     onChange: (page: number, pageSize: number) =>
-      handlePageChange(page, pageSize), //改变页码的函数
+      handlePageChange(page, pageSize), // 改变页码的函数
     showSizeChanger: true,
-  };
+  }
 
   const handlePageChange = (page: number, pageSize: number) => {
-    setPage(page);
-    setSize(pageSize);
-  };
+    setPage(page)
+    setSize(pageSize)
+  }
 
   const columns: ColumnsType<DataType> = [
     {
-      title: "ID",
+      title: 'ID',
       width: 120,
       render: (_, record: any) => <span>{record.id}</span>,
     },
     {
-      title: "学员",
+      title: '学员',
       width: 210,
       render: (_, record: any) => (
         <>
-          {users[record.user_id] && (
+          {users[record.userId] && (
             <div className="user-item d-flex">
               <div className="avatar">
                 <img
-                  src={users[record.user_id].avatar}
+                  src={users[record.userId].avatar}
                   width="40"
                   height="40"
                 />
               </div>
-              <div className="ml-10">{users[record.user_id].nick_name}</div>
+              <div className="ml-10">{users[record.userId].name}</div>
             </div>
           )}
-          {!users[record.user_id] && <span className="c-red">学员不存在</span>}
+          {!users[record.userId] && <span className="c-red">学员不存在</span>}
         </>
       ),
     },
     {
-      title: "商品名称",
+      title: '商品名称',
       width: 300,
       render: (_, record: any) => (
         <>
-          {record.goods.map((item: any) => (
-            <span key={item.goods_id}>{item.goods_name}</span>
-          ))}
+          <span key={record.goods.goodsId}>{record.goods.goodsName}</span>
         </>
       ),
     },
     {
-      title: "支付金额",
+      title: '支付金额',
       width: 150,
-      dataIndex: "charge",
-      render: (charge: number) => <span>¥{charge}</span>,
+      dataIndex: 'charge',
+      render: (charge: number) => (
+        <span>
+          ¥
+          {charge}
+        </span>
+      ),
     },
     {
-      title: "支付渠道",
+      title: '支付渠道',
       width: 150,
       render: (_, record: any) => (
         <>
-          {record.payment === "alipay" && (
+          {record.payment === 'ALIPAY' && (
             <img src={aliIcon} width="30" height="30" />
           )}
-          {record.payment === "wechat" && (
+          {record.payment === 'WX_PAY' && (
             <img src={wepayIcon} width="30" height="30" />
           )}
-          {record.payment === "wechat_h5" && (
+          {record.payment === 'wechat_h5' && (
             <img src={wepayIcon} width="30" height="30" />
           )}
-          {record.payment === "wechat-jsapi" && (
+          {record.payment === 'wechat-jsapi' && (
             <img src={wepayIcon} width="30" height="30" />
           )}
-          {record.payment === "wechatApp" && (
+          {record.payment === 'wechatApp' && (
             <img src={wepayIcon} width="30" height="30" />
           )}
-          {record.payment === "handPay" && (
+          {record.payment === 'OTHER' && (
             <img src={cardIcon} width="30" height="30" />
           )}
-          {record.payment === "" && <span>-</span>}
+          {record.payment === '' && <span>-</span>}
         </>
       ),
     },
     {
-      title: "支付状态",
+      title: '支付状态',
       width: 150,
       render: (_, record: any) => (
         <>
-          {record.status_text === "已支付" && (
-            <span className="c-green">· {record.status_text}</span>
+          {record.orderStatusText === '已支付' && (
+            <span className="c-green">
+              ·
+              {record.orderStatusText}
+            </span>
           )}
-          {record.status_text === "未支付" && (
-            <span className="c-red">· {record.status_text}</span>
+          {record.orderStatusText === '未支付' && (
+            <span className="c-red">
+              ·
+              {record.orderStatusText}
+            </span>
           )}
-          {record.status_text === "支付中" && (
-            <span className="c-yellow">· {record.status_text}</span>
+          {record.orderStatusText === '已退款' && (
+            <span className="c-yellow">
+              ·
+              {record.orderStatusText}
+            </span>
           )}
-          {record.status_text === "已取消" && (
-            <span className="c-gray">· {record.status_text}</span>
+          {record.orderStatusText === '已取消' && (
+            <span className="c-gray">
+              ·
+              {record.orderStatusText}
+            </span>
           )}
         </>
       ),
     },
     {
-      title: "退款",
+      title: '退款',
       render: (_, record: any) => (
         <>
-          {record.is_refund === 0 ? (
-            <span>-</span>
-          ) : record.refund ? (
-            <span>{showRefund(record.refund)}</span>
-          ) : (
-            ""
-          )}
+          {!record.isRefund
+            ? (
+              <span>-</span>
+              )
+            : record.refund
+              ? (
+                <span>{showRefund(record.refund)}</span>
+                )
+              : (
+                  ''
+                )}
         </>
       ),
     },
     {
-      title: "订单创建时间",
+      title: '订单创建时间',
       width: 200,
-      dataIndex: "updated_at",
-      render: (updated_at: string) => <span>{dateFormat(updated_at)}</span>,
+      dataIndex: 'createdTime',
+      render: (createdTime: string) => <span>{dateFormat(createdTime)}</span>,
     },
     {
-      title: "操作",
+      title: '操作',
       width: 120,
       render: (_, record: any) => {
-        const items: MenuProps["items"] = [
+        const items: MenuProps['items'] = [
           {
-            key: "1",
+            key: '1',
             label: (
               <PerButton
                 type="link"
@@ -358,13 +377,13 @@ const OrderPage = () => {
                 icon={null}
                 p="order.refund"
                 onClick={() => {
-                  refund(record);
+                  refund(record)
                 }}
                 disabled={record.status !== 9}
               />
             ),
           },
-        ];
+        ]
         return (
           <Space>
             <PerButton
@@ -374,7 +393,7 @@ const OrderPage = () => {
               icon={null}
               p="order.detail"
               onClick={() => {
-                navigate("/order/detail?id=" + record.id);
+                navigate(`/order/detail?id=${record.id}`)
               }}
               disabled={null}
             />
@@ -382,7 +401,7 @@ const OrderPage = () => {
               <Button
                 type="link"
                 className="c-primary"
-                onClick={(e) => e.preventDefault()}
+                onClick={e => e.preventDefault()}
               >
                 <Space size="small" align="center">
                   更多
@@ -391,112 +410,111 @@ const OrderPage = () => {
               </Button>
             </Dropdown>
           </Space>
-        );
+        )
       },
     },
-  ];
+  ]
 
   const showRefund = (item: any) => {
-    let amount = 0;
+    let amount = 0
     for (let i = 0; i < item.length; i++) {
-      if (item[i].status === 1 || item[i].status === 5) {
-        amount += item[i].amount / 100;
-      }
+      if (item[i].status === 1 || item[i].status === 5)
+        amount += item[i].amount / 100
     }
-    return "¥" + amount.toFixed(2);
-  };
+    return `¥${amount.toFixed(2)}`
+  }
 
   const refund = (item: any) => {
-    setOid(item.id);
-    setVisiable(true);
-  };
+    setOid(item.id)
+    setVisiable(true)
+  }
 
   const importexcel = () => {
-    if (loading) {
-      return;
+    if (loading)
+      return
+
+    setLoading(true)
+    const params = {
+      pageNum: 1,
+      pageSize: total,
+      orderId: order_id,
+      goodsName: goods_name,
+      isRefund: is_refund,
+      status,
+      createdTime: created_at.join(','),
+      payment,
     }
-    setLoading(true);
-    let params = {
-      page: 1,
-      size: total,
-      order_id: order_id,
-      goods_name: goods_name,
-      is_refund: is_refund,
-      status: status,
-      created_at: created_at,
-      payment: payment,
-    };
     order.list(params).then((res: any) => {
       if (res.data.orders.total === 0) {
-        message.error("数据为空");
-        setLoading(false);
-        return;
+        message.error('数据为空')
+        setLoading(false)
+        return
       }
-      let status;
-      if (Number(status) === 9) {
-        status = "已支付";
-      } else if (Number(status) === 5) {
-        status = "支付中";
-      } else if (Number(status) === 1) {
-        status = "未支付";
-      } else if (Number(status) === 7) {
-        status = "已取消";
-      } else {
-        status = "全部";
-      }
-      let filename = "全部订单（" + status + "）.xlsx";
-      let sheetName = "sheet1";
-      let users = res.data.users;
-      let data = [
+      let status
+      if (Number(status) === 3)
+        status = '已支付'
+      else if (Number(status) === 4)
+        status = '已退款'
+      else if (Number(status) === 1)
+        status = '未支付'
+      else if (Number(status) === 2)
+        status = '已取消'
+      else
+        status = '全部'
+
+      const filename = `全部订单（${status}）.xlsx`
+      const sheetName = 'sheet1'
+      const users = res.data.users
+      const data = [
         [
-          "ID",
-          "学员ID",
-          "学员",
-          "商品名称",
-          "支付金额",
-          "支付渠道",
-          "支付状态",
-          "退款",
-          "订单创建时间",
+          'ID',
+          '学员ID',
+          '学员',
+          '商品名称',
+          '支付金额',
+          '支付渠道',
+          '支付状态',
+          '退款',
+          '订单创建时间',
         ],
-      ];
+      ]
       res.data.orders.data.forEach((item: any) => {
         data.push([
           item.id,
           item.user_id,
-          users[item.user_id] ? users[item.user_id].nick_name : "用户已删除",
-          item.goods[0] ? item.goods[0].goods_name : "商品已删除",
-          item.charge + "元",
+          users[item.user_id] ? users[item.user_id].nick_name : '用户已删除',
+          item.goods[0] ? item.goods[0].goods_name : '商品已删除',
+          `${item.charge}元`,
           item.payment_text,
           item.status_text,
-          item.is_refund === 0 ? "-" : showRefund(item.refund),
+          item.is_refund === 0 ? '-' : showRefund(item.refund),
           item.updated_at
-            ? moment(item.updated_at).format("YYYY-MM-DD HH:mm")
-            : "",
-        ]);
-      });
+            ? moment(item.updated_at).format('YYYY-MM-DD HH:mm')
+            : '',
+        ])
+      })
 
-      const jsonWorkSheet = XLSX.utils.json_to_sheet(data);
+      const jsonWorkSheet = XLSX.utils.json_to_sheet(data)
       const workBook: XLSX.WorkBook = {
         SheetNames: [sheetName],
         Sheets: {
           [sheetName]: jsonWorkSheet,
         },
-      };
-      XLSX.writeFile(workBook, filename);
-      setLoading(false);
-    });
-  };
+      }
+      XLSX.writeFile(workBook, filename)
+      setLoading(false)
+    })
+  }
 
   const onChange = (key: string) => {
-    setPage(1);
-    setStatus(key);
-    setRefresh(!refresh);
-  };
+    setPage(1)
+    setStatus(key)
+    setRefresh(!refresh)
+  }
 
   const disabledDate = (current: any) => {
-    return current && current >= moment().add(0, "days"); // 选择时间要大于等于当前天。若今天不能被选择，去掉等号即可。
-  };
+    return current && current >= moment().add(0, 'days') // 选择时间要大于等于当前天。若今天不能被选择，去掉等号即可。
+  }
 
   return (
     <div className="geekedu-main-body">
@@ -505,10 +523,11 @@ const OrderPage = () => {
         id={oid}
         onCancel={() => setVisiable(false)}
         onSuccess={() => {
-          setVisiable(false);
-          setRefresh(!refresh);
+          setVisiable(false)
+          setRefresh(!refresh)
         }}
-      ></RefundDialog>
+      >
+      </RefundDialog>
       <div className="float-left j-b-flex mb-30">
         <div className="d-flex">
           <PerButton
@@ -517,7 +536,7 @@ const OrderPage = () => {
             class=""
             icon={null}
             p="order.refund.list"
-            onClick={() => navigate("/order/refund")}
+            onClick={() => navigate('/order/refund')}
             disabled={null}
           />
           <Button
@@ -532,7 +551,7 @@ const OrderPage = () => {
           <Input
             value={order_id}
             onChange={(e) => {
-              setOrderId(e.target.value);
+              setOrderId(e.target.value)
             }}
             allowClear
             style={{ width: 150 }}
@@ -541,7 +560,7 @@ const OrderPage = () => {
           <Input
             value={goods_name}
             onChange={(e) => {
-              setGoodsName(e.target.value);
+              setGoodsName(e.target.value)
             }}
             allowClear
             style={{ width: 150, marginLeft: 10 }}
@@ -551,7 +570,7 @@ const OrderPage = () => {
             style={{ width: 150, marginLeft: 10 }}
             value={payment}
             onChange={(e) => {
-              setPayment(e);
+              setPayment(e)
             }}
             allowClear
             placeholder="支付渠道"
@@ -564,9 +583,9 @@ const OrderPage = () => {
             className="ml-10"
             type="primary"
             onClick={() => {
-              setPage(1);
-              setRefresh(!refresh);
-              setDrawer(false);
+              setPage(1)
+              setRefresh(!refresh)
+              setDrawer(false)
             }}
           >
             筛选
@@ -598,95 +617,97 @@ const OrderPage = () => {
           loading={loading}
           columns={columns}
           dataSource={list}
-          rowKey={(record) => record.id}
+          rowKey={record => record.id}
           pagination={paginationProps}
         />
       </div>
-      {drawer ? (
-        <Drawer
-          title="更多筛选"
-          onClose={() => setDrawer(false)}
-          maskClosable={false}
-          open={true}
-          footer={
-            <Space className="j-b-flex">
-              <Button
-                onClick={() => {
-                  resetList();
-                  setDrawer(false);
+      {drawer
+        ? (
+          <Drawer
+            title="更多筛选"
+            onClose={() => setDrawer(false)}
+            maskClosable={false}
+            open={true}
+            footer={(
+              <Space className="j-b-flex">
+                <Button
+                  onClick={() => {
+                    resetList()
+                    setDrawer(false)
+                  }}
+                >
+                  清空
+                </Button>
+                <Button
+                  onClick={() => {
+                    setPage(1)
+                    setRefresh(!refresh)
+                    setDrawer(false)
+                  }}
+                  type="primary"
+                >
+                  筛选
+                </Button>
+              </Space>
+            )}
+            width={360}
+          >
+            <div className="float-left">
+              <Input
+                value={order_id}
+                onChange={(e) => {
+                  setOrderId(e.target.value)
                 }}
-              >
-                清空
-              </Button>
-              <Button
-                onClick={() => {
-                  setPage(1);
-                  setRefresh(!refresh);
-                  setDrawer(false);
+                allowClear
+                placeholder="订单编号"
+              />
+              <Input
+                value={goods_name}
+                onChange={(e) => {
+                  setGoodsName(e.target.value)
                 }}
-                type="primary"
-              >
-                筛选
-              </Button>
-            </Space>
-          }
-          width={360}
-        >
-          <div className="float-left">
-            <Input
-              value={order_id}
-              onChange={(e) => {
-                setOrderId(e.target.value);
-              }}
-              allowClear
-              placeholder="订单编号"
-            />
-            <Input
-              value={goods_name}
-              onChange={(e) => {
-                setGoodsName(e.target.value);
-              }}
-              allowClear
-              style={{ marginTop: 20 }}
-              placeholder="商品全称"
-            />
-            <Select
-              style={{ width: "100%", marginTop: 20 }}
-              value={payment}
-              onChange={(e) => {
-                setPayment(e);
-              }}
-              allowClear
-              placeholder="支付渠道"
-              options={payments}
-            />
-            <Select
-              style={{ width: "100%", marginTop: 20 }}
-              value={is_refund}
-              onChange={(e) => {
-                setIsRefund(e);
-              }}
-              allowClear
-              placeholder="退款方式"
-              options={refunds}
-            />
-            <RangePicker
-              disabledDate={disabledDate}
-              format={"YYYY-MM-DD"}
-              value={createdAts}
-              style={{ marginTop: 20 }}
-              onChange={(date, dateString) => {
-                dateString[1] += " 23:59:59";
-                setCreatedAt(dateString);
-                setCreatedAts(date);
-              }}
-              placeholder={["订单添加-开始时间", "订单添加-结束时间"]}
-            />
-          </div>
-        </Drawer>
-      ) : null}
+                allowClear
+                style={{ marginTop: 20 }}
+                placeholder="商品全称"
+              />
+              <Select
+                style={{ width: '100%', marginTop: 20 }}
+                value={payment}
+                onChange={(e) => {
+                  setPayment(e)
+                }}
+                allowClear
+                placeholder="支付渠道"
+                options={payments}
+              />
+              <Select
+                style={{ width: '100%', marginTop: 20 }}
+                value={is_refund}
+                onChange={(e) => {
+                  setIsRefund(e)
+                }}
+                allowClear
+                placeholder="退款方式"
+                options={refunds}
+              />
+              <RangePicker
+                disabledDate={disabledDate}
+                format="YYYY-MM-DD"
+                value={createdAts}
+                style={{ marginTop: 20 }}
+                onChange={(date, dateString) => {
+                  dateString[1] += ' 23:59:59'
+                  setCreatedAt(dateString)
+                  setCreatedAts(date)
+                }}
+                placeholder={['订单添加-开始时间', '订单添加-结束时间']}
+              />
+            </div>
+          </Drawer>
+          )
+        : null}
     </div>
-  );
-};
+  )
+}
 
-export default OrderPage;
+export default OrderPage
