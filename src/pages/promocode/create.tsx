@@ -1,46 +1,46 @@
-import { useState, useEffect } from "react";
-import { message, DatePicker, Form, Button, Input, Space } from "antd";
-import { useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import { promocode } from "../../api/index";
-import { titleAction } from "../../store/user/loginUserSlice";
-import { BackBartment, HelperText } from "../../components";
-import moment from "moment";
+import { useEffect, useState } from 'react'
+import { Button, DatePicker, Form, Input, Space, message } from 'antd'
+import { useNavigate } from 'react-router-dom'
+import { useDispatch, useSelector } from 'react-redux'
+import moment from 'moment'
+import { promocode } from '../../api/index'
+import { titleAction } from '../../store/user/loginUserSlice'
+import { BackBartment, HelperText } from '../../components'
 
-const PromoCodeCreatePage = () => {
-  const [form] = Form.useForm();
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const [loading, setLoading] = useState<boolean>(false);
+function PromoCodeCreatePage() {
+  const [form] = Form.useForm()
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
+  const [loading, setLoading] = useState<boolean>(false)
 
   useEffect(() => {
-    document.title = "新建优惠码";
-    dispatch(titleAction("新建优惠码"));
-  }, []);
+    document.title = '新建优惠码'
+    dispatch(titleAction('新建优惠码'))
+  }, [])
 
   const onFinish = (values: any) => {
-    if (loading) {
-      return;
-    }
-    setLoading(true);
-    values.expired_at = moment(new Date(values.expired_at)).format(
-      "YYYY-MM-DD HH:mm"
-    );
+    if (loading)
+      return
+
+    setLoading(true)
+    values.expiredTime = moment(new Date(values.expiredTime)).format(
+      'YYYY-MM-DD HH:mm:ss',
+    )
     promocode
       .create(values)
       .then((res: any) => {
-        setLoading(false);
-        message.success("保存成功！");
-        navigate(-1);
+        setLoading(false)
+        message.success('保存成功！')
+        navigate(-1)
       })
       .catch((e) => {
-        setLoading(false);
-      });
-  };
+        setLoading(false)
+      })
+  }
 
   const onFinishFailed = (errorInfo: any) => {
-    console.log("Failed:", errorInfo);
-  };
+    console.log('Failed:', errorInfo)
+  }
 
   return (
     <div className="geekedu-main-body">
@@ -58,13 +58,13 @@ const PromoCodeCreatePage = () => {
         >
           <Form.Item
             label="优惠码"
-            name="code"
-            rules={[{ required: true, message: "请输入优惠码!" }]}
+            name="couponCode"
+            rules={[{ required: true, message: '请输入优惠码!' }]}
           >
             <Space align="baseline" style={{ height: 32 }}>
               <Form.Item
-                name="code"
-                rules={[{ required: true, message: "请输入优惠码!" }]}
+                name="couponCode"
+                rules={[{ required: true, message: '请输入优惠码!' }]}
               >
                 <Input
                   style={{ width: 300 }}
@@ -78,14 +78,59 @@ const PromoCodeCreatePage = () => {
             </Space>
           </Form.Item>
 
+          <Form.Item
+            label="优惠码数量"
+            name="couponTotal"
+            rules={[{ required: true, message: '请输入优惠码数量!' }]}
+          >
+            <Space align="baseline" style={{ height: 32 }}>
+              <Form.Item
+                name="couponTotal"
+                rules={[{ required: true, message: '请输入优惠码数量!' }]}
+              >
+                <Input
+                  style={{ width: 300 }}
+                  type="number"
+                  placeholder="请输入优惠码数量"
+                  allowClear
+                />
+              </Form.Item>
+              <div className="ml-10">
+                <HelperText text="请勿使用大写U或者小写u开头"></HelperText>
+              </div>
+            </Space>
+          </Form.Item>
+
+          <Form.Item
+            label="优惠码描述"
+            name="couponDesc"
+            rules={[{ required: true, message: '请输入优惠码描述!' }]}
+          >
+            <Space align="baseline" style={{ height: 32 }}>
+              <Form.Item
+                name="couponDesc"
+                rules={[{ required: true, message: '请输入优惠码描述!' }]}
+              >
+                <Input
+                  style={{ width: 300 }}
+                  placeholder="请输入优惠码描述"
+                  allowClear
+                />
+              </Form.Item>
+              <div className="ml-10">
+                <HelperText text="请勿使用大写U或者小写u开头"></HelperText>
+              </div>
+            </Space>
+          </Form.Item>
+
           <Form.Item label="到期时间" required={true}>
             <Space align="baseline" style={{ height: 32 }}>
               <Form.Item
-                name="expired_at"
-                rules={[{ required: true, message: "请选择到期时间!" }]}
+                name="expiredTime"
+                rules={[{ required: true, message: '请选择到期时间!' }]}
               >
                 <DatePicker
-                  format="YYYY-MM-DD HH:mm"
+                  format="YYYY-MM-DD HH:mm:ss"
                   style={{ width: 300 }}
                   showTime
                   placeholder="请选择到期时间"
@@ -98,13 +143,13 @@ const PromoCodeCreatePage = () => {
           </Form.Item>
           <Form.Item
             label="面值"
-            name="invited_user_reward"
-            rules={[{ required: true, message: "请输入面值!" }]}
+            name="couponPrice"
+            rules={[{ required: true, message: '请输入面值!' }]}
           >
             <Space align="baseline" style={{ height: 32 }}>
               <Form.Item
-                name="invited_user_reward"
-                rules={[{ required: true, message: "请输入面值!" }]}
+                name="couponPrice"
+                rules={[{ required: true, message: '请输入面值!' }]}
               >
                 <Input
                   type="number"
@@ -119,14 +164,36 @@ const PromoCodeCreatePage = () => {
             </Space>
           </Form.Item>
           <Form.Item
-            label="可使用次数"
-            name="use_times"
-            rules={[{ required: true, message: "请输入可使用次数!" }]}
+            label="最低使用金额"
+            name="couponLimit"
+            rules={[{ required: true, message: '请输入最低使用金额!' }]}
           >
             <Space align="baseline" style={{ height: 32 }}>
               <Form.Item
-                name="use_times"
-                rules={[{ required: true, message: "请输入可使用次数!" }]}
+                name="couponLimit"
+                rules={[{ required: true, message: '请输入最低使用金额!' }]}
+              >
+                <Input
+                  type="number"
+                  style={{ width: 300 }}
+                  placeholder="请输入最低使用金额"
+                  allowClear
+                />
+              </Form.Item>
+              <div className="ml-10">
+                <HelperText text="请输入整数。不支持小数。使用优惠码满足的最低金额"></HelperText>
+              </div>
+            </Space>
+          </Form.Item>
+          <Form.Item
+            label="可使用次数"
+            name="useLimit"
+            rules={[{ required: true, message: '请输入可使用次数!' }]}
+          >
+            <Space align="baseline" style={{ height: 32 }}>
+              <Form.Item
+                name="useLimit"
+                rules={[{ required: true, message: '请输入可使用次数!' }]}
               >
                 <Input
                   type="number"
@@ -161,6 +228,6 @@ const PromoCodeCreatePage = () => {
         </div>
       </div>
     </div>
-  );
-};
-export default PromoCodeCreatePage;
+  )
+}
+export default PromoCodeCreatePage

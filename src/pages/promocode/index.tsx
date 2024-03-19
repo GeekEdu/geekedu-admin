@@ -1,216 +1,239 @@
-import { useState, useEffect } from "react";
+/*
+ * @Author: Poison02 2069820192@qq.com
+ * @Date: 2024-01-19 22:53:24
+ * @LastEditors: Poison02 2069820192@qq.com
+ * @LastEditTime: 2024-03-19 14:39:08
+ * @FilePath: /geekedu-admin/src/pages/promocode/index.tsx
+ * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+ */
+import { useEffect, useState } from 'react'
 import {
-  Table,
-  Modal,
-  message,
+  Button,
+  DatePicker,
   Drawer,
   Input,
-  Button,
-  Tag,
-  DatePicker,
+  Modal,
   Space,
-} from "antd";
-import { useNavigate } from "react-router-dom";
-import type { ColumnsType } from "antd/es/table";
-import { useDispatch, useSelector } from "react-redux";
-import { promocode } from "../../api/index";
-import { titleAction } from "../../store/user/loginUserSlice";
-import { PerButton, OptionBar } from "../../components";
-import { dateFormat } from "../../utils/index";
-import { ExclamationCircleFilled } from "@ant-design/icons";
-import filterIcon from "../../assets/img/icon-filter.png";
-import filterHIcon from "../../assets/img/icon-filter-h.png";
-const { confirm } = Modal;
-const { RangePicker } = DatePicker;
+  Table,
+  Tag,
+  message,
+} from 'antd'
+import { useNavigate } from 'react-router-dom'
+import type { ColumnsType } from 'antd/es/table'
+import { useDispatch, useSelector } from 'react-redux'
+import { ExclamationCircleFilled } from '@ant-design/icons'
+import { promocode } from '../../api/index'
+import { titleAction } from '../../store/user/loginUserSlice'
+import { OptionBar, PerButton } from '../../components'
+import { dateFormat } from '../../utils/index'
+import filterIcon from '../../assets/img/icon-filter.png'
+import filterHIcon from '../../assets/img/icon-filter-h.png'
+
+const { confirm } = Modal
+const { RangePicker } = DatePicker
 
 interface DataType {
-  id: React.Key;
-  used_times: number;
-  expired_at: string;
-  created_at: string;
+  couponId: React.Key
+  couponTotal: number
+  expiredTime: string
+  createdTime: string
 }
 
-const PromoCodePage = () => {
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const [loading, setLoading] = useState<boolean>(false);
-  const [list, setList] = useState<any>([]);
-  const [page, setPage] = useState(1);
-  const [size, setSize] = useState(10);
-  const [total, setTotal] = useState(0);
-  const [refresh, setRefresh] = useState(false);
-  const [key, setKey] = useState<string>("");
-  const [user_id, setUserId] = useState("");
-  const [created_at, setCreatedAt] = useState<any>([]);
-  const [expired_at, setExpiredAt] = useState<any>([]);
-  const [createdAts, setCreatedAts] = useState<any>([]);
-  const [expiredAts, setExpiredAts] = useState<any>([]);
-  const [selectedRowKeys, setSelectedRowKeys] = useState<any>([]);
-  const [drawer, setDrawer] = useState(false);
-  const [showStatus, setShowStatus] = useState(false);
+function PromoCodePage() {
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
+  const [loading, setLoading] = useState<boolean>(false)
+  const [list, setList] = useState<any>([])
+  const [page, setPage] = useState(1)
+  const [size, setSize] = useState(10)
+  const [total, setTotal] = useState(0)
+  const [refresh, setRefresh] = useState(false)
+  const [key, setKey] = useState<string>('')
+  const [user_id, setUserId] = useState('')
+  const [created_at, setCreatedAt] = useState<any>([])
+  const [expired_at, setExpiredAt] = useState<any>([])
+  const [createdAts, setCreatedAts] = useState<any>([])
+  const [expiredAts, setExpiredAts] = useState<any>([])
+  const [selectedRowKeys, setSelectedRowKeys] = useState<any>([])
+  const [drawer, setDrawer] = useState(false)
+  const [showStatus, setShowStatus] = useState(false)
 
   useEffect(() => {
-    document.title = "优惠码";
-    dispatch(titleAction("优惠码"));
-  }, []);
+    document.title = '优惠码'
+    dispatch(titleAction('优惠码'))
+  }, [])
 
   useEffect(() => {
-    getData();
-  }, [page, size, refresh]);
+    getData()
+  }, [page, size, refresh])
 
   useEffect(() => {
     if (
-      (created_at && created_at.length > 0) ||
-      (expired_at && expired_at.length > 0) ||
-      user_id ||
-      key
-    ) {
-      setShowStatus(true);
-    } else {
-      setShowStatus(false);
-    }
-  }, [created_at, expired_at, user_id, key]);
+      (created_at && created_at.length > 0)
+      || (expired_at && expired_at.length > 0)
+      || user_id
+      || key
+    )
+      setShowStatus(true)
+    else
+      setShowStatus(false)
+  }, [created_at, expired_at, user_id, key])
 
   const getData = () => {
-    if (loading) {
-      return;
-    }
-    setLoading(true);
+    if (loading)
+      return
+
+    setLoading(true)
     promocode
       .list({
-        page: page,
-        size: size,
-        user_id: user_id,
-        key: key,
-        created_at: created_at,
-        expired_at: expired_at,
+        pageNum: page,
+        pageSize: size,
+        keywords: key,
       })
       .then((res: any) => {
-        setList(res.data.data);
-        setTotal(res.data.total);
-        setLoading(false);
+        setList(res.data.data)
+        setTotal(res.data.total)
+        setLoading(false)
       })
       .catch((e) => {
-        setLoading(false);
-      });
-  };
+        setLoading(false)
+      })
+  }
 
   const destorymulti = () => {
     if (selectedRowKeys.length === 0) {
-      message.error("请选择需要操作的数据");
-      return;
+      message.error('请选择需要操作的数据')
+      return
     }
     confirm({
-      title: "操作确认",
+      title: '操作确认',
       icon: <ExclamationCircleFilled />,
-      content: "确认删除选中的优惠码？",
+      content: '确认删除选中的优惠码？',
       centered: true,
-      okText: "确认",
-      cancelText: "取消",
+      okText: '确认',
+      cancelText: '取消',
       onOk() {
-        if (loading) {
-          return;
-        }
-        setLoading(true);
+        if (loading)
+          return
+
+        setLoading(true)
         promocode
           .destroyMulti({
             ids: selectedRowKeys,
           })
           .then(() => {
-            message.success("成功");
-            resetList();
-            setLoading(false);
+            message.success('成功')
+            resetList()
+            setLoading(false)
           })
           .catch((e) => {
-            setLoading(false);
-          });
+            setLoading(false)
+          })
       },
       onCancel() {
-        console.log("Cancel");
+        console.log('Cancel')
       },
-    });
-  };
+    })
+  }
 
   const resetList = () => {
-    setPage(1);
-    setSize(10);
-    setList([]);
-    setSelectedRowKeys([]);
-    setKey("");
-    setUserId("");
-    setCreatedAts([]);
-    setExpiredAt([]);
-    setExpiredAts([]);
-    setCreatedAt([]);
-    setRefresh(!refresh);
-  };
+    setPage(1)
+    setSize(10)
+    setList([])
+    setSelectedRowKeys([])
+    setKey('')
+    setUserId('')
+    setCreatedAts([])
+    setExpiredAt([])
+    setExpiredAts([])
+    setCreatedAt([])
+    setRefresh(!refresh)
+  }
 
   const paginationProps = {
-    current: page, //当前页码
+    current: page, // 当前页码
     pageSize: size,
-    total: total, // 总条数
+    total, // 总条数
     onChange: (page: number, pageSize: number) =>
-      handlePageChange(page, pageSize), //改变页码的函数
+      handlePageChange(page, pageSize), // 改变页码的函数
     showSizeChanger: true,
-  };
+  }
 
   const handlePageChange = (page: number, pageSize: number) => {
-    setPage(page);
-    setSize(pageSize);
-  };
+    setPage(page)
+    setSize(pageSize)
+  }
 
   const columns: ColumnsType<DataType> = [
     {
-      title: "ID",
+      title: 'ID',
       width: 120,
-      render: (_, record: any) => <span>{record.id}</span>,
+      render: (_, record: any) => <span>{record.couponId}</span>,
     },
     {
-      title: "优惠码",
+      title: '优惠码',
       render: (_, record: any) => (
         <>
-          <div className="mb-10">{record.code}</div>
-          <div>面值：{record.invited_user_reward}元</div>
-          <div>奖励：{record.invite_user_reward}元</div>
+          <div className="mb-10">{record.couponCode}</div>
+          <div>
+            面值：
+            {record.couponPrice}
+            元
+          </div>
+          <div>
+            最低消费：
+            {record.couponLimit}
+            元
+          </div>
         </>
       ),
     },
     {
-      title: "可使用次数",
+      title: '可使用次数',
       width: 300,
       render: (_, record: any) => (
         <>
-          {record.use_times === 0 && <Tag color="error">不限制</Tag>}
-          {record.use_times !== 0 && <Tag>{record.use_times || 0}次</Tag>}
+          {record.useLimit === 0 && <Tag color="error">不限制</Tag>}
+          {record.useLimit !== 0 && (
+            <Tag>
+              {record.useLimit || 0}
+              次
+            </Tag>
+          )}
         </>
       ),
     },
     {
-      title: "已使用次数",
+      title: '库存',
       width: 150,
-      dataIndex: "used_times",
-      render: (used_times: number) => <span>{used_times || 0}次</span>,
+      dataIndex: 'couponTotal',
+      render: (couponTotal: number) => (
+        <span>
+          {couponTotal || 0}
+          次
+        </span>
+      ),
     },
     {
-      title: "过期时间",
+      title: '过期时间',
       width: 200,
-      dataIndex: "expired_at",
-      render: (expired_at: string) => <span>{dateFormat(expired_at)}</span>,
+      dataIndex: 'expiredTime',
+      render: (expiredTime: string) => <span>{dateFormat(expiredTime)}</span>,
     },
     {
-      title: "添加时间",
+      title: '添加时间',
       width: 200,
-      dataIndex: "created_at",
-      render: (created_at: string) => <span>{dateFormat(created_at)}</span>,
+      dataIndex: 'createdTime',
+      render: (createdTime: string) => <span>{dateFormat(createdTime)}</span>,
     },
-  ];
+  ]
 
   const rowSelection = {
-    selectedRowKeys: selectedRowKeys,
+    selectedRowKeys,
     onChange: (selectedRowKeys: React.Key[], selectedRows: DataType[]) => {
-      setSelectedRowKeys(selectedRowKeys);
+      setSelectedRowKeys(selectedRowKeys)
     },
-  };
+  }
 
   return (
     <div className="geekedu-main-body">
@@ -222,7 +245,7 @@ const PromoCodePage = () => {
             class=""
             icon={null}
             p="promoCode.store"
-            onClick={() => navigate("/createcode")}
+            onClick={() => navigate('/createcode')}
             disabled={null}
           />
           <PerButton
@@ -231,7 +254,7 @@ const PromoCodePage = () => {
             class="ml-10"
             icon={null}
             p="promoCode.generator"
-            onClick={() => navigate("/createmulticode")}
+            onClick={() => navigate('/createmulticode')}
             disabled={null}
           />
           <PerButton
@@ -240,7 +263,7 @@ const PromoCodePage = () => {
             class="ml-10"
             icon={null}
             p="promoCode.store"
-            onClick={() => navigate("/order/code-import")}
+            onClick={() => navigate('/order/code-import')}
             disabled={null}
           />
           <PerButton
@@ -257,7 +280,7 @@ const PromoCodePage = () => {
           <Input
             value={key}
             onChange={(e) => {
-              setKey(e.target.value);
+              setKey(e.target.value)
             }}
             allowClear
             style={{ width: 150 }}
@@ -270,9 +293,9 @@ const PromoCodePage = () => {
             className="ml-10"
             type="primary"
             onClick={() => {
-              setPage(1);
-              setRefresh(!refresh);
-              setDrawer(false);
+              setPage(1)
+              setRefresh(!refresh)
+              setDrawer(false)
             }}
           >
             筛选
@@ -299,88 +322,90 @@ const PromoCodePage = () => {
       <div className="float-left">
         <Table
           rowSelection={{
-            type: "checkbox",
+            type: 'checkbox',
             ...rowSelection,
           }}
           loading={loading}
           columns={columns}
           dataSource={list}
-          rowKey={(record) => record.id}
+          rowKey={record => record.couponId}
           pagination={paginationProps}
         />
       </div>
-      {drawer ? (
-        <Drawer
-          title="更多筛选"
-          onClose={() => setDrawer(false)}
-          maskClosable={false}
-          open={true}
-          footer={
-            <Space className="j-b-flex">
-              <Button
-                onClick={() => {
-                  resetList();
-                  setDrawer(false);
+      {drawer
+        ? (
+          <Drawer
+            title="更多筛选"
+            onClose={() => setDrawer(false)}
+            maskClosable={false}
+            open={true}
+            footer={(
+              <Space className="j-b-flex">
+                <Button
+                  onClick={() => {
+                    resetList()
+                    setDrawer(false)
+                  }}
+                >
+                  清空
+                </Button>
+                <Button
+                  onClick={() => {
+                    setPage(1)
+                    setRefresh(!refresh)
+                    setDrawer(false)
+                  }}
+                  type="primary"
+                >
+                  筛选
+                </Button>
+              </Space>
+            )}
+            width={360}
+          >
+            <div className="float-left">
+              <Input
+                value={key}
+                onChange={(e) => {
+                  setKey(e.target.value)
                 }}
-              >
-                清空
-              </Button>
-              <Button
-                onClick={() => {
-                  setPage(1);
-                  setRefresh(!refresh);
-                  setDrawer(false);
+                allowClear
+                placeholder="优惠码"
+              />
+              <Input
+                value={user_id}
+                onChange={(e) => {
+                  setUserId(e.target.value)
                 }}
-                type="primary"
-              >
-                筛选
-              </Button>
-            </Space>
-          }
-          width={360}
-        >
-          <div className="float-left">
-            <Input
-              value={key}
-              onChange={(e) => {
-                setKey(e.target.value);
-              }}
-              allowClear
-              placeholder="优惠码"
-            />
-            <Input
-              value={user_id}
-              onChange={(e) => {
-                setUserId(e.target.value);
-              }}
-              allowClear
-              style={{ marginTop: 20 }}
-              placeholder="学员ID"
-            />
-            <RangePicker
-              format={"YYYY-MM-DD"}
-              value={expiredAts}
-              style={{ marginTop: 20 }}
-              onChange={(date, dateString) => {
-                setExpiredAt(dateString);
-                setExpiredAts(date);
-              }}
-              placeholder={["过期时间-开始", "过期时间-结束"]}
-            />
-            <RangePicker
-              format={"YYYY-MM-DD"}
-              value={createdAts}
-              style={{ marginTop: 20 }}
-              onChange={(date, dateString) => {
-                setCreatedAt(dateString);
-                setCreatedAts(date);
-              }}
-              placeholder={["添加时间-开始", "添加时间-结束"]}
-            />
-          </div>
-        </Drawer>
-      ) : null}
+                allowClear
+                style={{ marginTop: 20 }}
+                placeholder="学员ID"
+              />
+              <RangePicker
+                format="YYYY-MM-DD"
+                value={expiredAts}
+                style={{ marginTop: 20 }}
+                onChange={(date, dateString) => {
+                  setExpiredAt(dateString)
+                  setExpiredAts(date)
+                }}
+                placeholder={['过期时间-开始', '过期时间-结束']}
+              />
+              <RangePicker
+                format="YYYY-MM-DD"
+                value={createdAts}
+                style={{ marginTop: 20 }}
+                onChange={(date, dateString) => {
+                  setCreatedAt(dateString)
+                  setCreatedAts(date)
+                }}
+                placeholder={['添加时间-开始', '添加时间-结束']}
+              />
+            </div>
+          </Drawer>
+          )
+        : null}
     </div>
-  );
-};
-export default PromoCodePage;
+  )
+}
+export default PromoCodePage
