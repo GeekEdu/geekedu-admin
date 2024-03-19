@@ -33,8 +33,8 @@ const { RangePicker } = DatePicker
 
 interface DataType {
   id: React.Key
-  charge: number
-  updated_at: string
+  amount: number
+  createdTime: string
 }
 
 function OrderPage() {
@@ -66,19 +66,19 @@ function OrderPage() {
       key: '',
     },
     {
-      label: '已支付',
+      label: '已下单已支付',
       key: '3',
     },
     {
-      label: '已退款',
+      label: '已下单已退款',
       key: '4',
     },
     {
-      label: '未支付',
+      label: '已下单未支付',
       key: '1',
     },
     {
-      label: '已取消',
+      label: '已下单已取消',
       key: '2',
     },
   ])
@@ -137,19 +137,19 @@ function OrderPage() {
         key: '',
       },
       {
-        label: `已支付(${Number(countMap[3])})`,
+        label: `已下单已支付(${Number(countMap[3])})`,
         key: '3',
       },
       {
-        label: `已退款(${Number(countMap[4])})`,
+        label: `已下单已退款(${Number(countMap[4])})`,
         key: '4',
       },
       {
-        label: `未支付(${Number(countMap[1])})`,
+        label: `已下单未支付(${Number(countMap[1])})`,
         key: '1',
       },
       {
-        label: `已取消(${Number(countMap[2])})`,
+        label: `已下单已取消(${Number(countMap[2])})`,
         key: '2',
       },
     ]
@@ -236,7 +236,7 @@ function OrderPage() {
     {
       title: 'ID',
       width: 120,
-      render: (_, record: any) => <span>{record.id}</span>,
+      render: (_, record: any) => <span>{record.orderId}</span>,
     },
     {
       title: '学员',
@@ -271,11 +271,11 @@ function OrderPage() {
     {
       title: '支付金额',
       width: 150,
-      dataIndex: 'charge',
-      render: (charge: number) => (
+      dataIndex: 'amount',
+      render: (amount: number) => (
         <span>
           ¥
-          {charge}
+          {amount}
         </span>
       ),
     },
@@ -311,25 +311,25 @@ function OrderPage() {
       width: 150,
       render: (_, record: any) => (
         <>
-          {record.orderStatusText === '已支付' && (
+          {record.orderStatusText === '已下单已支付' && (
             <span className="c-green">
               ·
               {record.orderStatusText}
             </span>
           )}
-          {record.orderStatusText === '未支付' && (
+          {record.orderStatusText === '已下单未支付' && (
             <span className="c-red">
               ·
               {record.orderStatusText}
             </span>
           )}
-          {record.orderStatusText === '已退款' && (
+          {record.orderStatusText === '已下单已退款' && (
             <span className="c-yellow">
               ·
               {record.orderStatusText}
             </span>
           )}
-          {record.orderStatusText === '已取消' && (
+          {record.orderStatusText === '已下单已取消' && (
             <span className="c-gray">
               ·
               {record.orderStatusText}
@@ -393,7 +393,7 @@ function OrderPage() {
               icon={null}
               p="order.detail"
               onClick={() => {
-                navigate(`/order/detail?id=${record.id}`)
+                navigate(`/order/detail?id=${record.orderId}`)
               }}
               disabled={null}
             />
@@ -445,20 +445,20 @@ function OrderPage() {
       payment,
     }
     order.list(params).then((res: any) => {
-      if (res.data.orders.total === 0) {
+      if (res.data.data.total === 0) {
         message.error('数据为空')
         setLoading(false)
         return
       }
       let status
       if (Number(status) === 3)
-        status = '已支付'
+        status = '已下单已支付'
       else if (Number(status) === 4)
-        status = '已退款'
+        status = '已下单已退款'
       else if (Number(status) === 1)
-        status = '未支付'
+        status = '已下单未支付'
       else if (Number(status) === 2)
-        status = '已取消'
+        status = '已下单已取消'
       else
         status = '全部'
 
@@ -478,18 +478,18 @@ function OrderPage() {
           '订单创建时间',
         ],
       ]
-      res.data.orders.data.forEach((item: any) => {
+      res.data.data.data.forEach((item: any) => {
         data.push([
-          item.id,
-          item.user_id,
-          users[item.user_id] ? users[item.user_id].nick_name : '用户已删除',
-          item.goods[0] ? item.goods[0].goods_name : '商品已删除',
-          `${item.charge}元`,
-          item.payment_text,
-          item.status_text,
-          item.is_refund === 0 ? '-' : showRefund(item.refund),
-          item.updated_at
-            ? moment(item.updated_at).format('YYYY-MM-DD HH:mm')
+          item.orderId,
+          item.userId,
+          users[item.userId] ? users[item.userId].name : '用户已删除',
+          item.goods ? item.goods.goodsName : '商品已删除',
+          `${item.amount}元`,
+          item.payTypeText,
+          item.orderStatusText,
+          item.isRefund === false ? '-' : showRefund(item.refund),
+          item.createdTime
+            ? moment(item.createdTime).format('YYYY-MM-DD HH:mm:ss')
             : '',
         ])
       })
@@ -692,11 +692,10 @@ function OrderPage() {
               />
               <RangePicker
                 disabledDate={disabledDate}
-                format="YYYY-MM-DD"
+                format="YYYY-MM-DD HH:mm:ss"
                 value={createdAts}
                 style={{ marginTop: 20 }}
                 onChange={(date, dateString) => {
-                  dateString[1] += ' 23:59:59'
                   setCreatedAt(dateString)
                   setCreatedAts(date)
                 }}

@@ -22,7 +22,7 @@ export function dateFormat(dateStr: string) {
   if (!dateStr)
     return ''
 
-  return moment(dateStr).format('YYYY-MM-DD HH:mm')
+  return moment(dateStr).format('YYYY-MM-DD HH:mm:ss')
 }
 
 export function dateWholeFormat(dateStr: string) {
