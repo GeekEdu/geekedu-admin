@@ -123,7 +123,7 @@ function CourseUpdatePage() {
       message.error('课程未设置免费时价格应该大于0')
       return
     }
-    values.render_desc = values.intro
+    values.intro
     values.groundingTime = moment(new Date(values.groundingTime)).format(
       'YYYY-MM-DD HH:mm:ss',
     )

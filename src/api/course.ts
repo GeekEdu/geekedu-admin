@@ -12,8 +12,9 @@ export function getCourseCategory(params: any) {
   return client.get(`/label/api/category/getCategoryList`, params)
 }
 
+// 新增录播课
 export function store(params: any) {
-  return client.post('/backend/api/v1/course', params)
+  return client.post('/course/api/add', params)
 }
 
 // 根据id获取课程明细
@@ -26,8 +27,9 @@ export function destroy(id: number) {
   return client.destroy(`/course/api/delete/${id}`)
 }
 
+// 更新课程
 export function update(id: number, params: any) {
-  return client.put(`/backend/api/v1/course/${id}`, params)
+  return client.put(`/course/api/update/${id}`, params)
 }
 
 // 获取播放地址
