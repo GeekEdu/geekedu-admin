@@ -435,11 +435,11 @@ function LivePage() {
             onClick={() => navigate('/live/course/comment')}
             disabled={null}
           />
-          <OptionBar
+          {/* <OptionBar
             text="直播服务配置"
             value="/system/liveConfig?referer=%2Flive%2Fcourse%2Findex"
           >
-          </OptionBar>
+          </OptionBar> */}
         </div>
         <div className="d-flex">
           <Input
