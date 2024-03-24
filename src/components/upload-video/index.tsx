@@ -157,7 +157,7 @@ export const UploadVideoDialog: React.FC<PropInterface> = ({
       width: 100,
       fixed: 'right',
       render: (_, record: any) =>
-        record.storage_driver === 'local'
+        record.mediaSource === 'local'
           ? (
             <PerButton
               type="link"
@@ -166,7 +166,7 @@ export const UploadVideoDialog: React.FC<PropInterface> = ({
               icon={null}
               p="addons.LocalUpload.video.destroy"
               onClick={() => {
-                destoryLocal(record.storage_file_id)
+                destoryLocal(record.mediaId)
               }}
               disabled={null}
             />

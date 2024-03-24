@@ -83,9 +83,9 @@ function CourseVideoUpdatePage() {
       chapterId: data.chapterId === 0 ? null : data.chapterId,
       isShow: !data.isShow,
       banDrag: data.banDrag,
-      aliyun_video_id: data?.aliyun_video_id,
-      videoLink: data.videoLink,
-      tencentId: data.tencentId,
+      // aliyun_video_id: data?.aliyun_video_id,
+      videoId: data.videoId,
+      tencentVideoId: data.tencentId,
       groundingTime: dayjs(data.groundingTime, 'YYYY-MM-DD HH:mm:ss'),
     })
     setDuration(data.duration)
@@ -111,13 +111,13 @@ function CourseVideoUpdatePage() {
     const res: any = await course.detail(cid)
     const data = res.data
     setIsFree(data.isFree)
-    if (data.isFree === 1) {
+    if (data.isFree) {
       setCharge(0)
       setFreeSeconds(0)
       form.setFieldsValue({ freeSeconds: 0 })
     }
     else {
-      setCharge(data.charge)
+      setCharge(data.price)
     }
   }
 
@@ -125,7 +125,7 @@ function CourseVideoUpdatePage() {
     if (loading)
       return
 
-    if (!values.videoLink && !values.aliyun_video_id && !values.tencentId) {
+    if (!values.videoId && !values.tencentVideoId) {
       message.error('请上传课程视频')
       return
     }
@@ -141,8 +141,8 @@ function CourseVideoUpdatePage() {
     values.groundingTime = moment(new Date(values.groundingTime)).format(
       'YYYY-MM-DD HH:mm:ss',
     )
-    values.charge = charge
-    values.course_id = cid
+    values.price = charge
+    values.courseId = cid
     values.freeSeconds = Number(freeSeconds)
     values.duration = Number(duration)
     setLoading(true)
@@ -264,7 +264,6 @@ function CourseVideoUpdatePage() {
                     value={freeSeconds}
                     disabled={false}
                     onChange={(val: number) => {
-                      console.log(val)
                       setFreeSeconds(val)
                       form.setFieldsValue({ freeSeconds: val })
                     }}
@@ -340,15 +339,15 @@ function CourseVideoUpdatePage() {
               </Space>
             </Form.Item>
 
-            <Form.Item label="阿里云视频文件ID" name="aliyun_video_id">
+            {/* <Form.Item label="阿里云视频文件ID" name="aliyun_video_id">
               <Input
                 style={{ width: 300 }}
                 placeholder="阿里云视频文件ID"
                 allowClear
               />
-            </Form.Item>
+            </Form.Item> */}
 
-            <Form.Item label="腾讯云视频文件ID" name="tencentId">
+            <Form.Item label="腾讯云视频文件ID" name="tencentVideoId">
               <Input
                 style={{ width: 300 }}
                 placeholder="腾讯云视频文件ID"
@@ -356,8 +355,8 @@ function CourseVideoUpdatePage() {
               />
             </Form.Item>
 
-            <Form.Item label="视频URL" name="url">
-              <Input style={{ width: 300 }} placeholder="视频URL" allowClear />
+            <Form.Item label="视频ID" name="videoId">
+              <Input style={{ width: 300 }} placeholder="视频ID" allowClear />
             </Form.Item>
           </div>
         </Form>
@@ -386,24 +385,24 @@ function CourseVideoUpdatePage() {
         onSuccess={(video: any) => {
           form.setFieldsValue({ duration: video.duration })
           setDuration(video.duration)
-          if (video.storage_driver === 'aliyun') {
+          if (video.mediaSource === 'aliyun') {
             form.setFieldsValue({
-              aliyun_video_id: video.storage_file_id,
-              tencentId: null,
-              videoLink: null,
+              aliyun_video_id: video.mediaId,
+              tencentVideoId: null,
+              videoId: null,
             })
             setTit(video.title)
           }
-          else if (video.storage_driver === 'tencent') {
+          else if (video.mediaSource === 'tencent') {
             form.setFieldsValue({
               aliyun_video_id: null,
-              tencentId: video.storage_file_id,
-              videoLink: null,
+              tencentVideoId: video.mediaId,
+              videoId: video.id,
             })
             setTit(video.title)
           }
-          else if (video.storage_driver === 'local') {
-            media.localVideoUrl(video.storage_file_id, {}).then((res: any) => {
+          else if (video.mediaSource === 'local') {
+            media.localVideoUrl(video.mediaId, {}).then((res: any) => {
               form.setFieldsValue({
                 aliyun_video_id: null,
                 tencentId: null,

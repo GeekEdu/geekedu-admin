@@ -415,7 +415,7 @@ function CoursePage() {
             onClick={() => navigate('/course/vod/video/comments')}
             disabled={null}
           />
-          <PerButton
+          {/* <PerButton
             type="primary"
             text="课时批量导入"
             class="ml-10"
@@ -423,12 +423,12 @@ function CoursePage() {
             p="video.store"
             onClick={() => navigate('/course/vod/video-import')}
             disabled={null}
-          />
-          <OptionBar
+          /> */}
+          {/* <OptionBar
             text="播放器配置"
             value="/system/playerConfig?referer=%2Fcourse%2Fvod%2Findex"
           >
-          </OptionBar>
+          </OptionBar> */}
         </div>
         {/* 搜索框 */}
         <div className="d-flex">

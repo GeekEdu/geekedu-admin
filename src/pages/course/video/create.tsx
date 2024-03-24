@@ -31,7 +31,7 @@ function CourseVideoCreatePage() {
   const [loading, setLoading] = useState<boolean>(false)
   const [resourceActive, setResourceActive] = useState<string>('base')
   const [chapters, setChapters] = useState<any>([])
-  const [isFree, setIsFree] = useState(1)
+  const [isFree, setIsFree] = useState(true)
   const [charge, setCharge] = useState(0)
   const [freeSeconds, setFreeSeconds] = useState(0)
   const [duration, setDuration] = useState(0)
@@ -73,7 +73,7 @@ function CourseVideoCreatePage() {
         const box: any = []
         for (let i = 0; i < chapters.length; i++) {
           box.push({
-            label: chapters[i].title,
+            label: chapters[i].name,
             value: chapters[i].id,
           })
         }
@@ -85,14 +85,14 @@ function CourseVideoCreatePage() {
   const getCourse = () => {
     course.detail(cid).then((res: any) => {
       const course = res.data
-      setIsFree(course.is_free)
-      if (course.is_free === 1) {
+      setIsFree(course.isFree)
+      if (course.isFree) {
         setCharge(0)
         setFreeSeconds(0)
-        form.setFieldsValue({ free_seconds: 0 })
+        form.setFieldsValue({ freeSeconds: 0 })
       }
       else {
-        setCharge(course.charge)
+        setCharge(course.price)
       }
     })
   }
@@ -101,25 +101,25 @@ function CourseVideoCreatePage() {
     if (loading)
       return
 
-    if (!values.url && !values.aliyun_video_id && !values.tencent_video_id) {
+    if (!values.url && !values.tencentVideoId) {
       message.error('请上传课程视频')
       return
     }
-    if (chapters.length > 0 && !values.chapter_id) {
+    if (chapters.length > 0 && !values.chapterId) {
       message.error('请选择所属章节')
       return
     }
-    if (values.is_show === 1)
-      values.is_show = 0
+    if (values.isShow)
+      values.isShow = false
     else
-      values.is_show = 1
+      values.isShow = true
 
-    values.published_at = moment(new Date(values.published_at)).format(
-      'YYYY-MM-DD HH:mm',
+    values.groundingTime = moment(new Date(values.groundingTime)).format(
+      'YYYY-MM-DD HH:mm:ss',
     )
-    values.charge = charge
-    values.course_id = cid
-    values.free_seconds = Number(freeSeconds)
+    values.price = charge
+    values.courseId = cid
+    values.freeSeconds = Number(freeSeconds)
     values.duration = Number(duration)
     setLoading(true)
     course
@@ -226,15 +226,15 @@ function CourseVideoCreatePage() {
                 </div>
               </Space>
             </Form.Item>
-            {isFree !== 1 && (
-              <Form.Item label="可试看时长" name="free_seconds">
+            {!isFree && (
+              <Form.Item label="可试看时长" name="freeSeconds">
                 <Space align="baseline" style={{ height: 32 }}>
                   <InputDuration
                     value={freeSeconds}
                     disabled={false}
                     onChange={(val: number) => {
                       setFreeSeconds(val)
-                      form.setFieldsValue({ free_seconds: val })
+                      form.setFieldsValue({ freeSeconds: val })
                     }}
                   >
                   </InputDuration>
@@ -244,9 +244,9 @@ function CourseVideoCreatePage() {
                 </Space>
               </Form.Item>
             )}
-            <Form.Item label="所属章节" name="chapter_id">
+            <Form.Item label="所属章节" name="chapterId">
               <Space align="baseline" style={{ height: 32 }}>
-                <Form.Item name="chapter_id">
+                <Form.Item name="chapterId">
                   <Select
                     style={{ width: 300 }}
                     allowClear
@@ -271,11 +271,11 @@ function CourseVideoCreatePage() {
             </Form.Item>
             <Form.Item
               label="上架时间"
-              name="published_at"
+              name="groundingTime"
               rules={[{ required: true, message: '请选择上架时间!' }]}
             >
               <DatePicker
-                format="YYYY-MM-DD HH:mm"
+                format="YYYY-MM-DD HH:mm:ss"
                 style={{ width: 300 }}
                 showTime
                 placeholder="请选择上架时间"
@@ -283,9 +283,9 @@ function CourseVideoCreatePage() {
             </Form.Item>
           </div>
           <div style={{ display: resourceActive === 'dev' ? 'block' : 'none' }}>
-            <Form.Item label="禁止快进播放" name="ban_drag">
+            <Form.Item label="禁止快进播放" name="banDrag">
               <Space align="baseline" style={{ height: 32 }}>
-                <Form.Item name="ban_drag" valuePropName="checked">
+                <Form.Item name="banDrag" valuePropName="checked">
                   <Switch onChange={onBanChange} />
                 </Form.Item>
                 <div className="ml-10">
@@ -293,9 +293,9 @@ function CourseVideoCreatePage() {
                 </div>
               </Space>
             </Form.Item>
-            <Form.Item label="隐藏课时" name="is_show">
+            <Form.Item label="隐藏课时" name="isShow">
               <Space align="baseline" style={{ height: 32 }}>
-                <Form.Item name="is_show" valuePropName="checked">
+                <Form.Item name="isShow" valuePropName="checked">
                   <Switch onChange={onShowChange} />
                 </Form.Item>
                 <div className="ml-10">
@@ -303,22 +303,22 @@ function CourseVideoCreatePage() {
                 </div>
               </Space>
             </Form.Item>
-            <Form.Item label="阿里云视频文件ID" name="aliyun_video_id">
+            {/* <Form.Item label="阿里云视频文件ID" name="aliyun_video_id">
               <Input
                 style={{ width: 300 }}
                 placeholder="阿里云视频文件ID"
                 allowClear
               />
-            </Form.Item>
-            <Form.Item label="腾讯云视频文件ID" name="tencent_video_id">
+            </Form.Item> */}
+            <Form.Item label="腾讯云视频文件ID" name="tencentVideoId">
               <Input
                 style={{ width: 300 }}
                 placeholder="腾讯云视频文件ID"
                 allowClear
               />
             </Form.Item>
-            <Form.Item label="视频URL" name="url">
-              <Input style={{ width: 300 }} placeholder="视频URL" allowClear />
+            <Form.Item label="视频ID" name="videoId">
+              <Input style={{ width: 300 }} placeholder="视频ID" allowClear />
             </Form.Item>
           </div>
         </Form>
@@ -347,36 +347,36 @@ function CourseVideoCreatePage() {
         onSuccess={(video: any) => {
           form.setFieldsValue({ duration: video.duration })
           setDuration(video.duration)
-          if (video.storage_driver === 'aliyun') {
+          if (video.mediaSource === 'aliyun') {
             if (!title) {
               form.setFieldsValue({
-                title: video.title.replace('.m3u8', '').replace('.mp4', ''),
+                title: video.mediaName.replace('.m3u8', '').replace('.mp4', ''),
               })
             }
             form.setFieldsValue({
-              aliyun_video_id: video.storage_file_id,
-              tencent_video_id: null,
-              url: null,
+              aliyunVideoId: video.mediaId,
+              tencentVideoId: null,
+              videoId: video.id,
             })
-            setTit(video.title)
+            setTit(video.mediaName)
           }
-          else if (video.storage_driver === 'tencent') {
+          else if (video.mediaSource === 'tencent') {
             if (!title) {
               form.setFieldsValue({
-                title: video.title.replace('.m3u8', '').replace('.mp4', ''),
+                title: video.mediaName.replace('.m3u8', '').replace('.mp4', ''),
               })
             }
             form.setFieldsValue({
               aliyun_video_id: null,
-              tencent_video_id: video.storage_file_id,
-              url: null,
+              tencentVideoId: video.mediaId,
+              videoId: video.id,
             })
             setTit(video.title)
           }
-          else if (video.storage_driver === 'local') {
+          else if (video.mediaSource === 'local') {
             if (!title) {
               form.setFieldsValue({
-                title: video.title.replace('.m3u8', '').replace('.mp4', ''),
+                title: video.mediaName.replace('.m3u8', '').replace('.mp4', ''),
               })
             }
             media.localVideoUrl(video.storage_file_id, {}).then((res: any) => {

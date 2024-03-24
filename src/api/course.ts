@@ -104,7 +104,7 @@ export function videoCreate(id: number) {
 
 // 新建课时
 export function videoStore(params: any) {
-  return client.post('/backend/api/v1/video', params)
+  return client.post('/course/api/section/add', params)
 }
 
 // 返回课时明细
@@ -114,7 +114,7 @@ export function videoDetail(id: number) {
 
 // 更新课时
 export function videoUpdate(id: number, params: any) {
-  return client.put(`/backend/api/v1/video/${id}`, params)
+  return client.post(`/course/api/section/${id}/update`, params)
 }
 
 export function videoSubscribe(id: number, params: any) {
