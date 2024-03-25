@@ -1,78 +1,78 @@
-import { useEffect, useState } from "react";
-import { Modal, Space, Form, Input, Upload, Button, message } from "antd";
-import { useNavigate, useLocation } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import { course } from "../../../api/index";
-import { titleAction } from "../../../store/user/loginUserSlice";
-import { BackBartment, HelperText } from "../../../components";
+import { useEffect, useState } from 'react'
+import { Button, Form, Input, Modal, Space, Upload, message } from 'antd'
+import { useLocation, useNavigate } from 'react-router-dom'
+import { useDispatch, useSelector } from 'react-redux'
+import { course } from '../../../api/index'
+import { titleAction } from '../../../store/user/loginUserSlice'
+import { BackBartment, HelperText } from '../../../components'
 
-const CourseAttachCreatePage = () => {
-  const [form] = Form.useForm();
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const result = new URLSearchParams(useLocation().search);
-  const [loading, setLoading] = useState<boolean>(false);
-  const [cid, setCid] = useState(Number(result.get("course_id")));
-  const [fileName, setFileName] = useState<string>("");
-  const [file, setFile] = useState<any>(null);
-
-  useEffect(() => {
-    document.title = "添加课程附件";
-    dispatch(titleAction("添加课程附件"));
-  }, []);
+function CourseAttachCreatePage() {
+  const [form] = Form.useForm()
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
+  const result = new URLSearchParams(useLocation().search)
+  const [loading, setLoading] = useState<boolean>(false)
+  const [cid, setCid] = useState(Number(result.get('course_id')))
+  const [fileName, setFileName] = useState<string>('')
+  const [file, setFile] = useState<any>(null)
 
   useEffect(() => {
-    setCid(Number(result.get("course_id")));
-  }, [result.get("course_id")]);
+    document.title = '添加课程附件'
+    dispatch(titleAction('添加课程附件'))
+  }, [])
+
+  useEffect(() => {
+    setCid(Number(result.get('course_id')))
+  }, [result.get('course_id')])
 
   const onFinish = (values: any) => {
-    if (loading) {
-      return;
-    }
-    setLoading(true);
-    const formData = new FormData();
-    formData.append("file", file);
-    formData.append("name", values.name);
-    formData.append("course_id", String(cid));
+    if (loading)
+      return
+
+    setLoading(true)
+    const formData = new FormData()
+    formData.append('file', file)
+    formData.append('name', values.name)
+    formData.append('courseId', String(cid))
     course
       .attachStore(formData)
       .then((res: any) => {
-        setLoading(false);
-        message.success("成功！");
-        navigate(-1);
+        setLoading(false)
+        message.success('成功！')
+        navigate(-1)
       })
       .catch((e) => {
-        setLoading(false);
-      });
-  };
+        setLoading(false)
+      })
+  }
 
   const onFinishFailed = (errorInfo: any) => {
-    console.log("Failed:", errorInfo);
-  };
+    console.log('Failed:', errorInfo)
+  }
 
   const uploadProps = {
     accept:
-      "image/gif,image/jpeg,image/jpg,image/png,.csv,.doc,.txt,.pdf,.md,.zip,",
+      'image/gif,image/jpeg,image/jpg,image/png,.csv,.doc,.txt,.pdf,.md,.zip,',
     beforeUpload: (file: any) => {
-      if (loading) {
-        return;
-      }
-      setLoading(true);
-      const f = file;
+      if (loading)
+        return
+
+      setLoading(true)
+      const f = file
       if (f.size > 10240000) {
-        message.error("上传附件大小不能超过10MB");
-        setLoading(false);
-        return;
+        message.error('上传附件大小不能超过10MB')
+        setLoading(false)
+        return
       }
-      setFileName(f.name);
+      setFileName(f.name)
       form.setFieldsValue({
         name: f.name,
-      });
-      setFile(f);
-      setLoading(false);
-      return false;
+      })
+      setFile(f)
+      setLoading(false)
+      return false
     },
-  };
+  }
 
   return (
     <div className="geekedu-main-body">
@@ -91,12 +91,12 @@ const CourseAttachCreatePage = () => {
           <Form.Item
             label="排序"
             name="file"
-            rules={[{ required: true, message: "填上传附件!" }]}
+            rules={[{ required: true, message: '填上传附件!' }]}
           >
             <Space align="baseline" style={{ height: 32 }}>
               <Form.Item
                 name="file"
-                rules={[{ required: true, message: "填上传附件!" }]}
+                rules={[{ required: true, message: '填上传附件!' }]}
               >
                 <Upload {...uploadProps} showUploadList={false}>
                   <Button loading={loading} type="primary">
@@ -113,7 +113,7 @@ const CourseAttachCreatePage = () => {
           <Form.Item
             label="附件名"
             name="name"
-            rules={[{ required: true, message: "请输入附件名!" }]}
+            rules={[{ required: true, message: '请输入附件名!' }]}
           >
             <Input
               style={{ width: 300 }}
@@ -142,7 +142,7 @@ const CourseAttachCreatePage = () => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default CourseAttachCreatePage;
+export default CourseAttachCreatePage

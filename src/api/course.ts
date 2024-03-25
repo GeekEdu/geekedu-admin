@@ -171,16 +171,19 @@ export function subUsersDel(id: number, params: any) {
   return client.get(`/backend/api/v1/course/${id}/subscribe/delete`, params)
 }
 
+// 附件列表
 export function attachList(params: any) {
-  return client.get(`/backend/api/v1/course_attach`, params)
+  return client.get(`/res/api/attach/list`, params)
 }
 
+// 附件上传
 export function attachStore(params: any) {
-  return client.post(`/backend/api/v1/course_attach`, params)
+  return client.post(`/res/api/attach/upload`, params)
 }
 
+// 附件删除
 export function attachDestory(id: number) {
-  return client.destroy(`/backend/api/v1/course_attach/${id}`)
+  return client.post(`/res/api/attach/${id}/delete`, {})
 }
 
 // 返回章节列表
