@@ -47,8 +47,8 @@ function CertificatePage() {
         pageSize: size,
       })
       .then((res: any) => {
-        setList(res.data.data.data)
-        setTotal(res.data.data.total)
+        setList(res.data.data)
+        setTotal(res.data.total)
         setLoading(false)
       })
       .catch((e) => {
@@ -73,7 +73,7 @@ function CertificatePage() {
       title: '已授予人数',
       render: (_, record: any) => (
         <span>
-          {record.users_count}
+          {record.userCount}
           人
         </span>
       ),
@@ -81,7 +81,7 @@ function CertificatePage() {
     {
       title: '创建时间',
       width: 200,
-      render: (_, record: any) => <div>{dateFormat(record.created_at)}</div>,
+      render: (_, record: any) => <div>{dateFormat(record.createdTime)}</div>,
     },
     {
       title: '操作',

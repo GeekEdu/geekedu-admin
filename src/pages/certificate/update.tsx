@@ -2,7 +2,7 @@
  * @Author: Poison02 2069820192@qq.com
  * @Date: 2024-01-19 22:53:24
  * @LastEditors: Poison02 2069820192@qq.com
- * @LastEditTime: 2024-03-24 20:13:00
+ * @LastEditTime: 2024-03-25 10:48:37
  * @FilePath: /geekedu-admin/src/pages/certificate/update.tsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -161,9 +161,9 @@ function CertificateUpdatePage() {
     certificate.detail(id).then((res: any) => {
       form.setFieldsValue({
         name: res.data.name,
-        template_image: res.data.template_image,
+        templateImage: res.data.templateImage,
       })
-      setThumb(res.data.template_image)
+      setThumb(res.data.templateImage)
       const params = JSON.parse(res.data.params)
       const arr = []
       for (let i = 0; i < params.length; i++) {
@@ -190,7 +190,7 @@ function CertificateUpdatePage() {
         }
       }
       setBlocksData(arr)
-      const relate_res = res.data.relate_res
+      const relate_res = res.data?.relation
       if (relate_res) {
         const data = relate_res
         const coursesData = []
@@ -336,7 +336,7 @@ function CertificateUpdatePage() {
     if (paperData.length > 0)
       courses = courses.concat(paperData)
 
-    values.courses = courses
+    values.relation = courses
     setLoading(true)
     certificate
       .update(id, values)

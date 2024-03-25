@@ -245,7 +245,7 @@ function CertificateCreatePage() {
     if (paperData.length > 0)
       relation = relation.concat(paperData)
 
-    values.courses = relation
+    values.relation = relation
     setLoading(true)
     certificate
       .store(values)
