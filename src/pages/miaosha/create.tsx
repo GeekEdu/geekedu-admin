@@ -1,90 +1,92 @@
-import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { Button, Input, message, Form, Space, DatePicker } from "antd";
-import { useDispatch, useSelector } from "react-redux";
-import { miaosha } from "../../api/index";
-import { titleAction } from "../../store/user/loginUserSlice";
-import { HelperText, BackBartment, SelectResources } from "../../components";
-const { RangePicker } = DatePicker;
-import moment from "moment";
+import { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { Button, DatePicker, Form, Input, Space, message } from 'antd'
+import { useDispatch, useSelector } from 'react-redux'
+import moment from 'moment'
+import { miaosha } from '../../api/index'
+import { titleAction } from '../../store/user/loginUserSlice'
+import { BackBartment, HelperText, SelectResources } from '../../components'
 
-const MiaoshaCreatePage = () => {
-  const [form] = Form.useForm();
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const [loading, setLoading] = useState<boolean>(false);
-  const [title, setTitle] = useState<string>("");
-  const [thumb, setThumb] = useState<string>("");
-  const [goods_type, setGoodsType] = useState<string>("");
-  const [original_charge, setOriginalCharge] = useState("");
-  const [showSelectResWin, setShowSelectResWin] = useState<boolean>(false);
+const { RangePicker } = DatePicker
+
+function MiaoshaCreatePage() {
+  const [form] = Form.useForm()
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
+  const [loading, setLoading] = useState<boolean>(false)
+  const [title, setTitle] = useState<string>('')
+  const [thumb, setThumb] = useState<string>('')
+  const [goods_type, setGoodsType] = useState<string>('')
+  const [original_charge, setOriginalCharge] = useState('')
+  const [showSelectResWin, setShowSelectResWin] = useState<boolean>(false)
 
   useEffect(() => {
-    document.title = "新建秒杀活动";
-    dispatch(titleAction("新建秒杀活动"));
-  }, []);
+    document.title = '新建秒杀活动'
+    dispatch(titleAction('新建秒杀活动'))
+  }, [])
 
   const onFinish = (values: any) => {
-    if (loading) {
-      return;
+    if (loading)
+      return
+
+    if (values.price < 0) {
+      message.error('请输入正确的秒杀价')
+      return
     }
-    if (values.charge < 0) {
-      message.error("请输入正确的秒杀价");
-      return;
+    if (values.stock < 0) {
+      message.error('请输入正确的库存')
+      return
     }
-    if (values.num < 0) {
-      message.error("请输入正确的库存");
-      return;
-    }
-    setLoading(true);
-    values.goods_type = goods_type;
-    values.original_charge = original_charge;
-    values.goods_title = title;
-    values.goods_thumb = thumb;
-    values.end_at = moment(new Date(values.started_at[1])).format(
-      "YYYY-MM-DD HH:mm"
-    );
-    values.started_at = moment(new Date(values.started_at[0])).format(
-      "YYYY-MM-DD HH:mm"
-    );
+    setLoading(true)
+    values.goodsType = goods_type
+    values.originPrice = original_charge
+    values.goodsTitle = title
+    values.goodsCover = thumb
+    values.endAt = moment(new Date(values.startAt[1])).format(
+      'YYYY-MM-DD HH:mm:ss',
+    )
+    values.startAt = moment(new Date(values.startAt[0])).format(
+      'YYYY-MM-DD HH:mm:ss',
+    )
     miaosha
       .store(values)
       .then((res: any) => {
-        setLoading(false);
-        message.success("保存成功！");
-        navigate(-1);
+        setLoading(false)
+        message.success('保存成功！')
+        navigate(-1)
       })
       .catch((e) => {
-        setLoading(false);
-      });
-  };
+        setLoading(false)
+      })
+  }
 
   const onFinishFailed = (errorInfo: any) => {
-    console.log("Failed:", errorInfo);
-  };
+    console.log('Failed:', errorInfo)
+  }
 
   return (
     <div className="geekedu-main-body">
       <BackBartment title="新建秒杀活动" />
       <SelectResources
         open={showSelectResWin}
-        enabledResource={"vod,live,book,learnPath"}
+        enabledResource="vod,live,book,learnPath"
         onCancel={() => setShowSelectResWin(false)}
         onSelected={(result: any) => {
           form.setFieldsValue({
-            goods_id: result.id,
-          });
-          setTitle(result.title);
-          setThumb(result.thumb);
-          if (result.resource_type === "vod") {
-            setGoodsType("course");
-          } else {
-            setGoodsType(result.resource_type);
-          }
-          setOriginalCharge(result.original_charge);
-          setShowSelectResWin(false);
+            goodsId: result.id,
+          })
+          setTitle(result.title)
+          setThumb(result.thumb)
+          if (result.resource_type === 'vod')
+            setGoodsType('course')
+          else
+            setGoodsType(result.resource_type)
+
+          setOriginalCharge(result.original_charge)
+          setShowSelectResWin(false)
         }}
-      ></SelectResources>
+      >
+      </SelectResources>
       <div className="float-left mt-30">
         <Form
           form={form}
@@ -98,27 +100,33 @@ const MiaoshaCreatePage = () => {
         >
           <Form.Item
             label="商品"
-            name="goods_id"
-            rules={[{ required: true, message: "请选择商品!" }]}
+            name="goodsId"
+            rules={[{ required: true, message: '请选择商品!' }]}
           >
             <Button
               loading={loading}
               type="primary"
               onClick={() => setShowSelectResWin(true)}
             >
-              {title && <span>已选择「{title}」</span>}
+              {title && (
+                <span>
+                  已选择「
+                  {title}
+                  」
+                </span>
+              )}
               {!title && <span>选择商品</span>}
             </Button>
           </Form.Item>
           <Form.Item
             label="秒杀价"
-            name="charge"
-            rules={[{ required: true, message: "请输入秒杀价!" }]}
+            name="price"
+            rules={[{ required: true, message: '请输入秒杀价!' }]}
           >
             <Space align="baseline" style={{ height: 32 }}>
               <Form.Item
-                name="charge"
-                rules={[{ required: true, message: "请输入秒杀价!" }]}
+                name="price"
+                rules={[{ required: true, message: '请输入秒杀价!' }]}
               >
                 <Input
                   style={{ width: 300 }}
@@ -134,8 +142,8 @@ const MiaoshaCreatePage = () => {
           </Form.Item>
           <Form.Item
             label="库存"
-            name="num"
-            rules={[{ required: true, message: "请输入库存!" }]}
+            name="stock"
+            rules={[{ required: true, message: '请输入库存!' }]}
           >
             <Input
               type="number"
@@ -146,13 +154,13 @@ const MiaoshaCreatePage = () => {
           </Form.Item>
           <Form.Item
             label="活动时间"
-            name="started_at"
-            rules={[{ required: true, message: "请输入活动时间!" }]}
+            name="startAt"
+            rules={[{ required: true, message: '请输入活动时间!' }]}
           >
             <RangePicker
-              format={"YYYY-MM-DD HH:mm"}
+              format="YYYY-MM-DD HH:mm:ss"
               showTime
-              placeholder={["开始时间", "结束时间"]}
+              placeholder={['开始时间', '结束时间']}
             />
           </Form.Item>
         </Form>
@@ -176,7 +184,7 @@ const MiaoshaCreatePage = () => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default MiaoshaCreatePage;
+export default MiaoshaCreatePage
