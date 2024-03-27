@@ -123,7 +123,7 @@ function DashboardPage() {
       start_at,
       end_at,
     }
-    home.statistic(databox).then((res: any) => {
+    home.statistic({}).then((res: any) => {
       drawLineChart(res.data)
     })
 
@@ -409,7 +409,7 @@ function DashboardPage() {
           )} */}
         </div>
         <div className={styles.el_top_row3}>
-          <div className={styles.tit}>统计分析</div>
+          {/* <div className={styles.tit}>统计分析</div>
           <div className={styles.selcharttimebox}>
             <RangePicker format="YYYY-MM-DD HH:mm:ss" onChange={onChange} />
             <Button
@@ -421,7 +421,7 @@ function DashboardPage() {
             >
               筛选
             </Button>
-          </div>
+          </div> */}
           <div className={styles.charts}>
             <div
               ref={chartRef}
