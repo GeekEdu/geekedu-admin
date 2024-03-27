@@ -1,146 +1,146 @@
-import { useState, useEffect } from "react";
-import styles from "./index.module.scss";
-import { Radio, Table, Tooltip } from "antd";
-import type { ColumnsType } from "antd/es/table";
-import { useDispatch, useSelector } from "react-redux";
-import { stats } from "../../../api/index";
-import { titleAction } from "../../../store/user/loginUserSlice";
-import moment from "moment";
-import { DayWeekMonth } from "../../../components/index";
-import { InfoCircleOutlined } from "@ant-design/icons";
+import { useEffect, useState } from 'react'
+import { Radio, Table, Tooltip } from 'antd'
+import type { ColumnsType } from 'antd/es/table'
+import { useDispatch, useSelector } from 'react-redux'
+import moment from 'moment'
+import { InfoCircleOutlined } from '@ant-design/icons'
+import { stats } from '../../../api/index'
+import { titleAction } from '../../../store/user/loginUserSlice'
+import { DayWeekMonth } from '../../../components/index'
+import styles from './index.module.scss'
 
 interface DataType {
-  id: React.Key;
-  goods_name: string;
-  orders_count: number;
-  orders_paid_sum: number;
+  id: React.Key
+  goods_name: string
+  orders_count: number
+  orders_paid_sum: number
 }
 
-const StatsContentPage = () => {
-  const dispatch = useDispatch();
-  const [loading, setLoading] = useState<boolean>(false);
-  const [page, setPage] = useState(1);
-  const [size, setSize] = useState(10);
-  const [total, setTotal] = useState(0);
-  const [list, setList] = useState<any>([]);
-  const [refresh, setRefresh] = useState(false);
-  const [goodsType, setGoodsType] = useState<string>("COURSE");
+function StatsContentPage() {
+  const dispatch = useDispatch()
+  const [loading, setLoading] = useState<boolean>(false)
+  const [page, setPage] = useState(1)
+  const [size, setSize] = useState(10)
+  const [total, setTotal] = useState(0)
+  const [list, setList] = useState<any>([])
+  const [refresh, setRefresh] = useState(false)
+  const [goodsType, setGoodsType] = useState<string>('REPLAY_COURSE')
   const [start_at, setStartAt] = useState(
-    moment().subtract(6, "days").format("YYYY-MM-DD")
-  );
+    moment().subtract(6, 'days').format('YYYY-MM-DD HH:mm:ss'),
+  )
   const [end_at, setEndAt] = useState(
-    moment().add(1, "days").format("YYYY-MM-DD")
-  );
-  const [typeList, setTypeList] = useState<any>([]);
+    moment().add(1, 'days').format('YYYY-MM-DD HH:mm:ss'),
+  )
+  const [typeList, setTypeList] = useState<any>([])
   const enabledAddons = useSelector(
-    (state: any) => state.enabledAddonsConfig.value.enabledAddons
-  );
+    (state: any) => state.enabledAddonsConfig.value.enabledAddons,
+  )
 
   useEffect(() => {
-    document.title = "商品数据";
-    dispatch(titleAction("商品数据"));
-  }, []);
+    document.title = '商品数据'
+    dispatch(titleAction('商品数据'))
+  }, [])
 
   useEffect(() => {
-    getData();
-  }, [page, size, start_at, end_at, goodsType, refresh]);
+    getData()
+  }, [page, size, start_at, end_at, goodsType, refresh])
 
   useEffect(() => {
-    let typeList = [
+    const typeList = [
       {
-        name: "录播课",
-        key: "COURSE",
+        name: '录播课',
+        key: 'REPLAY_COURSE',
       },
-    ];
+    ]
 
-    if (enabledAddons["Zhibo"]) {
+    if (enabledAddons.Zhibo) {
       typeList.push({
-        name: "直播课",
-        key: "直播课程",
-      });
+        name: '直播课',
+        key: 'LIVE_COURSE',
+      })
     }
 
-    if (enabledAddons["MeeduBooks"]) {
+    if (enabledAddons.MeeduBooks) {
       typeList.push({
-        name: "电子书",
-        key: "BOOK",
-      });
+        name: '电子书',
+        key: 'E_BOOK',
+      })
     }
 
-    if (enabledAddons["MeeduTopics"]) {
+    if (enabledAddons.MeeduTopics) {
       typeList.push({
-        name: "图文",
-        key: "文章",
-      });
+        name: '图文',
+        key: 'IMAGE_TEXT',
+      })
     }
 
-    if (enabledAddons["LearningPaths"]) {
+    if (enabledAddons.LearningPaths) {
       typeList.push({
-        name: "学习路径",
-        key: "学习路径",
-      });
+        name: '学习路径',
+        key: 'LEARN_PATH',
+      })
     }
 
     typeList.push({
-      name: "VIP会员",
-      key: "ROLE",
-    });
-    setTypeList(typeList);
-  }, [enabledAddons]);
+      name: 'VIP会员',
+      key: 'VIP',
+    })
+    setTypeList(typeList)
+  }, [enabledAddons])
 
   const paginationPageChange = (page: number) => {
-    setPage(page);
-    setRefresh(!refresh);
-  };
+    setPage(page)
+    setRefresh(!refresh)
+  }
 
   const getData = () => {
-    if (loading) {
-      return;
-    }
-    setLoading(true);
+    if (loading)
+      return
+
+    setLoading(true)
     stats
       .contentList({
-        page: page,
-        size: size,
-        start_at: start_at,
-        end_at: end_at,
-        goods_type: goodsType,
+        pageNum: page,
+        pageSize: size,
+        startAt: start_at,
+        endAt: end_at,
+        goodsType,
       })
       .then((res: any) => {
-        setList(res.data.data);
-        setTotal(res.data.total);
-        setLoading(false);
+        setList(res.data.data)
+        setTotal(res.data.total)
+        setLoading(false)
       })
       .catch((e) => {
-        setLoading(false);
-      });
-  };
+        setLoading(false)
+      })
+  }
 
   const paginationReset = () => {
-    setStartAt(moment().subtract(6, "days").format("YYYY-MM-DD"));
-    setEndAt(moment().add(1, "days").format("YYYY-MM-DD"));
-    setRefresh(!refresh);
-  };
+    setStartAt(moment().subtract(6, 'days').format('YYYY-MM-DD HH:mm:ss'))
+    setEndAt(moment().add(1, 'days').format('YYYY-MM-DD HH:mm:ss'))
+    setRefresh(!refresh)
+  }
 
   const changeTimeContentTop = (start_at: any, end_at: any) => {
-    setStartAt(start_at);
-    setEndAt(end_at);
-    paginationPageChange(1);
-  };
+    setStartAt(start_at)
+    setEndAt(end_at)
+    paginationPageChange(1)
+  }
 
   const paginationProps = {
-    current: page, //当前页码
+    current: page, // 当前页码
     pageSize: size,
-    total: total, // 总条数
+    total, // 总条数
     onChange: (page: number, pageSize: number) =>
-      handlePageChange(page, pageSize), //改变页码的函数
+      handlePageChange(page, pageSize), // 改变页码的函数
     showSizeChanger: true,
-  };
+  }
 
   const handlePageChange = (page: number, pageSize: number) => {
-    setPage(page);
-    setSize(pageSize);
-  };
+    setPage(page)
+    setSize(pageSize)
+  }
 
   const columns: ColumnsType<DataType> = [
     {
@@ -152,50 +152,51 @@ const StatsContentPage = () => {
           </Tooltip>
         </div>
       ),
-      render: (_, record: any) => <span>{record.goods_name}</span>,
+      render: (_, record: any) => <span>{record.goodsName}</span>,
     },
     {
-      title: "支付订单数",
+      title: '支付订单数',
       width: 250,
-      render: (_, record: any) => <span>{record.orders_count}</span>,
+      render: (_, record: any) => <span>{record.orderCount}</span>,
     },
     {
-      title: "支付总金额",
+      title: '支付总金额',
       width: 250,
-      render: (_, record: any) => <span>{record.orders_paid_sum}</span>,
+      render: (_, record: any) => <span>{record.payTotal}</span>,
     },
-  ];
+  ]
 
   return (
-    <div className={styles["el_content"]}>
-      <div className={styles["el_top_row1"]}>
-        <div className={styles["el_row_item"]}>
-          <div className={styles["header"]}>
-            <div className={styles["tabs"]}>
+    <div className={styles.el_content}>
+      <div className={styles.el_top_row1}>
+        <div className={styles.el_row_item}>
+          <div className={styles.header}>
+            <div className={styles.tabs}>
               <Radio.Group
                 size="large"
                 defaultValue={goodsType}
                 buttonStyle="solid"
                 onChange={(e) => {
-                  setGoodsType(e.target.value);
-                  paginationPageChange(1);
+                  setGoodsType(e.target.value)
+                  paginationPageChange(1)
                 }}
               >
-                {typeList.length > 0 &&
-                  typeList.map((item: any) => (
-                    <Radio.Button key={item.key} value={item.key}>
-                      {item.name}
-                    </Radio.Button>
-                  ))}
+                {typeList.length > 0
+                && typeList.map((item: any) => (
+                  <Radio.Button key={item.key} value={item.key}>
+                    {item.name}
+                  </Radio.Button>
+                ))}
               </Radio.Group>
             </div>
-            <div className={styles["controls"]}>
+            <div className={styles.controls}>
               <DayWeekMonth
                 active={true}
                 onChange={(start_at, end_at) => {
-                  changeTimeContentTop(start_at, end_at);
+                  changeTimeContentTop(start_at, end_at)
                 }}
-              ></DayWeekMonth>
+              >
+              </DayWeekMonth>
             </div>
           </div>
           <div className="float-left mt-15">
@@ -203,13 +204,13 @@ const StatsContentPage = () => {
               loading={loading}
               columns={columns}
               dataSource={list}
-              rowKey={(record) => record.id}
+              rowKey={record => record.id}
               pagination={paginationProps}
             />
           </div>
         </div>
       </div>
     </div>
-  );
-};
-export default StatsContentPage;
+  )
+}
+export default StatsContentPage
