@@ -30,7 +30,7 @@ export function destroy(id: number) {
 }
 
 export function userList(id: number, params: any) {
-  return client.get(`/backend/addons/Cert/cert/${id}/users`, params)
+  return client.get(`/user/api/certificate/${id}/members`, params)
 }
 
 export function userImport(id: number, params: any) {
@@ -38,5 +38,5 @@ export function userImport(id: number, params: any) {
 }
 
 export function userDelete(id: number, params: any) {
-  return client.post(`/backend/addons/Cert/cert/${id}/user/destroy`, params)
+  return client.post(`/user/api/certificate/${id}/cancel/batch`, params)
 }

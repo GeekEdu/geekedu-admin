@@ -14,8 +14,8 @@ const { confirm } = Modal
 
 interface DataType {
   id: React.Key
-  user_id: number
-  created_at: string
+  userId: string
+  createdTime: string
 }
 
 function CertificateUsersPage() {
@@ -53,9 +53,8 @@ function CertificateUsersPage() {
     setLoading(true)
     certificate
       .userList(id, {
-        page,
-        size,
-        user_id,
+        pageNum: page,
+        pageSize: size,
       })
       .then((res: any) => {
         setList(res.data.data)
@@ -94,7 +93,7 @@ function CertificateUsersPage() {
 
         setLoading(true)
         certificate
-          .userDelete(id, { user_ids: selectedRowKeys })
+          .userDelete(id, { ids: selectedRowKeys })
           .then(() => {
             setLoading(false)
             message.success('成功')
@@ -142,7 +141,7 @@ function CertificateUsersPage() {
     {
       title: '学员ID',
       width: 150,
-      render: (_, record: any) => <span>{record.user_id}</span>,
+      render: (_, record: any) => <span>{record.userId}</span>,
     },
     {
       title: '学员',
@@ -153,7 +152,7 @@ function CertificateUsersPage() {
               <div className="avatar">
                 <img src={record.user.avatar} width="40" height="40" />
               </div>
-              <div className="ml-10">{record.user.nick_name}</div>
+              <div className="ml-10">{record.user.name}</div>
             </div>
           )}
           {!record.user && <span className="c-red">学员不存在</span>}
@@ -163,18 +162,18 @@ function CertificateUsersPage() {
     {
       title: '手机号',
       width: 150,
-      render: (_, record: any) => <span>{record.user?.mobile}</span>,
+      render: (_, record: any) => <span>{record.user?.phone}</span>,
     },
     {
       title: '证书编号',
       width: 400,
-      render: (_, record: any) => <span>{record.cert_no}</span>,
+      render: (_, record: any) => <span>{record.cnum}</span>,
     },
     {
-      title: '使用时间',
+      title: '授予时间',
       width: 200,
-      dataIndex: 'created_at',
-      render: (created_at: string) => <span>{dateFormat(created_at)}</span>,
+      dataIndex: 'createdTime',
+      render: (createdTime: string) => <span>{dateFormat(createdTime)}</span>,
     },
     {
       title: '操作',
@@ -212,7 +211,7 @@ function CertificateUsersPage() {
   return (
     <div className="geekedu-main-body">
       <BackBartment title="证书授予学员" />
-      <UserImportDialog
+      {/* <UserImportDialog
         open={importDialog}
         id={id}
         type="cert"
@@ -223,10 +222,10 @@ function CertificateUsersPage() {
           resetData()
         }}
       >
-      </UserImportDialog>
+      </UserImportDialog> */}
       <div className="float-left j-b-flex mb-30 mt-30">
         <div className="d-flex">
-          <PerButton
+          {/* <PerButton
             type="primary"
             text="批量授予"
             class=""
@@ -234,7 +233,7 @@ function CertificateUsersPage() {
             p="addons.cert.user.import"
             onClick={() => setImportDialog(true)}
             disabled={null}
-          />
+          /> */}
 
           <PerButton
             type="danger"
@@ -246,7 +245,7 @@ function CertificateUsersPage() {
             disabled={null}
           />
         </div>
-        <div className="d-flex">
+        {/* <div className="d-flex">
           <Input
             value={user_id}
             onChange={(e) => {
@@ -269,7 +268,7 @@ function CertificateUsersPage() {
           >
             筛选
           </Button>
-        </div>
+        </div> */}
       </div>
       <div className="float-left">
         <Table
@@ -280,7 +279,7 @@ function CertificateUsersPage() {
           loading={loading}
           columns={columns}
           dataSource={list}
-          rowKey={record => record.user_id}
+          rowKey={record => record.userId}
           pagination={paginationProps}
         />
       </div>
