@@ -63,15 +63,15 @@ export function Header() {
 
   return (
     <div className={styles['app-header']}>
-      <StudentDeviceDialog
+      {/* <StudentDeviceDialog
         open={studentDevice}
         onCancel={() => setStudentDevice(false)}
       >
-      </StudentDeviceDialog>
+      </StudentDeviceDialog> */}
       <div className={styles['main-header']}>
         <div className={styles['page-name']}>{title}</div>
         <div className={styles['device-bar']}>
-          <div
+          {/* <div
             className={styles['device-item']}
             onClick={() => setStudentDevice(true)}
           >
@@ -95,7 +95,7 @@ export function Header() {
               </div>
               <i className={styles.column}></i>
             </>
-          )}
+          )} */}
           {isLogin && user && (
             <Button.Group className={styles['user-info']}>
               <Dropdown menu={{ items, onClick }} placement="bottomRight">
