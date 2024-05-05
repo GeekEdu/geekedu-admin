@@ -220,7 +220,25 @@ function LiveVideoPage() {
               }}
               disabled={null}
             />
-            {record.status === 2 && (
+            {record.status === 0 && (
+              <PerButton
+                type="link"
+                text="直播"
+                class="c-primary"
+                icon={null}
+                p="addons.Zhibo.course_video.stats"
+                onClick={() => {
+                  navigate(
+                    `/live/course/video/users?id=${
+                    record.id
+                       }&course_id=${
+                       id}`,
+                  )
+                }}
+                disabled={null}
+              />
+            )}
+            {/* {record.status === 2 && (
               <PerButton
                 type="link"
                 text="统计"
@@ -232,7 +250,7 @@ function LiveVideoPage() {
                 }}
                 disabled={null}
               />
-            )}
+            )} */}
             <Dropdown menu={{ items }}>
               <Button
                 type="link"

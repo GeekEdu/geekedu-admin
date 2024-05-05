@@ -417,7 +417,7 @@ function LivePage() {
             onClick={() => navigate('/live/course/category/index')}
             disabled={null}
           />
-          <PerButton
+          {/* <PerButton
             type="primary"
             text="讲师管理"
             class="ml-10"
@@ -425,7 +425,7 @@ function LivePage() {
             p="addons.Zhibo.teacher.list"
             onClick={() => navigate('/live/teacher/index')}
             disabled={null}
-          />
+          /> */}
           <PerButton
             type="primary"
             text="课程评论"
