@@ -8,7 +8,6 @@ import { getToken } from '../utils'
 import LoginPage from '../pages/login'
 import WithHeaderWithoutFooter from '../pages/layouts/with-header-without-footer'
 import WithoutHeaderWithoutFooter from '../pages/layouts/without-header-without-footer'
-import LiveZhibo from '../pages/live-zhibo '
 
 // 主页
 const DashboardPage = lazy(() => import('../pages/dashboard'))
@@ -69,6 +68,7 @@ const LiveVideoUpdatePage = lazy(() => import('../pages/live/video/update'))
 const LiveChapterPage = lazy(() => import('../pages/live/chapter/index'))
 const LiveVideoChatsPage = lazy(() => import('../pages/live/video/chats'))
 const LiveVideoUsersPage = lazy(() => import('../pages/live/video/users'))
+const LiveZhiboPage = lazy(() => import('../pages/live/live-teacher/video'))
 // 电子书相关
 const BookPage = lazy(() => import('../pages/book/index'))
 const BookCreatePage = lazy(() => import('../pages/book/create'))
@@ -475,6 +475,8 @@ const routes: RouteObject[] = [
           { path: '/live/course/chapter/index', element: <LiveChapterPage /> },
           { path: '/live/course/video/chats', element: <LiveVideoChatsPage /> },
           { path: '/live/course/video/users', element: <LiveVideoUsersPage /> },
+          { path: '/live/course/zhibo', element: <LiveZhiboPage /> },
+
           { path: '/meedubook/book/index', element: <BookPage /> },
           { path: '/meedubook/book/create', element: <BookCreatePage /> },
           { path: '/meedubook/book/update', element: <BookUpdatePage /> },

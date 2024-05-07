@@ -193,3 +193,32 @@ export function chaptersDetail(id: number) {
 export function chaptersUpdate(id: number, params: any) {
   return client.put(`/course/api/live/course/chapter/update/${id}`, params)
 }
+
+// 直播时长记录
+export function liveWatchRecord(
+  courseId: number,
+  videoId: number,
+  params: any,
+) {
+  return client.post(
+    `/course/api/live/course/${courseId}/video/${videoId}/liveWatchRecord`,
+    params,
+  )
+}
+
+// 直播
+export function play(id: number) {
+  return client.get(`/course/api/live/v2/${id}/play`, {})
+}
+
+// 聊天记录
+export function chatMsgPaginate(
+  courseId: number,
+  videoId: number,
+  params: any,
+) {
+  return client.get(
+    `/course/api/live/course/${courseId}/video/${videoId}/chat/msg`,
+    params,
+  )
+}

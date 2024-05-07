@@ -229,10 +229,7 @@ function LiveVideoPage() {
                 p="addons.Zhibo.course_video.stats"
                 onClick={() => {
                   navigate(
-                    `/live/course/video/users?id=${
-                    record.id
-                       }&course_id=${
-                       id}`,
+                    `/live/course/zhibo?course_id=${id}&id=${record.id}&title=${title}`,
                   )
                 }}
                 disabled={null}
