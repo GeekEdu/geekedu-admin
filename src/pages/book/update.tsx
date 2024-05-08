@@ -113,7 +113,7 @@ function BookUpdatePage() {
       message.error('电子书未设置免费时价格应该大于0')
       return
     }
-    values.render_desc = values.fullDesc
+    // values.render_desc = values.fullDesc
     values.groundingTime = moment(new Date(values.groundingTime)).format(
       'YYYY-MM-DD HH:mm:ss',
     )

@@ -29,7 +29,7 @@ export function destroy(id: number) {
 
 // 更新课程
 export function update(id: number, params: any) {
-  return client.put(`/course/api/update/${id}`, params)
+  return client.post(`/course/api/update/${id}`, params)
 }
 
 // 获取播放地址

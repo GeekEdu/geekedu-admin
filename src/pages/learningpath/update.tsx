@@ -210,7 +210,7 @@ function LearnPathUpdatePage() {
                 <UploadImageButton
                   text="选择图片"
                   onSelected={(url) => {
-                    form.setFieldsValue({ thumb: url })
+                    form.setFieldsValue({ cover: url })
                     setThumb(url)
                   }}
                 >
